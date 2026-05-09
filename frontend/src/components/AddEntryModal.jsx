@@ -99,7 +99,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                 <CustomInput
                   register={register}
                   type="number"
-                  rules={{ required: { value: true, message: 'Weight is required' }, min: { value: 1, message: 'Weight should be greater than 0' }, valueAsNumber: true }}
+                  rules={{ required: { value: true, message: 'Weight is required' }, min: { value: 0.01, message: 'Weight should be greater than 0' }, valueAsNumber: true }}
                   label="Weight (mg)"
                   placeholder="e.g. 10.5"
                   icon={Scale}
