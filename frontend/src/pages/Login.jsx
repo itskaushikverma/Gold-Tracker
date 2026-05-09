@@ -23,7 +23,7 @@ export default function Login() {
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     mode: 'onTouched',
-    defaultValues: { email: localStorage.getItem('user_email') || '', password: '' },
+    defaultValues: { email: localStorage.getItem('user_email') || '', password: localStorage.getItem('user_password') || '' },
   });
 
   const onSubmit = async (data) => {
@@ -32,6 +32,7 @@ export default function Login() {
       if (resp?.success) {
         dispatch(setCredentials({ user_id: resp?.data?.user_id, isAuthenticated: resp?.data?.isAuthenticated }));
         localStorage.setItem('user_email', resp?.data?.user_email);
+        localStorage.setItem('user_password', data.password);
         navigate('/dashboard');
       }
     } catch (err) {
