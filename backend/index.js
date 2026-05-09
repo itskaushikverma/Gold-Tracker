@@ -15,13 +15,15 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-      if (allowedOrigins?.includes(origin)) {
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS"), false);
+        return callback(new Error('Not allowed by CORS'), false);
       }
     },
     credentials: true,
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   })
 );
 
