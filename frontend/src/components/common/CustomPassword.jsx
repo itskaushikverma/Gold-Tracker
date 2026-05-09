@@ -46,7 +46,7 @@ export default function CustomPassword({ register, type = 'text', errors, name, 
         </button>
       </div>
 
-      <span className="absolute mt-0.5 w-full text-left text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
+      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
     </div>
   );
 }

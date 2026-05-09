@@ -3,7 +3,7 @@ import { MotionDiv } from './MotionWrapper';
 export default function BackgroundAnimation() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-slate-950">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-[size:4rem_4rem] opacity-30" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] mask-[radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[4rem_4rem] opacity-30" />
 
       <MotionDiv
         animate={{
@@ -12,7 +12,7 @@ export default function BackgroundAnimation() {
           y: [0, 30, 0],
         }}
         transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-        className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-blue-900/20 blur-[120px]"
+        className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-blue-900/20 blur-[120px]"
       />
       <MotionDiv
         animate={{
@@ -21,7 +21,7 @@ export default function BackgroundAnimation() {
           y: [0, 50, 0],
         }}
         transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-        className="absolute top-[50%] -right-[10%] h-[50%] w-[50%] rounded-full bg-cyan-900/10 blur-[120px]"
+        className="absolute top-[50%] right-[-10%] h-[50%] w-[50%] rounded-full bg-cyan-900/10 blur-[120px]"
       />
       <MotionDiv
         animate={{

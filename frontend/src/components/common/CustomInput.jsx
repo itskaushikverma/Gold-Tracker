@@ -1,4 +1,4 @@
-export default function CustomInput({ register, type = 'text', errors, name, label, icon: Icon, disabled = false, rules = {}, placeholder }) {
+export default function CustomInput({ register, type = 'text', errors, name, label, icon: Icon, disabled = false, rules = {}, placeholder, step }) {
   return (
     <div className="relative w-full">
       <div className="relative w-full">
@@ -11,6 +11,7 @@ export default function CustomInput({ register, type = 'text', errors, name, lab
           disabled={disabled}
           type={type}
           id={name}
+          step={step || (type === 'number' ? 'any' : undefined)}
           autoComplete="off"
           className={`peer w-full cursor-pointer rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-4 ${
             errors?.[name]
@@ -25,7 +26,7 @@ export default function CustomInput({ register, type = 'text', errors, name, lab
         />
       </div>
 
-      <span className="absolute mt-0.5 w-full text-left text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
+      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
     </div>
   );
 }

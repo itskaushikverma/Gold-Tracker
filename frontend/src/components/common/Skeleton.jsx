@@ -16,7 +16,7 @@ export const DashboardSkeleton = () => {
         <Skeleton className="h-32 rounded-2xl" />
         <Skeleton className="h-32 rounded-2xl" />
       </div>
-      <Skeleton className="h-[400px] rounded-2xl" />
+      <Skeleton className="h-100 rounded-2xl" />
     </div>
   );
 };
@@ -28,7 +28,7 @@ export const PerformanceSkeleton = () => {
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-4 w-80" />
       </div>
-      <Skeleton className="h-[500px] rounded-2xl" />
+      <Skeleton className="h-125 rounded-2xl" />
     </div>
   );
 };
