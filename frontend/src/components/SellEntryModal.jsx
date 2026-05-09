@@ -43,7 +43,7 @@ export default function SellEntryModal({ isOpen, onClose, selectedItems }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
+            className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
           >
             <MotionDiv
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -52,7 +52,7 @@ export default function SellEntryModal({ isOpen, onClose, selectedItems }) {
               onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl md:p-8"
             >
-              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-rose-500 to-orange-400" />
+              <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-rose-500 to-orange-400" />
               <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-rose-500/10 blur-3xl" />
 
               <div className="mb-6 flex items-center justify-between">
@@ -130,7 +130,7 @@ export default function SellEntryModal({ isOpen, onClose, selectedItems }) {
                     type="submit"
                     disabled={isLoading}
                     onClick={onSubmit}
-                    className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400"
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400"
                   >
                     {isLoading ? 'Selling...' : 'Confirm Sell'}
                   </MotionButton>

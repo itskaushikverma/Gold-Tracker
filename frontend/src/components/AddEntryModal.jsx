@@ -53,7 +53,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
+            className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
           >
             <MotionDiv
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -62,7 +62,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
               onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl md:p-8"
             >
-              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-cyan-400" />
+              <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-blue-500 to-cyan-400" />
               <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
 
               <div className="mb-6 flex items-center justify-between">
@@ -115,7 +115,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   label="Invested Amount (Rs)"
                   placeholder="e.g. 5000"
                   icon={Wallet}
-                  name={'amount'}
+                  name={'investedValue'}
                   errors={errors}
                   disabled={isLoading || isSubmitting}
                 />
@@ -138,7 +138,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
                     disabled={isLoading || isSubmitting || !isValid}
-                    className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50"
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50"
                   >
                     {isLoading || isSubmitting ? 'Adding...' : 'Add Entry'}
                   </MotionButton>

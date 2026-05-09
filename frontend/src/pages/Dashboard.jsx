@@ -45,7 +45,7 @@ export default function Dashboard() {
               whileTap={{ scale: 0.95, y: 2 }}
               transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
             >
               <Plus className="h-5 w-5" />
               Add Entry
@@ -77,7 +77,7 @@ export default function Dashboard() {
                     whileTap={{ scale: 0.95, y: 2 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     onClick={() => setIsSellModalOpen(true)}
-                    className="flex cursor-pointer items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 px-4 py-1.5 text-xs font-medium text-rose-400 transition-colors transition-shadow duration-300 hover:border-rose-500 hover:bg-rose-500/80 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"
+                    className="flex cursor-pointer items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 px-4 py-1.5 text-xs font-medium text-rose-400 transition-colors duration-300 hover:border-rose-500 hover:bg-rose-500/80 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"
                   >
                     <CheckSquare className="h-3.5 w-3.5" />
                     Sell Selected ({selectedItems.length})
@@ -194,7 +194,7 @@ const Card = ({ icon, title, value, percentage, isPositive, trend = false }) => 
           : 'hover:border-slate-700/80 hover:shadow-[0_8px_30px_rgb(59,130,246,0.1)]',
       )}
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative z-10 mb-4 flex items-center gap-4">
         <div
           className={cn(

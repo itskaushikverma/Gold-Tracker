@@ -56,7 +56,7 @@ export default function Performance() {
           <p className="text-sm text-slate-400 md:text-base">Visualize your investment growth over time.</p>
         </header>
 
-        <div className="min-h-[400px] flex-1 rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4 shadow-xl backdrop-blur-md md:p-6">
+        <div className="min-h-100 flex-1 rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4 shadow-xl backdrop-blur-md md:p-6">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
               <defs>
