@@ -40,7 +40,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['INVESTMENT_DETAILS'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE'],
     }),
 
     sell: builder.mutation({
@@ -49,7 +49,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['INVESTMENT_DETAILS'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE'],
     }),
 
     getDetails: builder.query({
@@ -67,6 +67,7 @@ export const api = createApi({
         method: 'GET',
         params: { user_id },
       }),
+      providesTags: ['INVESTMENT_PERFORMANCE'],
     }),
   }),
 });

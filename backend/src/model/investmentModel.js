@@ -22,6 +22,10 @@ const investmentSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    isSell: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

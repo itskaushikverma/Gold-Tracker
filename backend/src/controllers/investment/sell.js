@@ -1,40 +1,59 @@
 import InvestmentModel from '../../model/investmentModel.js';
+import UserModel from '../../model/userModel.js';
 
 export const sell = async (req, res, next) => {
   try {
-    const { user_id, investment_ids } = req.body;
+    const { user_id, weight, date, price } = req.body;
 
-    if (
-      !user_id ||
-      !investment_ids ||
-      !Array.isArray(investment_ids) ||
-      investment_ids.length === 0
-    ) {
+
+    if (!date || !weight || !price || !user_id) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Date, weight, amount, and user_id are required' });
+    }
+
+    const user = await UserModel.findById(user_id)
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (user.totalInvestedGoldWeight < Number(weight)) {
       return res.status(400).json({
         success: false,
-        message: 'user_id and a valid array of investment_ids are required',
+        message: `Insufficient gold. You only have ${user.totalInvestedGoldWeight}mg available.`,
       });
     }
 
-    const result = await InvestmentModel.deleteMany({
-      _id: { $in: investment_ids },
-      userId: user_id,
-    });
+    await InvestmentModel.create(
+      [
+        {
+          date,
+          weight: -weight,
+          investedValue: -price,
+          userId: user_id,
+          isSell: true,
+        },
+      ],
+    );
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'No investments found or you are not authorized to sell them',
-      });
-    }
+    await UserModel.findByIdAndUpdate(
+      user_id,
+      {
+        $inc: {
+          totalInvestedGoldWeight: -Number(weight),
+          totalInvestedAmount: -Number(price),
+        },
+      },
+      { new: true },
+    );
 
-    return res.status(200).json({
+
+    return res.status(201).json({
       success: true,
-      message: `Successfully sold ${result.deletedCount} investment(s)`,
+      message: 'Sold successfully',
     });
+
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: error.message || 'Selling failed, please try again' });
+    return res.status(500).json({ success: false, message: error.message || 'Selling failed' });
   }
 };

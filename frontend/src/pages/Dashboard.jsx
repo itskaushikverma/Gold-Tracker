@@ -13,12 +13,11 @@ import { DashboardSkeleton } from '../components/common/Skeleton';
 export default function Dashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
   const user_id = useSelector((state) => state.auth.user_id);
 
-  const { data: getDetails, isLoading } = useGetDetailsQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  const { data: getDetails, isLoading, isFetching } = useGetDetailsQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <DashboardSkeleton />;
   }
 
@@ -40,22 +39,35 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <MotionButton
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.95, y: 2 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
-            >
-              <Plus className="h-5 w-5" />
-              Add Entry
-            </MotionButton>
+            <div className="flex gap-3 w-full justify-center md:justify-end">
+              <MotionButton
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.95, y: 2 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                onClick={() => setIsAddModalOpen(true)}
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+              >
+                <Plus className="h-5 w-5" />
+                Add Gold
+              </MotionButton>
+
+              <MotionButton
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.95, y: 2 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                onClick={() => setIsSellModalOpen(true)}
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-2.5 font-medium text-rose-400 transition-all duration-300 hover:border-rose-500 hover:bg-rose-500/80 hover:text-white hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]"
+              >
+                <Plus className="h-5 w-5" />
+                Sell Gold
+              </MotionButton>
+            </div>
           </header>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
             <Card title="Total Invested" value={formatCurrency(getDetails?.data?.totalInvestmentAmount || 0)} icon={<Wallet className="h-6 w-6" />} />
 
-            <Card title="Current Value" value={formatCurrency(getDetails?.data?.currentTotalInvestedAmount || 0)} icon={<TrendingUp className="h-6 w-6" />} />
+            <Card title="Current Value" value={formatCurrency(getDetails?.data?.currentTotalAmount || 0)} icon={<TrendingUp className="h-6 w-6" />} />
 
             <Card
               title="Total Profit / Loss"
@@ -70,40 +82,12 @@ export default function Dashboard() {
           <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-slate-800/80 bg-slate-900/40 shadow-xl backdrop-blur-xs">
             <div className="flex items-center justify-between bg-slate-900/20 p-4">
               <h2 className="text-lg font-semibold text-white md:text-xl">Investment History</h2>
-              <div className="flex gap-3">
-                {selectedItems.length > 0 && (
-                  <MotionButton
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.95, y: 2 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    onClick={() => setIsSellModalOpen(true)}
-                    className="flex cursor-pointer items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 px-4 py-1.5 text-xs font-medium text-rose-400 transition-colors duration-300 hover:border-rose-500 hover:bg-rose-500/80 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"
-                  >
-                    <CheckSquare className="h-3.5 w-3.5" />
-                    Sell Selected ({selectedItems.length})
-                  </MotionButton>
-                )}
-              </div>
             </div>
 
             <div className="min-h-0 flex-1 overflow-auto">
               <table className="relative w-full border-collapse">
                 <thead className="sticky top-0 z-20 bg-slate-900/95 shadow-sm backdrop-blur-md">
                   <tr className="border-b border-slate-800/60 text-xs font-medium text-slate-400 md:text-sm">
-                    <th className="px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 cursor-pointer rounded border-slate-700 bg-slate-800 text-blue-500"
-                        checked={selectedItems.length > 0 && selectedItems.length === (getDetails?.data?.investments?.length || 0)}
-                        onChange={() => {
-                          if (selectedItems.length === getDetails?.data?.investments?.length) {
-                            setSelectedItems([]);
-                          } else {
-                            setSelectedItems(getDetails?.data?.investments);
-                          }
-                        }}
-                      />
-                    </th>
                     <th className="px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4">Date</th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Weight</th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Invested Amount</th>
@@ -115,10 +99,10 @@ export default function Dashboard() {
                 {getDetails?.data?.investments?.length > 0 ? (
                   <tbody className="divide-y divide-slate-800/30">
                     {(getDetails?.data?.investments || []).map((item, index) => {
-                      const isSelected = selectedItems.some((i) => i._id === item._id);
+                      const isSale = item.isSell;
                       const profitLoss = (item.currentValue - item.investedValue).toFixed(2);
-                      const isPositive = profitLoss >= 0;
-                      const percentage = item.investedValue > 0 ? ((profitLoss / item.investedValue) * 100).toFixed(2) : '0.0';
+                      const isPositive = parseFloat(profitLoss) >= 0;
+                      const percentage = item.investedValue !== 0 ? ((profitLoss / Math.abs(item.investedValue)) * 100).toFixed(2) : '0.0';
 
                       return (
                         <MotionTr
@@ -126,41 +110,46 @@ export default function Dashboard() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.05 }}
                           key={item._id}
-                          className={cn('group cursor-default transition-all duration-300 hover:bg-slate-800/50', isSelected && 'bg-blue-500/10 hover:bg-blue-500/20')}
+                          className={cn('group cursor-default transition-all duration-300 hover:bg-slate-800/50', isSale && 'bg-rose-500/5')}
                         >
-                          <td className="px-4 py-3 text-nowrap md:px-6 md:py-4">
-                            <input
-                              type="checkbox"
-                              className="h-4 w-4 cursor-pointer rounded border-slate-700 bg-slate-800 text-blue-500"
-                              checked={isSelected}
-                              onChange={() => {
-                                setSelectedItems((prev) => (isSelected ? prev.filter((i) => i._id !== item._id) : [...prev, item]));
-                              }}
-                            />
+                          <td className="px-4 py-3 text-left text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
+                            <div className="flex flex-col">
+                              <span>{formatDate(item.date)}</span>
+                              {isSale && <span className="text-[10px] font-bold text-rose-400 uppercase tracking-tighter">Sale</span>}
+                            </div>
                           </td>
-                          <td className="px-4 py-3 text-left text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">{formatDate(item.date)}</td>
-                          <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-amber-400/80 md:px-6 md:py-4 md:text-base">{item.weight}mg</td>
-                          <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">{formatCurrency(item.investedValue)}</td>
+                          <td className={cn('px-4 py-3 text-center font-mono text-sm text-nowrap md:px-6 md:py-4 md:text-base', isSale ? 'text-rose-400' : 'text-amber-400/80')}>
+                            {isSale ? '-' : ''}{Math.abs(item.weight)}mg
+                          </td>
+                          <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
+                            {formatCurrency(Math.abs(item.investedValue))}
+                          </td>
                           <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                             <div className="mx-auto flex w-fit items-center justify-center rounded-lg border border-slate-700/50 bg-slate-950/50 shadow-inner transition-all duration-300 group-focus-within:border-blue-500/50 group-hover:border-slate-600">
-                              <span className="px-3 py-1.5 text-center text-white md:py-2">{formatCurrency(item.currentValue)}</span>
+                              <span className="px-3 py-1.5 text-center text-white md:py-2">{isSale ? '-' : formatCurrency(item.currentValue)}</span>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-right font-mono text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
-                            <div className="flex flex-col items-end">
-                              <span className={cn(isPositive ? 'text-emerald-400' : 'text-red-400')}>
-                                {isPositive ? '+' : '-'}
-                                {formatCurrency(Math.abs(profitLoss))}
-                              </span>
-                              <span className={cn('mt-1 rounded-md px-2 py-0.5 text-xs', isPositive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500')}>{percentage}%</span>
-                            </div>
+                            {!isSale ? (
+                              <div className="flex flex-col items-end">
+                                <span className={cn(isPositive ? 'text-emerald-400' : 'text-red-400')}>
+                                  {isPositive ? '+' : '-'}
+                                  {formatCurrency(Math.abs(profitLoss))}
+                                </span>
+                                <span className={cn('mt-1 rounded-md px-2 py-0.5 text-xs', isPositive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500')}>
+                                  {percentage}%
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-slate-500">—</span>
+                            )}
                           </td>
                         </MotionTr>
                       );
                     })}
                   </tbody>
                 ) : (
-                  <div className="absolute flex h-full w-full items-center justify-center">No investments found</div>
+                  <div className="absolute flex h-full w-full items-center justify-center text-slate-500">No active investments found</div>
                 )}
               </table>
             </div>
@@ -168,7 +157,7 @@ export default function Dashboard() {
         </MotionDiv>
       </div>
       <AddEntryModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
-      <SellEntryModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} selectedItems={selectedItems} />
+      <SellEntryModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} totalWeight={getDetails?.data?.totalInvestedWeight}/>
     </>
   );
 }

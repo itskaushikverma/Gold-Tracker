@@ -1,4 +1,5 @@
 import InvestmentModel from '../../model/investmentModel.js';
+import UserModel from '../../model/userModel.js';
 
 export const purchase = async (req, res, next) => {
   try {
@@ -15,11 +16,23 @@ export const purchase = async (req, res, next) => {
       weight,
       investedValue,
       userId: user_id,
+      isSell: false,
     });
 
     if (!investment) {
       return res.status(400).json({ success: false, message: 'Failed to record investment' });
     }
+
+    await UserModel.findByIdAndUpdate(
+      user_id,
+      {
+        $inc: {
+          totalInvestedGoldWeight: Number(weight),
+          totalInvestedAmount: Number(investedValue),
+        },
+      },
+      { new: true },
+    );
 
     return res.status(201).json({
       success: true,

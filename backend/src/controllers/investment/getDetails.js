@@ -1,4 +1,5 @@
 import InvestmentModel from '../../model/investmentModel.js';
+import UserModel from '../../model/userModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 
 export const getDetails = async (req, res, next) => {
@@ -10,8 +11,10 @@ export const getDetails = async (req, res, next) => {
     }
 
     const investments = await InvestmentModel.find({ userId: user_id })
-      .sort({ createdAt: -1 })
+      .sort({ date: -1, createdAt: -1 })
       .lean();
+
+    const user = await UserModel.findById(user_id);
 
     const goldPrice = await getGoldPrice();
 
@@ -23,9 +26,8 @@ export const getDetails = async (req, res, next) => {
         message: 'No investments found',
         data: {
           investments: [],
-          totalInvestmentAmount: 0,
-          totalWeight: 0,
-          totalPrice: 0,
+          totalInvestedAmount: user?.totalInvestedAmount,
+          totalInvestedGoldWeight: user?.totalInvestedGoldWeight,
           totalProfitLoss: 0,
           currentGoldPriceWithGST: round(goldPrice.data.priceWithGST),
           currentGoldPriceWithoutGST: round(goldPrice.data.priceWithoutGST),
@@ -42,25 +44,21 @@ export const getDetails = async (req, res, next) => {
     const updatedInvestments = investments.map((investment) => {
       return {
         ...investment,
-        currentValue: round(investment.weight * currentPrice),
+        currentValue: round(Number(investment.weight) * Number(currentPrice)),
       };
     });
 
-    const totalInvestmentAmount = round(
-      updatedInvestments.reduce((total, inv) => total + (inv.investedValue || 0), 0),
-    );
+    const totalInvestmentAmount = round(user.totalInvestedAmount);
 
-    const totalInvestedWeight = round(
-      updatedInvestments.reduce((total, inv) => total + (inv.weight || 0), 0),
-    );
+    const totalInvestedWeight = round(user.totalInvestedGoldWeight);
 
     const currentGoldPriceWithGST = round(goldPrice.data.priceWithGST);
 
     const currentGoldPriceWithoutGST = round(goldPrice.data.priceWithoutGST);
 
-    const currentTotalInvestedAmount = round(currentGoldPriceWithGST * totalInvestedWeight);
+    const currentTotalAmount = round(currentGoldPriceWithGST * totalInvestedWeight);
 
-    const totalProfitLoss = round(currentTotalInvestedAmount - totalInvestmentAmount);
+    const totalProfitLoss = round(currentTotalAmount - totalInvestmentAmount);
 
     return res.status(200).json({
       success: true,
@@ -71,7 +69,7 @@ export const getDetails = async (req, res, next) => {
         totalInvestedWeight,
         currentGoldPriceWithGST,
         currentGoldPriceWithoutGST,
-        currentTotalInvestedAmount,
+        currentTotalAmount,
         totalProfitLoss,
       },
     });
