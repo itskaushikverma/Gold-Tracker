@@ -23,8 +23,15 @@ const investmentSchema = new mongoose.Schema(
       required: true,
     },
     isSell: {
-      type: Boolean,
-      default: false,
+      status: {
+        type: Boolean,
+        default: false,
+      },
+      amount: {
+        type: Number,
+        default: 0,
+        trim: true,
+      }
     },
   },
   { timestamps: true },

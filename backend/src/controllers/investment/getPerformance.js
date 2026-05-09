@@ -9,7 +9,7 @@ export const getPerformance = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
 
-    const investments = await InvestmentModel.find({ userId: user_id, isSell: false }).sort({ date: 1 }).lean();
+    const investments = await InvestmentModel.find({ userId: user_id, 'isSell.status': false }).sort({ date: 1 }).lean();
 
     if (!investments || investments.length === 0) {
       return res.status(200).json({

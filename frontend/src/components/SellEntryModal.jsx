@@ -1,37 +1,33 @@
 import { AnimatePresence } from 'motion/react';
-import { X, CheckSquare, Scale, Calendar, Wallet } from 'lucide-react';
+import { X, CheckSquare, TrendingUp, TrendingDown, Scale } from 'lucide-react';
 import { MotionButton, MotionDiv } from './common/MotionWrapper';
 import { useSellMutation } from '../services/api';
 import { useSelector } from 'react-redux';
 import { useToast } from './common/Toast';
-import { useForm } from 'react-hook-form';
-import CustomInput from './common/CustomInput';
+import { formatCurrency } from '../utils/formatCurrency';
+import { cn } from '../lib/utils';
 
-export default function SellEntryModal({ isOpen, onClose, totalWeight }) {
+export default function SellEntryModal({ isOpen, onClose, selectedItems, setSelectedItems }) {
   const toast = useToast();
   const [sell, { isLoading }] = useSellMutation();
   const user_id = useSelector((state) => state.auth.user_id);
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting, isValid } } = useForm({
-    defaultValues: {
-      date: new Date().toISOString().split('T')[0],
-      weight: '',
-      price: '',
-    },
-  });
+  const totalWeight = selectedItems?.reduce((sum, item) => sum + item?.weight || 0, 0);
+  const totalInvested = selectedItems?.reduce((sum, item) => sum + item?.investedValue || 0, 0);
+  const totalCurrentValue = selectedItems?.reduce((sum, item) => sum + item?.currentValue || 0, 0);
+  const profitLoss = totalCurrentValue - totalInvested;
+  const isProfitable = profitLoss >= 0;
 
   const onSubmit = async (data) => {
     try {
       const payload = {
+        investment_details: selectedItems,
         user_id,
-        weight: parseFloat(data.weight),
-        date: data.date,
-        price: parseFloat(data.price),
       };
       const resp = await sell(payload).unwrap();
       if (resp?.success) {
         onClose();
-        reset();
+        setSelectedItems([]);
         toast.success(resp?.message);
       }
     } catch (err) {
@@ -78,56 +74,43 @@ export default function SellEntryModal({ isOpen, onClose, totalWeight }) {
                 </MotionButton>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="relative z-10 space-y-4">
-                <p className="mb-2 text-sm text-slate-300">
-                  You are selling from your gold portfolio.
+              <div className="relative z-10">
+                <p className="mb-6 text-sm text-slate-300">
+                  You are about to sell {selectedItems.length} selected investment
+                  {selectedItems.length > 1 ? 's' : ''}. Here is the summary:
                 </p>
 
-                <div className="mb-6 space-y-4">
-                  <CustomInput
-                    register={register}
-                    type="date"
-                    rules={{ required: 'Sale date is required' }}
-                    label="Sale Date"
-                    icon={Calendar}
-                    name={'date'}
-                    errors={errors}
-                    disabled={isLoading || isSubmitting}
-                  />
+                <div className="mb-8 space-y-4">
+                  <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
+                    <div className="flex items-center gap-3">
+                      <Scale className="h-5 w-5 text-amber-500/70" />
+                      <span className="font-medium text-slate-300">Total Weight</span>
+                    </div>
+                    <span className="font-mono font-semibold text-amber-400">{totalWeight}mg</span>
+                  </div>
 
-                  <CustomInput
-                    register={register}
-                    type="number"
-                    rules={{ 
-                      required: 'Weight is required', 
-                      min: { value: 0.01, message: 'Weight should be greater than 0' },
-                      max: { value: totalWeight, message: `Cannot sell more than available (${totalWeight}mg)` },
-                      valueAsNumber: true 
-                    }}
-                    label="Weight to Sell (mg)"
-                    placeholder={`Available: ${totalWeight}mg`}
-                    icon={Scale}
-                    name={'weight'}
-                    errors={errors}
-                    disabled={isLoading || isSubmitting}
-                  />
+                  <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
+                    <div className="flex flex-col">
+                      <span className="text-xs text-slate-400">Total Invested</span>
+                      <span className="font-mono font-medium text-slate-200">{formatCurrency(totalInvested)}</span>
+                    </div>
+                    <div className="text-slate-600">→</div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-xs text-slate-400">Sell Value</span>
+                      <span className="font-mono text-lg font-bold text-slate-100">{formatCurrency(totalCurrentValue)}</span>
+                    </div>
+                  </div>
 
-                  <CustomInput
-                    register={register}
-                    type="number"
-                    rules={{ 
-                      required: 'Sale Price is required', 
-                      min: { value: 1, message: 'Price should be greater than 0' },
-                      valueAsNumber: true 
-                    }}
-                    label="Total Sale Price (Rs)"
-                    placeholder="e.g. 5500"
-                    icon={Wallet}
-                    name={'price'}
-                    errors={errors}
-                    disabled={isLoading || isSubmitting}
-                  />
-
+                  <div className={cn('flex items-center justify-between rounded-xl border p-4', isProfitable ? 'border-emerald-500/20 bg-emerald-500/10' : 'border-rose-500/20 bg-rose-500/10')}>
+                    <div className="flex items-center gap-3">
+                      {isProfitable ? <TrendingUp className="h-5 w-5 text-emerald-500" /> : <TrendingDown className="h-5 w-5 text-rose-500" />}
+                      <span className={cn('font-medium', isProfitable ? 'text-emerald-400' : 'text-rose-400')}>{isProfitable ? 'Net Profit' : 'Net Loss'}</span>
+                    </div>
+                    <span className={cn('font-mono text-lg font-bold', isProfitable ? 'text-emerald-400' : 'text-rose-400')}>
+                      {isProfitable ? '+' : ''}
+                      {formatCurrency(profitLoss)}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex gap-3">
@@ -146,13 +129,14 @@ export default function SellEntryModal({ isOpen, onClose, totalWeight }) {
                     whileTap={{ scale: 0.95, y: 2 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
-                    disabled={isLoading || isSubmitting || !isValid}
-                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400 disabled:opacity-50"
+                    disabled={isLoading}
+                    onClick={onSubmit}
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400"
                   >
-                    {isLoading || isSubmitting ? 'Processing...' : 'Confirm Sale'}
+                    {isLoading ? 'Selling...' : 'Confirm Sell'}
                   </MotionButton>
                 </div>
-              </form>
+              </div>
             </MotionDiv>
           </MotionDiv>
         </>
@@ -160,4 +144,3 @@ export default function SellEntryModal({ isOpen, onClose, totalWeight }) {
     </AnimatePresence>
   );
 }
-

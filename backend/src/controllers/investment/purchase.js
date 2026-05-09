@@ -13,34 +13,29 @@ export const purchase = async (req, res, next) => {
 
     const investment = await InvestmentModel.create({
       date,
-      weight,
-      investedValue,
+      weight: Number(weight).toFixed(2),
+      investedValue: Number(investedValue).toFixed(2),
       userId: user_id,
-      isSell: false,
     });
 
-    if (!investment) {
-      return res.status(400).json({ success: false, message: 'Failed to record investment' });
-    }
+    if (!investment) return res.status(400).json({ success: false, message: 'Failed to record investment' });
 
-    await UserModel.findByIdAndUpdate(
-      user_id,
+    const user = await UserModel.findById(user_id);
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    await user.updateOne(
       {
-        $inc: {
-          totalInvestedGoldWeight: Number(weight),
-          totalInvestedAmount: Number(investedValue),
-        },
+        totalInvestedGoldWeight: (Number(user?.totalInvestedGoldWeight) + Number(weight)).toFixed(2),
+        totalInvestedAmount: (Number(user?.totalInvestedAmount) + Number(investedValue)).toFixed(2),
       },
       { new: true },
     );
 
-    return res.status(201).json({
-      success: true,
-      message: 'Investment recorded successfully',
-    });
+    await user.save();
+
+    return res.status(201).json({ success: true, message: 'Investment recorded successfully' });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: error.message || 'Investment failed, please try again' });
+    return res.status(500).json({ success: false, message: error.message || 'Investment failed, please try again' });
   }
 };
