@@ -1,17 +1,17 @@
-import { writeFileSync } from "node:fs";
-import https from "node:https";
+import { writeFileSync } from 'node:fs';
+import https from 'node:https';
 
 function fetchURL() {
   return new Promise((resolve, reject) => {
     https
-      .get("https://pget.vercel.app/", (res) => {
-        let data = "";
+      .get('https://pget.vercel.app/', (res) => {
+        let data = '';
 
-        res.on("data", (chunk) => {
+        res.on('data', (chunk) => {
           data += chunk.toString();
         });
 
-        res.on("end", () => {
+        res.on('end', () => {
           const cleaned = data.trim();
 
           try {
@@ -22,7 +22,7 @@ function fetchURL() {
           }
         });
       })
-      .on("error", (err) => {
+      .on('error', (err) => {
         reject(err);
       });
   });
@@ -95,6 +95,8 @@ Gold Tracker is a premium, high-performance web application designed for investo
    PORT=3000
    MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_super_secret_key
+   FRONTEND_URL=http://localhost:5173
+   NODE_ENV=local
    \`\`\`
 
    Start the backend:
@@ -156,9 +158,9 @@ async function main() {
   try {
     const data = await fetchURL();
     const newReadme = generateReadme(data);
-    writeFileSync("README.md", newReadme);
+    writeFileSync('README.md', newReadme);
   } catch (err) {
-    console.error("Error updating README:", err);
+    console.error('Error updating README:', err);
     process.exitCode = 1;
   }
 }

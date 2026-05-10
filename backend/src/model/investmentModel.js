@@ -31,7 +31,7 @@ const investmentSchema = new mongoose.Schema(
         type: Number,
         default: 0,
         trim: true,
-      }
+      },
     },
   },
   { timestamps: true },

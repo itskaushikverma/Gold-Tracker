@@ -5,18 +5,7 @@ const MG_PER_GRAM = 1000;
 
 export const getGoldPrice = async () => {
   try {
-    // const { data } = await axios.get('https://api.gold-api.com/price/XAU/INR');
-
-    const data = {
-      currency: 'INR',
-      currencySymbol: '₹',
-      exchangeRate: 94.4997,
-      name: 'Gold',
-      price: 445632.2537174416,
-      symbol: 'XAU',
-      updatedAt: '2026-05-09T15:05:55Z',
-      updatedAtReadable: 'a few seconds ago'
-    }
+    const { data } = await axios.get('https://api.gold-api.com/price/XAU/INR');
 
     const xauPrice = data.price;
 

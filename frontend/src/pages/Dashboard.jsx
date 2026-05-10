@@ -87,19 +87,19 @@ export default function Dashboard() {
             </div>
 
             <div className="min-h-0 flex-1 overflow-auto">
-              <table className="relative w-full border-collapse">
-                <thead className="sticky top-0 z-20 bg-slate-900/95 shadow-sm backdrop-blur-md">
-                  <tr className="border-b border-slate-800/60 text-xs font-medium text-slate-400 md:text-sm">
-                    <th className='px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4'></th>
-                    <th className="px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4">Date</th>
-                    <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Weight</th>
-                    <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Invested Amount</th>
-                    <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Current Value</th>
-                    <th className="px-4 py-3 text-right tracking-wider text-nowrap uppercase md:px-6 md:py-4">Profit/Loss</th>
-                  </tr>
-                </thead>
+              {getDetails?.data?.investments?.length > 0 ? (
+                <table className="relative w-full border-collapse">
+                  <thead className="sticky top-0 z-20 bg-slate-900/95 shadow-sm backdrop-blur-md">
+                    <tr className="border-b border-slate-800/60 text-xs font-medium text-slate-400 md:text-sm">
+                      <th className="px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4"></th>
+                      <th className="px-4 py-3 text-left tracking-wider text-nowrap uppercase md:px-6 md:py-4">Date</th>
+                      <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Weight</th>
+                      <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Invested Amount</th>
+                      <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">Current Value</th>
+                      <th className="px-4 py-3 text-right tracking-wider text-nowrap uppercase md:px-6 md:py-4">Profit/Loss</th>
+                    </tr>
+                  </thead>
 
-                {getDetails?.data?.investments?.length > 0 ? (
                   <tbody className="divide-y divide-slate-800/30">
                     {(getDetails?.data?.investments || []).map((item, index) => {
                       const isSell = item?.isSell?.status;
@@ -113,31 +113,33 @@ export default function Dashboard() {
                           key={item._id}
                           className={cn('group cursor-default transition-all duration-300', isSell ? 'bg-rose-500/5' : 'hover:bg-slate-800/50')}
                         >
-                          <td className='px-4 py-3 text-nowrap md:px-6 md:py-4'>
-                            <input
-                              type="checkbox"
-                              className="h-4 w-4 cursor-pointer rounded border-slate-700 bg-slate-800 text-blue-500"
-                              checked={isSelected}
-                              onChange={() => {
-                                if (isSell) return;
-                                setSelectedItems((prev) => (isSelected ? prev.filter((i) => i._id !== item._id) : [...prev, item]));
-                              }}
-                            />
+                          <td className="px-4 py-3 text-nowrap md:px-6 md:py-4">
+                            {!isSell && (
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 cursor-pointer rounded border-slate-700 bg-slate-800 text-blue-500"
+                                checked={isSelected}
+                                onChange={() => {
+                                  setSelectedItems((prev) => (isSelected ? prev.filter((i) => i._id !== item._id) : [...prev, item]));
+                                }}
+                              />
+                            )}
                           </td>
                           <td className="px-4 py-3 text-left text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                             <div className="flex flex-col">
                               <span>{formatDate(item.date)}</span>
-                              {isSell && <span className="text-[10px] font-bold text-rose-400 uppercase tracking-tighter">Sale</span>}
+                              {isSell && <span className="text-[10px] font-bold tracking-tighter text-rose-400 uppercase">Sale</span>}
                             </div>
                           </td>
-                          <td className={cn('px-4 py-3 text-center font-mono text-sm text-nowrap md:px-6 md:py-4 md:text-base', isSell ? 'text-rose-400' : 'text-amber-400/80')}>
-                            {item.weight}mg
-                          </td>
+                          <td className={cn('px-4 py-3 text-center font-mono text-sm text-nowrap md:px-6 md:py-4 md:text-base', isSell ? 'text-rose-400' : 'text-amber-400/80')}>{item.weight}mg</td>
+                          <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">{formatCurrency(item.investedValue)}</td>
                           <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
-                            {formatCurrency(item.investedValue)}
-                          </td>
-                          <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
-                            <div className={cn("mx-auto flex w-fit items-center justify-center rounded-lg  shadow-inner transition-all duration-300 group-focus-within:border-blue-500/50 group-hover:border-slate-600", !isSell && 'border border-slate-700/50 bg-slate-950/50')}>
+                            <div
+                              className={cn(
+                                'mx-auto flex w-fit items-center justify-center rounded-lg shadow-inner transition-all duration-300 group-focus-within:border-blue-500/50 group-hover:border-slate-600',
+                                !isSell && 'border border-slate-700/50 bg-slate-950/50',
+                              )}
+                            >
                               <span className="px-3 py-1.5 text-center text-white md:py-2">{formatCurrency(item.currentValue)}</span>
                             </div>
                           </td>
@@ -156,10 +158,10 @@ export default function Dashboard() {
                       );
                     })}
                   </tbody>
-                ) : (
-                  <div className="absolute flex h-full w-full items-center justify-center text-slate-500">No active investments found</div>
-                )}
-              </table>
+                </table>
+              ) : (
+                <div className="flex h-full min-h-60 items-center justify-center text-slate-500">No active investments found</div>
+              )}
             </div>
           </div>
         </MotionDiv>

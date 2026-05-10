@@ -16,7 +16,7 @@ export const register = async (req, res, next) => {
     if (!password || !confirmPassword)
       return res.status(400).json({ success: false, message: 'All fields are required' });
 
-    const decodedToken = await jwt.verify(registerToken, process.env.JWT_REGISTER_EMAIL_SECRET);
+    const decodedToken = await jwt.verify(registerToken, process.env.JWT_SECRET);
 
     const { email, firstName, lastName } = decodedToken.data;
 

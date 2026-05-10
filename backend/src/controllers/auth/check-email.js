@@ -50,7 +50,7 @@ export const checkEmail = async (req, res, next) => {
 
     const token = jwt.sign(
       { data: { email, firstName, lastName }, purpose: 'REGISTER' },
-      process.env.JWT_REGISTER_EMAIL_SECRET,
+      process.env.JWT_SECRET,
       {
         expiresIn: '5m',
       },

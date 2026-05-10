@@ -34,15 +34,21 @@ export const getDetails = async (req, res, next) => {
         },
       });
 
-
-    if (!goldPrice.success) return res.status(500).json({ success: false, message: goldPrice.message });
+    if (!goldPrice.success)
+      return res.status(500).json({ success: false, message: goldPrice.message });
 
     const currentPrice = goldPrice.data.priceWithGST;
 
     const updatedInvestments = investments.map((investment) => {
-      const currentValue = investment?.isSell?.status ? investment?.isSell?.amount : round(Number(investment.weight) * Number(currentPrice))
+      const currentValue = investment?.isSell?.status
+        ? investment?.isSell?.amount
+        : round(Number(investment.weight) * Number(currentPrice));
       const profitLoss = round(currentValue - Number(investment.investedValue));
-      const percentage = round(Math.abs(currentValue - Number(investment.investedValue)) / Number(investment.investedValue) * 100);
+      const percentage = round(
+        (Math.abs(currentValue - Number(investment.investedValue)) /
+          Number(investment.investedValue)) *
+          100,
+      );
       const isPositive = profitLoss >= 0;
 
       return {
@@ -50,7 +56,7 @@ export const getDetails = async (req, res, next) => {
         currentValue,
         profitLoss,
         percentage,
-        isPositive
+        isPositive,
       };
     });
 

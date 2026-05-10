@@ -11,11 +11,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: ['https://gold-tracker-neon.vercel.app', process.env.FRONTEND_URL],
+    origin: [process.env.FRONTEND_URL],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -37,8 +37,8 @@ app.get('/', (req, res) => {
 app.use('/api', router);
 
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT || 5000, () => {
-    console.log(`Server is running on port ${PORT || 5000}`);
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
   });
 }
 
