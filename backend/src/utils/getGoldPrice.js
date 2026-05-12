@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-const TROY_OUNCE_IN_GRAMS = 31.1034768;
+const TROY_OUNCE = 31.1034768;
 const MG_PER_GRAM = 1000;
+const IMPORT_DUTY = 6.0;
+const PLATFORM_MARKUP = 3.38;
+const GST = 3.0;
+const SELL_SPREAD = 4.21;
 
 export const getGoldPrice = async () => {
   try {
@@ -9,13 +13,19 @@ export const getGoldPrice = async () => {
 
     const xauPrice = data.price;
 
-    const marketPricePerMg = xauPrice / TROY_OUNCE_IN_GRAMS / MG_PER_GRAM;
+    const spotPricePerMg = xauPrice / TROY_OUNCE / MG_PER_GRAM;
 
-    const premiumPercent = 9.38;
+    const premiumPercent = IMPORT_DUTY + PLATFORM_MARKUP;
 
-    const priceWithoutGST = marketPricePerMg * (1 + premiumPercent / 100);
+    let priceWithoutGST = spotPricePerMg * (1 + premiumPercent / 100);
 
-    const priceWithGST = priceWithoutGST * 1.03;
+    let priceWithGST = priceWithoutGST * (1 + GST / 100);
+
+    let sellingPrice = priceWithoutGST * (1 - SELL_SPREAD / 100);
+
+    priceWithoutGST = Number(priceWithoutGST.toFixed(2));
+    priceWithGST = Number(priceWithGST.toFixed(2));
+    sellingPrice = Number(sellingPrice.toFixed(2));
 
     return {
       success: true,
@@ -23,7 +33,8 @@ export const getGoldPrice = async () => {
       data: {
         priceWithoutGST,
         priceWithGST,
-        currency: 'INR',
+        sellingPrice,
+        currency: data.currency,
         unit: 'mg',
         updatedAt: data.updatedAt,
       },

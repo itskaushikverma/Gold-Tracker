@@ -53,10 +53,10 @@ export const api = createApi({
     }),
 
     getDetails: builder.query({
-      query: ({ user_id }) => ({
+      query: ({ user_id, customGoldSellingPrice }) => ({
         url: ENDPOINTS.GET_DETAILS,
         method: 'GET',
-        params: { user_id },
+        params: { user_id, customGoldSellingPrice },
       }),
       providesTags: ['INVESTMENT_DETAILS'],
     }),

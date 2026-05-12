@@ -4,7 +4,7 @@ import { getGoldPrice } from '../../utils/getGoldPrice.js';
 
 export const getDetails = async (req, res, next) => {
   try {
-    const { user_id } = req.query;
+    const { user_id, customGoldSellingPrice } = req.query;
 
     if (!user_id) {
       return res.status(400).json({ success: false, message: 'User ID is required' });
@@ -17,6 +17,8 @@ export const getDetails = async (req, res, next) => {
     const user = await UserModel.findById(user_id);
 
     const goldPrice = await getGoldPrice();
+    if (!goldPrice.success)
+      return res.status(500).json({ success: false, message: goldPrice.message });
 
     const round = (num) => Number(num.toFixed(2));
 
@@ -34,22 +36,34 @@ export const getDetails = async (req, res, next) => {
         },
       });
 
-    if (!goldPrice.success)
-      return res.status(500).json({ success: false, message: goldPrice.message });
+    const currentSellingPrice = goldPrice.data.sellingPrice;
 
-    const currentPrice = goldPrice.data.priceWithGST;
+    let currentValue = 0;
+    let profitLoss = 0;
+    let percentage = 0;
+    let isPositive = false;
 
     const updatedInvestments = investments.map((investment) => {
-      const currentValue = investment?.isSell?.status
-        ? investment?.isSell?.amount
-        : round(Number(investment.weight) * Number(currentPrice));
-      const profitLoss = round(currentValue - Number(investment.investedValue));
-      const percentage = round(
+      if (
+        customGoldSellingPrice &&
+        !isNaN(customGoldSellingPrice) &&
+        Number(customGoldSellingPrice) > 0
+      ) {
+        currentValue = investment?.isSell?.status
+          ? investment?.isSell?.amount
+          : round(Number(investment.weight) * Number(customGoldSellingPrice));
+      } else {
+        currentValue = investment?.isSell?.status
+          ? investment?.isSell?.amount
+          : round(Number(investment.weight) * Number(currentSellingPrice));
+      }
+      profitLoss = round(currentValue - Number(investment.investedValue));
+      percentage = round(
         (Math.abs(currentValue - Number(investment.investedValue)) /
           Number(investment.investedValue)) *
           100,
       );
-      const isPositive = profitLoss >= 0;
+      isPositive = profitLoss >= 0;
 
       return {
         ...investment,
@@ -68,9 +82,16 @@ export const getDetails = async (req, res, next) => {
 
     const currentGoldPriceWithoutGST = round(goldPrice.data.priceWithoutGST);
 
-    const currentTotalAmount = round(currentGoldPriceWithGST * totalInvestedWeight);
+    const currentTotalInvestedAmount =
+      customGoldSellingPrice && !isNaN(customGoldSellingPrice) && Number(customGoldSellingPrice) > 0
+        ? round(totalInvestedWeight * Number(customGoldSellingPrice))
+        : round(totalInvestedWeight * currentSellingPrice);
 
-    const totalProfitLoss = round(currentTotalAmount - totalInvestmentAmount);
+    const totalProfitLoss = round(currentTotalInvestedAmount - totalInvestmentAmount);
+
+    const totalProfitLossPercentage = round(
+      (Math.abs(currentTotalInvestedAmount - totalInvestmentAmount) / totalInvestmentAmount) * 100,
+    );
 
     return res.status(200).json({
       success: true,
@@ -81,8 +102,9 @@ export const getDetails = async (req, res, next) => {
         totalInvestedWeight,
         currentGoldPriceWithGST,
         currentGoldPriceWithoutGST,
-        currentTotalAmount,
+        currentTotalInvestedAmount,
         totalProfitLoss,
+        totalProfitLossPercentage,
       },
     });
   } catch (error) {

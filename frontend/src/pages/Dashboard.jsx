@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Wallet, Plus, CheckSquare } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, Plus, CheckSquare, Pencil, Edit } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { useGetDetailsQuery } from '../services/api';
 import { MotionButton, MotionDiv, MotionTr } from '../components/common/MotionWrapper';
@@ -8,15 +8,18 @@ import { cn } from '../lib/utils';
 import { formatDate } from '../utils/formatDate';
 import AddEntryModal from '../components/AddEntryModal';
 import SellEntryModal from '../components/SellEntryModal';
+import SetCustomGoldPriceModal from '../components/SetCustomGoldPriceModal';
 import { DashboardSkeleton } from '../components/common/Skeleton';
 
 export default function Dashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [customGoldSellingPrice, setCustomGoldSellingPrice] = useState(null);
+  const [customGoldSellingPriceModal, setCustomGoldSellingPriceModal] = useState(false);
 
   const user_id = useSelector((state) => state.auth.user_id);
-  const { data: getDetails, isLoading, isFetching } = useGetDetailsQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  const { data: getDetails, isLoading, isFetching } = useGetDetailsQuery({ user_id, customGoldSellingPrice }, { skip: !user_id, refetchOnMountOrArgChange: true });
 
   if (isLoading || isFetching) {
     return <DashboardSkeleton />;
@@ -55,7 +58,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
             <Card title="Total Invested" value={formatCurrency(getDetails?.data?.totalInvestmentAmount || 0)} icon={<Wallet className="h-6 w-6" />} />
 
-            <Card title="Current Value" value={formatCurrency(getDetails?.data?.currentTotalAmount || 0)} icon={<TrendingUp className="h-6 w-6" />} />
+            <Card title="Current Value" value={formatCurrency(getDetails?.data?.currentTotalInvestedAmount || 0)} icon={<TrendingUp className="h-6 w-6" />} />
 
             <Card
               title="Total Profit / Loss"
@@ -63,7 +66,7 @@ export default function Dashboard() {
               icon={getDetails?.data?.totalProfitLoss >= 0 ? <TrendingUp className="h-6 w-6" /> : <TrendingDown className="h-6 w-6" />}
               trend={true}
               isPositive={getDetails?.data?.totalProfitLoss >= 0}
-              percentage={getDetails?.data?.totalInvestmentAmount > 0 ? ((getDetails?.data?.totalProfitLoss / getDetails?.data?.totalInvestmentAmount) * 100).toFixed(2) : '0.00'}
+              percentage={getDetails?.data?.totalProfitLossPercentage || '0.00'}
             />
           </div>
 
@@ -71,6 +74,16 @@ export default function Dashboard() {
             <div className="flex items-center justify-between bg-slate-900/20 p-4">
               <h2 className="text-lg font-semibold text-white md:text-xl">Investment History</h2>
               <div className="flex gap-3">
+                <MotionButton
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.95, y: 2 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                  onClick={() => setCustomGoldSellingPriceModal(true)}
+                  className="flex cursor-pointer items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400 transition-colors duration-300 hover:border-blue-500 hover:bg-blue-500/80 hover:text-white"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  {customGoldSellingPrice && !isNaN(customGoldSellingPrice) && Number(customGoldSellingPrice) > 0 ? formatCurrency(customGoldSellingPrice) : 'Set Custom Price'}
+                </MotionButton>
                 {selectedItems.length > 0 && (
                   <MotionButton
                     whileHover={{ scale: 1.02, y: -2 }}
@@ -168,6 +181,12 @@ export default function Dashboard() {
       </div>
       <AddEntryModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
       <SellEntryModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} selectedItems={selectedItems} setSelectedItems={setSelectedItems} />
+      <SetCustomGoldPriceModal
+        isOpen={customGoldSellingPriceModal}
+        onClose={() => setCustomGoldSellingPriceModal(false)}
+        setCustomGoldSellingPrice={setCustomGoldSellingPrice}
+        customGoldSellingPrice={customGoldSellingPrice}
+      />
     </>
   );
 }
