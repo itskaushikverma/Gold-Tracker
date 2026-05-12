@@ -33,6 +33,7 @@ export const getDetails = async (req, res, next) => {
           totalProfitLoss: 0,
           currentGoldPriceWithGST: round(goldPrice.data.priceWithGST),
           currentGoldPriceWithoutGST: round(goldPrice.data.priceWithoutGST),
+          currentGoldSellingPrice: round(goldPrice.data.sellingPrice),
         },
       });
 
@@ -105,6 +106,7 @@ export const getDetails = async (req, res, next) => {
         currentTotalInvestedAmount,
         totalProfitLoss,
         totalProfitLossPercentage,
+        currentGoldSellingPrice: currentSellingPrice,
       },
     });
   } catch (error) {

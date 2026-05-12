@@ -40,6 +40,7 @@ export default function Dashboard() {
                 <Badge title="Total Weight" value={`${getDetails?.data?.totalInvestedWeight || 0}mg`} color="amber" />
                 <Badge title="Current Price (with GST 3%)" value={`${formatCurrency(getDetails?.data?.currentGoldPriceWithGST || 0)}/mg`} color="emerald" />
                 <Badge title="Current Price (without GST)" value={`${formatCurrency(getDetails?.data?.currentGoldPriceWithoutGST || 0)}/mg`} color="blue" />
+                <Badge title="Selling Price" value={`${formatCurrency(getDetails?.data?.currentGoldSellingPrice || 0)}/mg`} color="green" />
               </div>
             </div>
 
