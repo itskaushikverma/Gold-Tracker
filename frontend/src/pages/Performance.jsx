@@ -8,7 +8,8 @@ import { PerformanceSkeleton } from '../components/common/Skeleton';
 
 export default function Performance() {
   const user_id = useSelector((state) => state.auth.user_id);
-  const { data: getPerformance, isLoading, isFetching } = useGetPerformanceQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  const customGoldSellingPrice = useSelector((state) => state.auth.customGoldSellingPrice);
+  const { data: getPerformance, isLoading, isFetching } = useGetPerformanceQuery({ user_id, customGoldSellingPrice }, { skip: !user_id, refetchOnMountOrArgChange: true });
 
   const chartData = (getPerformance?.data?.performance || []).map((item) => ({
     date: new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit' }).format(new Date(item.date)),

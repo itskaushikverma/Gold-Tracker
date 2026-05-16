@@ -62,10 +62,10 @@ export const api = createApi({
     }),
 
     getPerformance: builder.query({
-      query: ({ user_id }) => ({
+      query: ({ user_id, customGoldSellingPrice }) => ({
         url: ENDPOINTS.GET_PERFORMANCE,
         method: 'GET',
-        params: { user_id },
+        params: { user_id, customGoldSellingPrice },
       }),
       providesTags: ['INVESTMENT_PERFORMANCE'],
     }),

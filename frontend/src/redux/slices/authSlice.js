@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   user_id: null,
   isAuthenticated: false,
+  customGoldSellingPrice: null,
 };
 
 const authSlice = createSlice({
@@ -14,13 +15,17 @@ const authSlice = createSlice({
       state.user_id = user_id;
       state.isAuthenticated = isAuthenticated;
     },
+    setCustomGoldSellingPrice: (state, action) => {
+      state.customGoldSellingPrice = action.payload;
+    },
     logout: (state) => {
       state.user_id = null;
       state.isAuthenticated = false;
+      state.customGoldSellingPrice = null;
     },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, setCustomGoldSellingPrice, logout } = authSlice.actions;
 
 export default authSlice.reducer;

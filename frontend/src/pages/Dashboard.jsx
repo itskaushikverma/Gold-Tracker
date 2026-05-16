@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Wallet, Plus, CheckSquare, Pencil, Edit } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetDetailsQuery } from '../services/api';
 import { MotionButton, MotionDiv, MotionTr } from '../components/common/MotionWrapper';
 import { useState } from 'react';
@@ -10,15 +10,17 @@ import AddEntryModal from '../components/AddEntryModal';
 import SellEntryModal from '../components/SellEntryModal';
 import SetCustomGoldPriceModal from '../components/SetCustomGoldPriceModal';
 import { DashboardSkeleton } from '../components/common/Skeleton';
+import { setCustomGoldSellingPrice } from '../redux/slices/authSlice';
 
 export default function Dashboard() {
+  const dispatch = useDispatch();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [customGoldSellingPrice, setCustomGoldSellingPrice] = useState(null);
   const [customGoldSellingPriceModal, setCustomGoldSellingPriceModal] = useState(false);
 
   const user_id = useSelector((state) => state.auth.user_id);
+  const customGoldSellingPrice = useSelector((state) => state.auth.customGoldSellingPrice);
   const { data: getDetails, isLoading, isFetching } = useGetDetailsQuery({ user_id, customGoldSellingPrice }, { skip: !user_id, refetchOnMountOrArgChange: true });
 
   if (isLoading || isFetching) {
@@ -185,7 +187,7 @@ export default function Dashboard() {
       <SetCustomGoldPriceModal
         isOpen={customGoldSellingPriceModal}
         onClose={() => setCustomGoldSellingPriceModal(false)}
-        setCustomGoldSellingPrice={setCustomGoldSellingPrice}
+        setCustomGoldSellingPrice={(price) => dispatch(setCustomGoldSellingPrice(price))}
         customGoldSellingPrice={customGoldSellingPrice}
       />
     </>

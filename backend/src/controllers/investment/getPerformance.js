@@ -3,7 +3,7 @@ import { getGoldPrice } from '../../utils/getGoldPrice.js';
 
 export const getPerformance = async (req, res, next) => {
   try {
-    const { user_id } = req.query;
+    const { user_id, customGoldSellingPrice } = req.query;
 
     if (!user_id) {
       return res.status(400).json({ success: false, message: 'User ID is required' });
@@ -24,6 +24,7 @@ export const getPerformance = async (req, res, next) => {
     }
 
     const goldPrice = await getGoldPrice();
+
     if (!goldPrice.success) {
       return res.status(500).json({ success: false, message: goldPrice.message });
     }
@@ -36,7 +37,12 @@ export const getPerformance = async (req, res, next) => {
 
     const performance = investments.map((investment) => {
       cumulativeInvested += investment.investedValue || 0;
-      cumulativeCurrentValue += investment.weight * currentPrice || 0;
+      cumulativeCurrentValue +=
+        customGoldSellingPrice &&
+        !isNaN(customGoldSellingPrice) &&
+        Number(customGoldSellingPrice) > 0
+          ? investment.weight * customGoldSellingPrice
+          : investment.weight * currentPrice || 0;
 
       return {
         date: investment.date,
