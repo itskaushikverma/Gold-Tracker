@@ -1,4 +1,5 @@
 import InvestmentModel from '../../model/investmentModel.js';
+import CustomSellingPriceModel from '../../model/customSellingPriceModal.js';
 import UserModel from '../../model/userModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
@@ -92,6 +93,14 @@ export const getDetails = async (req, res, next) => {
     const totalProfitLossPercentage = round(
       (Math.abs(currentTotalInvestedAmount - totalInvestedAmount) / totalInvestedAmount) * 100,
     );
+
+    if(customGoldSellingPrice && !isNaN(customGoldSellingPrice) && Number(customGoldSellingPrice) > 0) {
+      const sellingPrice = await CustomSellingPriceModel.create({
+        date: new Date(),
+        sellingPrice: customGoldSellingPrice,
+        userId: user_id,
+      });
+    }
 
     return res.status(200).json({
       success: true,

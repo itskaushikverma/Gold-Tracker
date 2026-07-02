@@ -6,4 +6,5 @@ export const ENDPOINTS = {
   SELL: '/investment/sell',
   GET_DETAILS: '/investment/getdetails',
   GET_PERFORMANCE: '/investment/getPerformance',
+  GET_SELLING_PRICE_PERFORMANCE: '/investment/getSellingPricePerformance',
 };

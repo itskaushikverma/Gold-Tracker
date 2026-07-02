@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import { lazy, Suspense } from 'react';
 import BackgroundAnimation from './components/common/BackgroundAnimation';
+import SellingPricePerformance from './pages/SellingPricePerformance.jsx';
 
 const Layout = lazy(() => import('./components/Layout'));
 const Login = lazy(() => import('./pages/Login'));
@@ -46,6 +47,7 @@ export default function App() {
             >
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/performance" element={<Performance />} />
+              <Route path="/selling-price-performance" element={<SellingPricePerformance />} />
             </Route>
 
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

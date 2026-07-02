@@ -40,7 +40,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE', 'INVESTMENT_SELLING_PRICE_PERFORMANCE'],
     }),
 
     sell: builder.mutation({
@@ -49,7 +49,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE', 'INVESTMENT_SELLING_PRICE_PERFORMANCE'],
     }),
 
     getDetails: builder.query({
@@ -69,7 +69,16 @@ export const api = createApi({
       }),
       providesTags: ['INVESTMENT_PERFORMANCE'],
     }),
+
+    getSellingPricePerformance: builder.query({
+      query: ({ user_id, customGoldSellingPrice }) => ({
+        url: ENDPOINTS.GET_SELLING_PRICE_PERFORMANCE,
+        method: 'GET',
+        params: { user_id, customGoldSellingPrice },
+      }),
+      providesTags: ['INVESTMENT_SELLING_PRICE_PERFORMANCE'],
+    }),
   }),
 });
 
-export const { useCheckEmailMutation, useRegisterMutation, useLoginMutation, usePurchaseMutation, useSellMutation, useGetDetailsQuery, useGetPerformanceQuery } = api;
+export const { useCheckEmailMutation, useRegisterMutation, useLoginMutation, usePurchaseMutation, useSellMutation, useGetDetailsQuery, useGetPerformanceQuery, useGetSellingPricePerformanceQuery } = api;

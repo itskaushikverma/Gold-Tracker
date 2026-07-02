@@ -97,6 +97,25 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
               </>
             )}
           </NavLink>
+
+           <NavLink
+            to="/selling-price-performance"
+            onClick={onClose}
+            className={({ isActive }) =>
+              cn(
+                'group relative flex items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 font-medium transition-colors duration-200',
+                isActive ? 'bg-cyan-500/10 text-cyan-50 shadow-[inset_0px_1px_0px_0px_rgba(255,255,255,0.05)]' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200',
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                {isActive && <div className="absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500" />}
+                <LineChart className={cn('h-5 w-5', isActive ? 'text-cyan-400' : 'text-slate-500 transition-colors group-hover:text-slate-300')} />
+                Selling Price Performance
+              </>
+            )}
+          </NavLink>
         </nav>
 
         <div className="w-64 border-t border-slate-800/50 p-4 lg:w-100">
