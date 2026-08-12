@@ -1,4 +1,3 @@
-import InvestmentModel from '../../model/investmentModel.js';
 import CustomSellingPriceModel from '../../model/customSellingPriceModal.js';
 import { round } from '../../utils/roundToDecimal.js';
 
@@ -10,14 +9,6 @@ export const getSellingPricePerformance = async (req, res, next) => {
     }
 
     const customPrices = await CustomSellingPriceModel.find({ userId: user_id }).sort({ date: 1 }).lean();
-
-    if (customPrices.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: 'No custom selling price data found to generate performance.',
-        data: { performance: [] }
-      });
-    }
 
     const performanceMap = new Map();
 
@@ -37,7 +28,18 @@ export const getSellingPricePerformance = async (req, res, next) => {
       success: true,
       message: 'Selling price performance data fetched successfully',
       data: {
-        performance: performanceData,
+        performance: {
+          chartType: 'line',
+          title: 'Selling Price Performance',
+          xAxis: {
+            type: 'time',
+            label: 'Date',
+          },
+          yAxis: {
+            label: 'Selling Price',
+          },
+          data: performanceData,
+        },
       },
     });
   } catch (error) {
