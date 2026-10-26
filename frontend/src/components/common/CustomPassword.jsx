@@ -1,8 +1,17 @@
-import { Eye, EyeOff, Lock } from 'lucide-react';
+import { RiEyeLine, RiEyeOffLine, RiLockLine } from '@remixicon/react';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 
-export default function CustomPassword({ register, type = 'text', errors, name, label, disabled = false, rules = {}, placeholder }) {
+export default function CustomPassword({
+  register,
+  type = 'text',
+  errors,
+  name,
+  label,
+  disabled = false,
+  rules = {},
+  placeholder,
+}) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleToggle = () => {
@@ -30,7 +39,7 @@ export default function CustomPassword({ register, type = 'text', errors, name, 
               : 'border-slate-800 text-slate-200 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50'
           }`}
         />
-        <Lock
+        <RiLockLine
           className={cn(
             'peer[:not(:placeholder-shown)]:left-[calc(100%-28px)] pointer-events-none absolute top-1/2 left-3 h-5 w-5 translate-y-0.5 text-slate-200 opacity-100 transition-all duration-500 peer-focus:left-[calc(100%-28px)] peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0',
           )}
@@ -42,11 +51,17 @@ export default function CustomPassword({ register, type = 'text', errors, name, 
           onClick={handleToggle}
           className="pointer-events-none absolute top-1/2 left-0 translate-y-0.5 cursor-pointer rounded-full p-0 opacity-0 transition-all duration-500 peer-focus:pointer-events-auto peer-focus:left-[calc(100%-28px)] peer-focus:opacity-100 peer-[:not(:placeholder-shown)]:pointer-events-auto peer-[:not(:placeholder-shown)]:left-[calc(100%-28px)] peer-[:not(:placeholder-shown)]:opacity-100"
         >
-          {showPassword ? <EyeOff className="h-5 w-5 cursor-pointer text-slate-200" /> : <Eye className="h-5 w-5 cursor-pointer text-slate-200" />}
+          {showPassword ? (
+            <RiEyeOffLine className="h-5 w-5 cursor-pointer text-slate-200" />
+          ) : (
+            <RiEyeLine className="h-5 w-5 cursor-pointer text-slate-200" />
+          )}
         </button>
       </div>
 
-      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
+      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">
+        {errors[name]?.message}
+      </span>
     </div>
   );
 }

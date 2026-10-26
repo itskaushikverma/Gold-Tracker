@@ -2,8 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import connectDB from './src/config/db.js';
-import router from './src/routes/index.js';
+import connectDB from './config/db.js';
+import router from './routes/index.js';
 
 const app = express();
 
@@ -11,8 +11,8 @@ app.use(
   cors({
     origin: [process.env.FRONTEND_URL],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
 
@@ -24,20 +24,9 @@ const PORT = process.env.PORT;
 
 connectDB();
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date() });
-});
-
-app.get('/', (req, res) => {
-  res.send('MERN Backend running 🚀');
-});
-
 app.use('/api', router);
+router.get('/health', (req, res) => {
+  return res.status(200).json({ status: 'ok', timestamp: new Date() });
+});
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
-
-export default app;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

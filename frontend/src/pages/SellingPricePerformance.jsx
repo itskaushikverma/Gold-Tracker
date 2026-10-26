@@ -1,11 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { format } from 'date-fns';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import { useSelector } from 'react-redux';
-import { useGetSellingPricePerformanceQuery, useGetSellingPricePerformanceAiQuery } from '../services/api';
+import {
+  useGetSellingPricePerformanceQuery,
+  useGetSellingPricePerformanceAiQuery,
+} from '../services/api';
 import { formatCurrency } from '../utils/formatCurrency';
-import { useToast } from '../components/common/Toast';
+import { useToast } from 'react-toast-kit-js';
 
 import { PerformanceSkeleton } from '../components/common/Skeleton';
 
@@ -15,8 +26,20 @@ const DEFAULT_DISPLAY_FORMAT = 'MMM yy';
 const DEFAULT_TOOLTIP_FORMAT = 'dd MMM yyyy';
 
 const TABS = [
-  { key: 'actual', label: 'Actual', seriesName: 'Custom Selling Price', color: '#3987e5', gradientId: 'colorActual' },
-  { key: 'ai', label: 'AI Formatted', seriesName: 'AI Formatted Price', color: '#d95926', gradientId: 'colorAI' },
+  {
+    key: 'actual',
+    label: 'Actual',
+    seriesName: 'Custom Selling Price',
+    color: '#3987e5',
+    gradientId: 'colorActual',
+  },
+  {
+    key: 'ai',
+    label: 'AI Formatted',
+    seriesName: 'AI Formatted Price',
+    color: '#d95926',
+    gradientId: 'colorAI',
+  },
 ];
 
 function safeFormatDate(date, pattern) {
@@ -52,7 +75,9 @@ function CustomTooltip({ active, payload }) {
 
   return (
     <div className="rounded-xl border border-slate-700/50 bg-slate-900/90 p-4 shadow-xl backdrop-blur-md">
-      <p className="mb-3 text-sm font-medium text-slate-300 md:text-base">{point.payload.tooltipDate}</p>
+      <p className="mb-3 text-sm font-medium text-slate-300 md:text-base">
+        {point.payload.tooltipDate}
+      </p>
       <div className="space-y-2 font-mono text-xs tracking-tight md:text-sm">
         <div className="flex items-center justify-between gap-4">
           <span className="flex items-center gap-2" style={{ color: point.color }}>
@@ -69,7 +94,10 @@ function CustomTooltip({ active, payload }) {
 function ChartLoader({ color }) {
   return (
     <div className="flex h-full min-h-80 flex-col items-center justify-center gap-3 text-sm text-slate-500">
-      <span className="h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-transparent" style={{ borderTopColor: color }} />
+      <span
+        className="h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-transparent"
+        style={{ borderTopColor: color }}
+      />
       Generating AI formatted chart…
     </div>
   );
@@ -85,7 +113,10 @@ export default function SellingPricePerformance() {
     isFetching: isActualFetching,
     isError: isActualError,
     error: actualError,
-  } = useGetSellingPricePerformanceQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  } = useGetSellingPricePerformanceQuery(
+    { user_id },
+    { skip: !user_id, refetchOnMountOrArgChange: true },
+  );
 
   const {
     data: aiPerformance,
@@ -93,15 +124,24 @@ export default function SellingPricePerformance() {
     isFetching: isAiFetching,
     isError: isAiError,
     error: aiError,
-  } = useGetSellingPricePerformanceAiQuery({ user_id }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  } = useGetSellingPricePerformanceAiQuery(
+    { user_id },
+    { skip: !user_id, refetchOnMountOrArgChange: true },
+  );
 
   useEffect(() => {
     if (isActualError) {
-      toast.error(actualError?.data?.message || actualError?.error || 'Failed to load selling price performance');
+      toast.error(
+        actualError?.data?.message ||
+          actualError?.error ||
+          'Failed to load selling price performance',
+      );
     }
 
     if (isAiError) {
-      toast.error(aiError?.data?.message || aiError?.error || 'Failed to load AI formatted performance');
+      toast.error(
+        aiError?.data?.message || aiError?.error || 'Failed to load AI formatted performance',
+      );
     }
   }, [isActualError, actualError, isAiError, aiError]);
 
@@ -115,7 +155,8 @@ export default function SellingPricePerformance() {
 
   const isAiBusy = isAiLoading || isAiFetching;
 
-  const activePerformance = activeTab === 'ai' ? aiPerformance?.data?.performance : actualPerformance?.data?.performance;
+  const activePerformance =
+    activeTab === 'ai' ? aiPerformance?.data?.performance : actualPerformance?.data?.performance;
   const xAxisMeta = activePerformance?.xAxis;
   const yAxisMeta = activePerformance?.yAxis;
   const datasetMeta = activePerformance?.dataset;
@@ -138,7 +179,10 @@ export default function SellingPricePerformance() {
 
   const curveType = datasetMeta?.tension === 0 ? 'linear' : 'monotone';
   const dotRadius = datasetMeta?.pointRadius;
-  const dotConfig = typeof dotRadius === 'number' && dotRadius > 0 ? { r: dotRadius, fill: activeTabConfig.color, stroke: '#0f172a', strokeWidth: 1 } : false;
+  const dotConfig =
+    typeof dotRadius === 'number' && dotRadius > 0
+      ? { r: dotRadius, fill: activeTabConfig.color, stroke: '#0f172a', strokeWidth: 1 }
+      : false;
 
   if (isActualLoading || isActualFetching) {
     return <PerformanceSkeleton />;
@@ -146,11 +190,20 @@ export default function SellingPricePerformance() {
 
   return (
     <div className="mx-auto flex h-full flex-col p-4 pb-20 md:p-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-1 flex-col">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-1 flex-col"
+      >
         <header className="mb-6 flex flex-wrap items-center justify-between gap-4 md:mb-8">
           <div>
-            <h1 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-3xl">Performance History</h1>
-            <p className="text-sm text-slate-400 md:text-base">Visualize your investment growth over time.</p>
+            <h1 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-3xl">
+              Performance History
+            </h1>
+            <p className="text-sm text-slate-400 md:text-base">
+              Visualize your investment growth over time.
+            </p>
           </div>
 
           <div className="inline-flex items-center gap-1 rounded-full border border-slate-800/80 bg-slate-900/60 p-1">
@@ -165,13 +218,20 @@ export default function SellingPricePerformance() {
                   <motion.div
                     layoutId="selling-price-tab-indicator"
                     className="absolute inset-0 rounded-full"
-                    style={{ backgroundColor: `${tab.color}26`, boxShadow: `inset 0 0 0 1px ${tab.color}66` }}
+                    style={{
+                      backgroundColor: `${tab.color}26`,
+                      boxShadow: `inset 0 0 0 1px ${tab.color}66`,
+                    }}
                     transition={{ type: 'spring', duration: 0.5, bounce: 0.15 }}
                   />
                 )}
-                <span className={`relative z-10 flex items-center gap-1.5 ${activeTab === tab.key ? 'text-white' : 'text-slate-400'}`}>
+                <span
+                  className={`relative z-10 flex items-center gap-1.5 ${activeTab === tab.key ? 'text-white' : 'text-slate-400'}`}
+                >
                   {tab.label}
-                  {tab.key === 'ai' && isAiBusy && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-400" />}
+                  {tab.key === 'ai' && isAiBusy && (
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-400" />
+                  )}
                 </span>
               </button>
             ))}
@@ -182,20 +242,36 @@ export default function SellingPricePerformance() {
           {activeTab === 'ai' && isAiBusy ? (
             <ChartLoader color={activeTabConfig.color} />
           ) : chartData.length === 0 ? (
-            <div className="flex h-full min-h-80 items-center justify-center text-sm text-slate-500">No {activeTabConfig.label.toLowerCase()} data available yet.</div>
+            <div className="flex h-full min-h-80 items-center justify-center text-sm text-slate-500">
+              No {activeTabConfig.label.toLowerCase()} data available yet.
+            </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={CHART_MARGIN}>
                 <defs>
                   {TABS.map((tab) => (
-                    <linearGradient key={tab.gradientId} id={tab.gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      key={tab.gradientId}
+                      id={tab.gradientId}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="5%" stopColor={tab.color} stopOpacity={0.3} />
                       <stop offset="95%" stopColor={tab.color} stopOpacity={0} />
                     </linearGradient>
                   ))}
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                <XAxis dataKey="date" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} dy={10} />
+                <XAxis
+                  dataKey="date"
+                  stroke="#64748b"
+                  tick={{ fill: '#64748b', fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  dy={10}
+                />
                 <YAxis
                   stroke="#64748b"
                   tick={{ fill: '#64748b', fontSize: 12 }}
@@ -207,7 +283,10 @@ export default function SellingPricePerformance() {
                   dx={-10}
                   width={60}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#334155', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  cursor={{ stroke: '#334155', strokeWidth: 1, strokeDasharray: '4 4' }}
+                />
                 <Area
                   type={curveType}
                   dataKey="value"

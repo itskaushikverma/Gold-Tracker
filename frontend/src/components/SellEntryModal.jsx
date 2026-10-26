@@ -1,9 +1,15 @@
 import { AnimatePresence } from 'motion/react';
-import { X, CheckSquare, TrendingUp, TrendingDown, Scale, IndianRupee } from 'lucide-react';
+import {
+  RiArrowRightDownLine,
+  RiArrowRightUpLine,
+  RiCheckboxLine,
+  RiCloseLine,
+  RiMoneyRupeeCircleLine,
+  RiScalesLine,
+} from '@remixicon/react';
 import { MotionButton, MotionDiv } from './common/MotionWrapper';
 import { useSellMutation } from '../services/api';
-import { useSelector } from 'react-redux';
-import { useToast } from './common/Toast';
+import { useToast } from 'react-toast-kit-js';
 import { formatCurrency } from '../utils/formatCurrency';
 import { cn } from '../lib/utils';
 import CustomInput from './common/CustomInput';
@@ -12,15 +18,13 @@ import { useForm } from 'react-hook-form';
 export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale }) {
   const toast = useToast();
   const [sell, { isLoading }] = useSellMutation();
-  const user_id = useSelector((state) => state.auth.user_id);
 
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    getValues,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       sellingPrice: 0,
@@ -31,8 +35,12 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
   const totalInvested = itemForSale?.investedValue;
 
   const watchedSellingPrice = watch('sellingPrice');
-  const sellingPriceNumber = watchedSellingPrice === undefined || watchedSellingPrice === 0 ? 0 : Number(watchedSellingPrice);
-  const totalCurrentValue = sellingPriceNumber != 0 ? sellingPriceNumber : itemForSale?.currentValue;
+  const sellingPriceNumber =
+    watchedSellingPrice === undefined || watchedSellingPrice === 0
+      ? 0
+      : Number(watchedSellingPrice);
+  const totalCurrentValue =
+    sellingPriceNumber != 0 ? sellingPriceNumber : itemForSale?.currentValue;
 
   const profitLoss = totalCurrentValue - totalInvested;
   const isProfitable = profitLoss >= 0;
@@ -45,7 +53,6 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
   const onSubmit = async (data) => {
     try {
       const payload = {
-        user_id,
         investment_id: itemForSale?._id,
         sellingPrice: data.sellingPrice,
       };
@@ -83,7 +90,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="flex items-center gap-2 text-xl font-bold text-white">
                   <div className="rounded-lg bg-rose-500/10 p-2 text-rose-400">
-                    <CheckSquare className="h-5 w-5" />
+                    <RiCheckboxLine className="h-5 w-5" />
                   </div>
                   Confirm Sale
                 </h2>
@@ -94,7 +101,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
                   onClick={onClose}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
-                  <X className="h-5 w-5" />
+                  <RiCloseLine className="h-5 w-5" />
                 </MotionButton>
               </div>
 
@@ -104,12 +111,17 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
                     <CustomInput
                       register={register}
                       type="number"
-                      rules={{ required: { value: true, message: 'Selling Price Required' }, validate: (v) => Number(v) > 0 || 'Amount should be greater than 0', valueAsNumber: true }}
+                      rules={{
+                        required: { value: true, message: 'Selling Price Required' },
+                        validate: (v) => Number(v) > 0 || 'Amount should be greater than 0',
+                        valueAsNumber: true,
+                      }}
                       label="Selling Price"
                       placeholder="e.g. 5000"
-                      icon={IndianRupee}
+                      icon={RiMoneyRupeeCircleLine}
                       name={'sellingPrice'}
                       errors={errors}
+                      autoFocus
                       disabled={isLoading || isSubmitting}
                     />
                   </div>
@@ -118,7 +130,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
 
                   <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
                     <div className="flex items-center gap-3">
-                      <Scale className="h-5 w-5 text-amber-500/70" />
+                      <RiScalesLine className="h-5 w-5 text-amber-500/70" />
                       <span className="font-medium text-slate-300">Total Weight</span>
                     </div>
                     <span className="font-mono font-semibold text-amber-400">{totalWeight}mg</span>
@@ -127,21 +139,48 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
                   <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
                     <div className="flex flex-col">
                       <span className="text-xs text-slate-400">Total Invested</span>
-                      <span className="font-mono font-medium text-slate-200">{formatCurrency(totalInvested)}</span>
+                      <span className="font-mono font-medium text-slate-200">
+                        {formatCurrency(totalInvested)}
+                      </span>
                     </div>
                     <div className="text-slate-600">→</div>
                     <div className="flex flex-col items-end">
                       <span className="text-xs text-slate-400">Sell Value</span>
-                      <span className="font-mono text-lg font-bold text-slate-100">{formatCurrency(totalCurrentValue)}</span>
+                      <span className="font-mono text-lg font-bold text-slate-100">
+                        {formatCurrency(totalCurrentValue)}
+                      </span>
                     </div>
                   </div>
 
-                  <div className={cn('flex items-center justify-between rounded-xl border p-4', isProfitable ? 'border-emerald-500/20 bg-emerald-500/10' : 'border-rose-500/20 bg-rose-500/10')}>
+                  <div
+                    className={cn(
+                      'flex items-center justify-between rounded-xl border p-4',
+                      isProfitable
+                        ? 'border-emerald-500/20 bg-emerald-500/10'
+                        : 'border-rose-500/20 bg-rose-500/10',
+                    )}
+                  >
                     <div className="flex items-center gap-3">
-                      {isProfitable ? <TrendingUp className="h-5 w-5 text-emerald-500" /> : <TrendingDown className="h-5 w-5 text-rose-500" />}
-                      <span className={cn('font-medium', isProfitable ? 'text-emerald-400' : 'text-rose-400')}>{isProfitable ? 'Net Profit' : 'Net Loss'}</span>
+                      {isProfitable ? (
+                        <RiArrowRightUpLine className="h-5 w-5 text-emerald-500" />
+                      ) : (
+                        <RiArrowRightDownLine className="h-5 w-5 text-rose-500" />
+                      )}
+                      <span
+                        className={cn(
+                          'font-medium',
+                          isProfitable ? 'text-emerald-400' : 'text-rose-400',
+                        )}
+                      >
+                        {isProfitable ? 'Net Profit' : 'Net Loss'}
+                      </span>
                     </div>
-                    <span className={cn('font-mono text-lg font-bold', isProfitable ? 'text-emerald-400' : 'text-rose-400')}>
+                    <span
+                      className={cn(
+                        'font-mono text-lg font-bold',
+                        isProfitable ? 'text-emerald-400' : 'text-rose-400',
+                      )}
+                    >
                       {isProfitable ? '+' : ''}
                       {formatCurrency(profitLoss)}
                     </span>

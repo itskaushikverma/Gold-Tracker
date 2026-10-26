@@ -1,49 +1,67 @@
 import { motion } from 'motion/react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 import { useSelector } from 'react-redux';
 import { useGetPerformanceQuery } from '../services/api';
 import { formatCurrency } from '../utils/formatCurrency';
 
 import { PerformanceSkeleton } from '../components/common/Skeleton';
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-slate-700/50 bg-slate-900/90 p-4 shadow-xl backdrop-blur-md">
+        <p className="mb-3 text-sm font-medium text-slate-300 md:text-base">{label}</p>
+        <div className="space-y-2 font-mono text-xs tracking-tight md:text-sm">
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex items-center gap-2 text-blue-400">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
+              Invested:
+            </span>
+            <span className="text-white">{formatCurrency(payload[0].value)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex items-center gap-2 text-cyan-400">
+              <span className="h-2 w-2 rounded-full bg-cyan-400" />
+              Current Value:
+            </span>
+            <span className="text-white">{formatCurrency(payload[1].value)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function Performance() {
   const user_id = useSelector((state) => state.auth.user_id);
   const customGoldSellingPrice = useSelector((state) => state.auth.customGoldSellingPrice);
-  const { data: getPerformance, isLoading, isFetching } = useGetPerformanceQuery({ user_id, customGoldSellingPrice }, { skip: !user_id, refetchOnMountOrArgChange: true });
+  const {
+    data: getPerformance,
+    isLoading,
+    isFetching,
+  } = useGetPerformanceQuery(
+    { user_id, customGoldSellingPrice },
+    { skip: !user_id, refetchOnMountOrArgChange: true },
+  );
 
   const chartData = (getPerformance?.data?.performance || []).map((item) => ({
-    date: new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit' }).format(new Date(item.date)),
+    date: new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit' }).format(
+      new Date(item.date),
+    ),
     fullDate: item.date,
     invested: item.invested,
     value: item.value,
   }));
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-xl border border-slate-700/50 bg-slate-900/90 p-4 shadow-xl backdrop-blur-md">
-          <p className="mb-3 text-sm font-medium text-slate-300 md:text-base">{label}</p>
-          <div className="space-y-2 font-mono text-xs tracking-tight md:text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <span className="flex items-center gap-2 text-blue-400">
-                <span className="h-2 w-2 rounded-full bg-blue-500" />
-                Invested:
-              </span>
-              <span className="text-white">{formatCurrency(payload[0].value)}</span>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="flex items-center gap-2 text-cyan-400">
-                <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                Current Value:
-              </span>
-              <span className="text-white">{formatCurrency(payload[1].value)}</span>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   if (isLoading || isFetching) {
     return <PerformanceSkeleton />;
@@ -51,10 +69,19 @@ export default function Performance() {
 
   return (
     <div className="mx-auto flex h-full flex-col p-4 pb-20 md:p-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-1 flex-col">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-1 flex-col"
+      >
         <header className="mb-6 md:mb-8">
-          <h1 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-3xl">Performance History</h1>
-          <p className="text-sm text-slate-400 md:text-base">Visualize your investment growth over time.</p>
+          <h1 className="mb-1 text-2xl font-bold tracking-tight text-white md:mb-2 md:text-3xl">
+            Performance History
+          </h1>
+          <p className="text-sm text-slate-400 md:text-base">
+            Visualize your investment growth over time.
+          </p>
         </header>
 
         <div className="min-h-100 flex-1 rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4 shadow-xl backdrop-blur-md md:p-6">
@@ -71,10 +98,33 @@ export default function Performance() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-              <XAxis dataKey="date" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} dy={10} />
-              <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`} dx={-10} width={60} />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#334155', strokeWidth: 1, strokeDasharray: '4 4' }} />
-              <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '14px', color: '#cbd5e1' }} />
+              <XAxis
+                dataKey="date"
+                stroke="#64748b"
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                dy={10}
+              />
+              <YAxis
+                stroke="#64748b"
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`}
+                dx={-10}
+                width={60}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ stroke: '#334155', strokeWidth: 1, strokeDasharray: '4 4' }}
+              />
+              <Legend
+                verticalAlign="top"
+                height={36}
+                iconType="circle"
+                wrapperStyle={{ paddingBottom: '20px', fontSize: '14px', color: '#cbd5e1' }}
+              />
               <Area
                 type="monotone"
                 dataKey="invested"

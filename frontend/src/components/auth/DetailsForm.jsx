@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { User, Mail, RefreshCw } from 'lucide-react';
+import { RiMailLine, RiRefreshLine, RiUserLine } from '@remixicon/react';
 import { useCheckEmailMutation } from '../../services/api';
 import { MotionButton, MotionForm } from '../common/MotionWrapper';
-import { useToast } from '../common/Toast';
+import { useToast } from 'react-toast-kit-js';
 import CustomInput from '../common/CustomInput';
 
 export default function DetailsForm({ onSuccess }) {
@@ -49,7 +49,7 @@ export default function DetailsForm({ onSuccess }) {
           errors={errors}
           name="firstName"
           label="First Name"
-          icon={User}
+          icon={RiUserLine}
           register={register}
           placeholder="John"
           disabled={isLoading || isSubmitting}
@@ -57,7 +57,10 @@ export default function DetailsForm({ onSuccess }) {
             required: 'First name is required',
             minLength: { value: 3, message: 'First name must be at least 3 characters' },
             maxLength: { value: 16, message: 'First name must be at most 16 characters' },
-            pattern: { value: /^[A-Za-z]+$/, message: 'First name can only contain alphabetic characters' },
+            pattern: {
+              value: /^[A-Za-z]+$/,
+              message: 'First name can only contain alphabetic characters',
+            },
           }}
         />
 
@@ -66,7 +69,7 @@ export default function DetailsForm({ onSuccess }) {
           errors={errors}
           name="lastName"
           label="Last Name"
-          icon={User}
+          icon={RiUserLine}
           register={register}
           placeholder="Doe"
           disabled={isLoading || isSubmitting}
@@ -74,7 +77,10 @@ export default function DetailsForm({ onSuccess }) {
             required: 'Last name is required',
             minLength: { value: 3, message: 'Last name must be at least 3 characters' },
             maxLength: { value: 16, message: 'Last name must be at most 16 characters' },
-            pattern: { value: /^[A-Za-z]+$/, message: 'Last name can only contain alphabetic characters' },
+            pattern: {
+              value: /^[A-Za-z]+$/,
+              message: 'Last name can only contain alphabetic characters',
+            },
           }}
         />
 
@@ -83,7 +89,7 @@ export default function DetailsForm({ onSuccess }) {
           errors={errors}
           name="email"
           label="Email"
-          icon={Mail}
+          icon={RiMailLine}
           register={register}
           placeholder="name@example.com"
           disabled={isLoading || isSubmitting}
@@ -106,7 +112,11 @@ export default function DetailsForm({ onSuccess }) {
           disabled={isLoading || isSubmitting || !isValid}
           className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-medium tracking-wide text-white shadow-lg shadow-blue-500/20 transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isLoading || isSubmitting ? <RefreshCw className="h-5 w-5 animate-spin" /> : 'Continue'}
+          {isLoading || isSubmitting ? (
+            <RiRefreshLine className="h-5 w-5 animate-spin" />
+          ) : (
+            'Continue'
+          )}
         </MotionButton>
 
         <p className="text-center text-sm text-slate-400">

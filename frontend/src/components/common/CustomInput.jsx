@@ -1,4 +1,26 @@
-export default function CustomInput({ register, type = 'text', errors, name, label, icon: Icon, disabled = false, rules = {}, placeholder, step }) {
+import { useEffect, useRef } from 'react';
+
+export default function CustomInput({
+  register,
+  type = 'text',
+  errors,
+  name,
+  label,
+  icon: Icon,
+  disabled = false,
+  rules = {},
+  placeholder,
+  step,
+  autoFocus = false,
+}) {
+  const inputRef = useRef(null);
+  const registration = register(name, rules);
+
+  useEffect(() => {
+    if (!autoFocus) return;
+    inputRef.current?.focus();
+  }, [autoFocus]);
+
   return (
     <div className="relative w-full">
       <div className="relative w-full">
@@ -7,10 +29,15 @@ export default function CustomInput({ register, type = 'text', errors, name, lab
         </label>
 
         <input
-          {...register(name, rules)}
+          {...registration}
+          ref={(node) => {
+            inputRef.current = node;
+            registration.ref(node);
+          }}
           disabled={disabled}
           type={type}
           id={name}
+          autoFocus={autoFocus}
           step={step || (type === 'number' ? 'any' : undefined)}
           autoComplete="off"
           className={`peer w-full cursor-pointer rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-4 ${
@@ -26,7 +53,9 @@ export default function CustomInput({ register, type = 'text', errors, name, lab
         />
       </div>
 
-      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">{errors[name]?.message}</span>
+      <span className="absolute mt-0.5 w-full text-right text-xs text-red-500 italic">
+        {errors[name]?.message}
+      </span>
     </div>
   );
 }

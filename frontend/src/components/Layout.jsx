@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { Menu, PanelLeft } from 'lucide-react';
+import { RiMenuLine, RiSidebarUnfoldLine } from '@remixicon/react';
 import { cn } from '../lib/utils';
 import logo from '../assets/gold.svg';
 import { MotionButton } from './common/MotionWrapper';
@@ -27,13 +27,23 @@ export default function Layout() {
             onClick={() => setMobileSidebarOpen(true)}
             className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
           >
-            <Menu className="h-6 w-6" />
+            <RiMenuLine className="h-6 w-6" />
           </MotionButton>
         </div>
 
-        <Sidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} isDesktopOpen={desktopSidebarOpen} onToggleDesktop={() => setDesktopSidebarOpen(!desktopSidebarOpen)} />
+        <Sidebar
+          isOpen={mobileSidebarOpen}
+          onClose={() => setMobileSidebarOpen(false)}
+          isDesktopOpen={desktopSidebarOpen}
+          onToggleDesktop={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+        />
 
-        <main className={cn('relative h-dvh w-full flex-1 overflow-y-auto transition-all duration-300 lg:h-screen', !desktopSidebarOpen ? 'lg:pl-0' : '')}>
+        <main
+          className={cn(
+            'relative h-dvh w-full flex-1 overflow-y-auto transition-all duration-300 lg:h-screen',
+            !desktopSidebarOpen ? 'lg:pl-0' : '',
+          )}
+        >
           {!desktopSidebarOpen && (
             <MotionButton
               whileHover={{ scale: 1.02, y: -2 }}
@@ -42,7 +52,7 @@ export default function Layout() {
               onClick={() => setDesktopSidebarOpen(true)}
               className="fixed top-6 left-6 z-40 hidden rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:bg-slate-800 hover:text-white lg:flex"
             >
-              <PanelLeft className="h-5 w-5" />
+              <RiSidebarUnfoldLine className="h-5 w-5" />
             </MotionButton>
           )}
           <Outlet />

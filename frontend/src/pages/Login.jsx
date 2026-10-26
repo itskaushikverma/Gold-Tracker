@@ -3,13 +3,13 @@ import logo from '../assets/gold.svg';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Mail, RefreshCw } from 'lucide-react';
+import { RiMailLine, RiRefreshLine } from '@remixicon/react';
 import { useLoginMutation } from '../services/api';
 import { setCredentials } from '../redux/slices/authSlice';
 import CustomInput from '../components/common/CustomInput';
 import CustomPassword from '../components/common/CustomPassword';
 import { MotionForm, MotionButton } from '../components/common/MotionWrapper';
-import { useToast } from '../components/common/Toast';
+import { useToast } from 'react-toast-kit-js';
 
 export default function Login() {
   const [loginApi, { isLoading }] = useLoginMutation();
@@ -23,20 +23,30 @@ export default function Login() {
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     mode: 'onTouched',
-    defaultValues: { email: localStorage.getItem('user_email') || '', password: localStorage.getItem('user_password') || '' },
+    defaultValues: {
+      email: localStorage.getItem('user_email') || '',
+      password: localStorage.getItem('user_password') || '',
+    },
   });
 
   const onSubmit = async (data) => {
     try {
       const resp = await loginApi(data).unwrap();
       if (resp?.success) {
-        dispatch(setCredentials({ user_id: resp?.data?.user_id, isAuthenticated: resp?.data?.isAuthenticated }));
+        dispatch(
+          setCredentials({
+            user_id: resp?.data?.user_id,
+            isAuthenticated: resp?.data?.isAuthenticated,
+          }),
+        );
         localStorage.setItem('user_email', resp?.data?.user_email);
         localStorage.setItem('user_password', data.password);
         navigate('/dashboard');
       }
     } catch (err) {
-      toast.error(err?.data?.message || err?.message || 'Incorrect email or password. Please try again.');
+      toast.error(
+        err?.data?.message || err?.message || 'Incorrect email or password. Please try again.',
+      );
     }
   };
   return (
@@ -65,7 +75,7 @@ export default function Login() {
                 name="email"
                 label="Email Address"
                 type="email"
-                icon={Mail}
+                icon={RiMailLine}
                 placeholder="name@example.com"
                 disabled={isLoading || isSubmitting}
                 register={register}
@@ -100,13 +110,20 @@ export default function Login() {
                 disabled={isSubmitting || isLoading || !isValid}
                 className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-medium tracking-wide text-white shadow-lg shadow-blue-500/20 transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSubmitting || isLoading ? <RefreshCw className="h-5 w-5 animate-spin" /> : 'Sign in'}
+                {isSubmitting || isLoading ? (
+                  <RiRefreshLine className="h-5 w-5 animate-spin" />
+                ) : (
+                  'Sign in'
+                )}
               </MotionButton>
 
               <div className="flex items-center justify-around">
                 <div className="text-sm text-slate-400">
                   Don't have an account?{' '}
-                  <Link to="/signup" className="font-medium text-blue-400 transition-colors hover:text-blue-300">
+                  <Link
+                    to="/signup"
+                    className="font-medium text-blue-400 transition-colors hover:text-blue-300"
+                  >
                     Sign up
                   </Link>
                 </div>

@@ -1,15 +1,19 @@
 import { AnimatePresence } from 'motion/react';
-import { X, Plus, Calendar, Scale, IndianRupee } from 'lucide-react';
+import {
+  RiAddLine,
+  RiCalendarLine,
+  RiCloseLine,
+  RiMoneyRupeeCircleLine,
+  RiScalesLine,
+} from '@remixicon/react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { usePurchaseMutation } from '../services/api';
 import { MotionButton, MotionDiv } from './common/MotionWrapper';
 import CustomInput from './common/CustomInput';
-import { useToast } from './common/Toast';
+import { useToast } from 'react-toast-kit-js';
 
 export default function AddEntryModal({ isOpen, onClose }) {
   const toast = useToast();
-  const user_id = useSelector((state) => state.auth.user_id);
   const [purchase, { isLoading }] = usePurchaseMutation();
 
   const {
@@ -31,7 +35,6 @@ export default function AddEntryModal({ isOpen, onClose }) {
         date: data.date,
         weight: parseFloat(data.weight),
         investedValue: parseFloat(data.investedValue),
-        user_id,
       };
       const resp = await purchase(payload).unwrap();
       if (resp?.success) {
@@ -68,7 +71,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="flex items-center gap-3 text-xl font-bold text-white">
                   <div className="rounded-lg bg-blue-500/10 p-2 text-blue-400">
-                    <Plus className="h-5 w-5" />
+                    <RiAddLine className="h-5 w-5" />
                   </div>
                   Add Entry
                 </h2>
@@ -80,7 +83,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   onClick={onClose}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
-                  <X className="h-5 w-5" />
+                  <RiCloseLine className="h-5 w-5" />
                 </MotionButton>
               </div>
 
@@ -90,19 +93,24 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   type="date"
                   rules={{ required: { value: true, message: 'Date is required' } }}
                   label="Date"
-                  icon={Calendar}
+                  icon={RiCalendarLine}
                   name={'date'}
                   errors={errors}
+                  autoFocus
                   disabled={isLoading || isSubmitting}
                 />
 
                 <CustomInput
                   register={register}
                   type="number"
-                  rules={{ required: { value: true, message: 'Weight is required' }, min: { value: 0.01, message: 'Weight should be greater than 0' }, valueAsNumber: true }}
+                  rules={{
+                    required: { value: true, message: 'Weight is required' },
+                    min: { value: 0.01, message: 'Weight should be greater than 0' },
+                    valueAsNumber: true,
+                  }}
                   label="Weight (mg)"
                   placeholder="e.g. 10.5"
-                  icon={Scale}
+                  icon={RiScalesLine}
                   name={'weight'}
                   errors={errors}
                   disabled={isLoading || isSubmitting}
@@ -111,10 +119,14 @@ export default function AddEntryModal({ isOpen, onClose }) {
                 <CustomInput
                   register={register}
                   type="number"
-                  rules={{ required: { value: true, message: 'Invested Amount is required' }, min: { value: 1, message: 'Amount should be greater than 0' }, valueAsNumber: true }}
+                  rules={{
+                    required: { value: true, message: 'Invested Amount is required' },
+                    min: { value: 1, message: 'Amount should be greater than 0' },
+                    valueAsNumber: true,
+                  }}
                   label="Invested Amount (Rs)"
                   placeholder="e.g. 5000"
-                  icon={IndianRupee}
+                  icon={RiMoneyRupeeCircleLine}
                   name={'investedValue'}
                   errors={errors}
                   disabled={isLoading || isSubmitting}

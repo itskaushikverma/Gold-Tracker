@@ -1,15 +1,20 @@
 import { AnimatePresence } from 'motion/react';
-import { X, Plus, IndianRupee } from 'lucide-react';
+import { RiAddLine, RiCloseLine, RiMoneyRupeeCircleLine } from '@remixicon/react';
 import { useForm } from 'react-hook-form';
 import { MotionButton, MotionDiv } from './common/MotionWrapper';
 import CustomInput from './common/CustomInput';
-import { useEffect } from 'react';
+import { useSetCustomSellingPriceMutation } from '../services/api';
+import { useToast } from 'react-toast-kit-js';
 
-export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSellingPrice, setCustomGoldSellingPrice }) {
+export default function SetCustomGoldPriceModal({
+  isOpen,
+  onClose,
+  customGoldSellingPrice,
+  setCustomGoldSellingPrice,
+}) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     mode: 'onChange',
@@ -18,9 +23,18 @@ export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSel
     },
   });
 
-  const onSubmit = ({ price }) => {
-    setCustomGoldSellingPrice(price);
-    onClose();
+  const toast = useToast();
+  const [savePrice, { isLoading }] = useSetCustomSellingPriceMutation();
+
+  const onSubmit = async ({ price }) => {
+    try {
+      const resp = await savePrice({ sellingPrice: price }).unwrap();
+      setCustomGoldSellingPrice(price);
+      onClose();
+      toast.success(resp?.message);
+    } catch (err) {
+      toast.error(err?.data?.message || 'Failed to save custom selling price');
+    }
   };
 
   return (
@@ -47,7 +61,7 @@ export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSel
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="flex items-center gap-3 text-xl font-bold text-white">
                   <div className="rounded-lg bg-blue-500/10 p-2 text-blue-400">
-                    <Plus className="h-5 w-5" />
+                    <RiAddLine className="h-5 w-5" />
                   </div>
                   Enter Gold Price
                 </h2>
@@ -59,7 +73,7 @@ export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSel
                   onClick={onClose}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
-                  <X className="h-5 w-5" />
+                  <RiCloseLine className="h-5 w-5" />
                 </MotionButton>
               </div>
 
@@ -69,9 +83,10 @@ export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSel
                   type="number"
                   label="Custom Gold Price (Rs)"
                   placeholder="e.g. 5000"
-                  icon={IndianRupee}
+                  icon={RiMoneyRupeeCircleLine}
                   name="price"
                   errors={errors}
+                  autoFocus
                   rules={{
                     required: { value: true, message: 'Custom gold price is required' },
                     min: { value: 1, message: 'Price should be greater than 0' },
@@ -96,7 +111,7 @@ export default function SetCustomGoldPriceModal({ isOpen, onClose, customGoldSel
                     whileTap={{ scale: 0.95, y: 2 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || isLoading || !isValid}
                     className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50"
                   >
                     Set Gold Price
