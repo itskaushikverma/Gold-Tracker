@@ -9,13 +9,11 @@ export const checkEmail = async (req, res) => {
 
     const validationError = validateCheckEmailFields({ firstName, lastName, email });
     if (validationError) {
-      return res
-        .status(400)
-        .json({
-          success: validationError.success,
-          data: validationError.data,
-          message: validationError.message,
-        });
+      return res.status(400).json({
+        success: validationError.success,
+        data: validationError.data,
+        message: validationError.message,
+      });
     }
 
     const isDisposable = await isDisposableEmail(email);

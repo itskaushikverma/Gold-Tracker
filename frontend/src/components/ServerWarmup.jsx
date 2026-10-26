@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import logo from '../assets/gold.svg';
+import Logo from './Logo';
+import LoaderAnimation from './LoaderAnimation';
 import { useHealthQuery } from '../services/api';
 
 const RETRY_MS = 3000;
@@ -25,9 +26,9 @@ export default function ServerWarmup({ children }) {
   return (
     <div className="relative z-10 flex min-h-screen flex-col items-center justify-center p-6">
       <div className="flex flex-col items-center text-center">
-        <img src={logo} alt="Gold Tracker" className="mb-6 h-11 w-11 object-contain" />
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
-        <h2 className="text-foreground mt-4 text-lg font-medium">{message}</h2>
+        <Logo withWordmark size={44} className="mb-6 justify-center" />
+        <LoaderAnimation />
+        <h2 className="text-foreground mt-2 text-lg font-medium">{message}</h2>
         <p className="text-muted-foreground mt-1 text-sm">
           This can take a moment on the first request.
         </p>
