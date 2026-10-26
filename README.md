@@ -161,7 +161,6 @@ Investment routes require the `authToken` cookie from login or register.
 ---
 
 <!-- AUTHOR:START -->
-
 ## 👨‍💻 Author
 
 **Kaushik Verma**
