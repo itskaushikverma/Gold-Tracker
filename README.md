@@ -1,49 +1,98 @@
-<p align="center">
-  <img src="frontend/src/assets/gold.svg" width="72" height="72" alt="Gold Tracker" />
-</p>
+<center>
+  <p align="center" style="text-align: center">
+    <img src="./frontend/src/assets/gold.svg" alt="Gold Tracker" width="180" />
+  </p>
+  <h1 align="center" style="text-align: center">Gold Tracker</h1>
+  <p align="center" style="text-align: center">
+    A full-stack gold portfolio built with React, Vite, and Express — sign in, record a purchase, and follow its value against the live INR price.
+  </p>
+  <p align="center" style="display: flex; align-items: center; justify-content: center; gap:10px;">
+    <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
+    <img src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white" alt="Vite 8" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4" />
+    <img src="https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white" alt="Express 5" />
+    <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />
+  </p>
 
-<h1 align="center">Gold Tracker</h1>
+  <h4 align="center" style="text-align: center">
+    <a href="https://gold-tracker-kv.vercel.app/" target="_blank" rel="noopener noreferrer">🚀 Live Demo</a>
+    <span> · </span>
+    <a href="https://github.com/itskaushikverma/Gold-Tracker" target="_blank" rel="noopener noreferrer">📁 Repository</a>
+  </h4>
+</center>
 
-<p align="center">
-  Sign in, record a gold purchase, and follow its value against the live INR price.
-</p>
+## 📚 Table of Contents
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white" alt="Vite" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white" alt="Express" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/JWT-Auth-000000?logo=jsonwebtokens&logoColor=white" alt="JWT" />
-</p>
+- [About the Project](#about-the-project)
+- [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [API](#api)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
----
+<a id="about-the-project"></a>
 
-## Preview
+## ✨ About the Project
 
-<img src="docs/screenshots/signup.png" alt="Gold Tracker create account screen" width="720" />
+Gold Tracker is a small portfolio app with a React client and an Express API. After sign-in, the dashboard lists purchases and sales, and the performance charts follow each holding against the current gold price.
 
-After sign-in, the dashboard lists purchases and sales, and the performance charts follow the holding against the current gold price.
+Each JSON response uses the same envelope:
 
-## Features
+```json
+{ "success": true, "data": {}, "message": "Login successful" }
+```
 
-- **Accounts** — Check the email, set a password, sign in, and stay signed in with an httpOnly JWT cookie.
-- **Purchases** — Record a date, weight in milligrams, and the amount invested.
-- **Sales** — Mark one of your holdings as sold at a selling price.
-- **Dashboard** — Invested amount, weight, current value, and profit or loss.
-- **Performance** — Cumulative invested value versus current value over time.
-- **Custom price** — Save a selling price and chart that history. An optional Gemini pass formats the chart.
-- **Owned data** — Investment routes use the signed-in user. A client cannot pass another user's id.
+Failed requests use `"success": false` and `"data": null`.
 
-## Tech stack
+<a id="screenshots"></a>
 
-| Layer   | Tools                                                                                         |
-| ------- | --------------------------------------------------------------------------------------------- |
-| Web app | React 19, Vite, Redux Toolkit Query, React Router, Tailwind CSS, Recharts, react-toast-kit-js |
-| API     | Node.js, Express 5, Mongoose, JWT, bcrypt                                                     |
-| Data    | MongoDB                                                                                       |
-| Price   | Live XAU/INR quote, converted to INR per milligram                                            |
+## 📸 Screenshots
 
-## Architecture
+<table>
+  <tr>
+    <td width="50%" align="center"><img src="./docs/screenshots/signup.png" alt="Gold Tracker create account screen" width="420" /></td>
+    <td width="50%" align="center"><img src="./docs/screenshots/dashboard.png" alt="Gold Tracker dashboard" width="420" /></td>
+  </tr>
+</table>
+
+<a id="tech-stack"></a>
+
+## 🛠️ Tech Stack
+
+- ⚛️ React 19
+- ⚡ Vite 8
+- 🎨 Tailwind CSS 4
+- 🔄 Redux Toolkit Query
+- 🧾 React Hook Form
+- 📈 Recharts
+- 🚂 Express 5
+- 🍃 MongoDB + Mongoose
+- 🔐 JWT + bcrypt
+- 🧹 ESLint + Prettier
+
+<a id="features"></a>
+
+## 🌟 Features
+
+- Check an email, set a password, sign in, and stay signed in with an httpOnly JWT cookie
+- Record a purchase with a date, a weight in milligrams, and the amount invested
+- Mark one of your holdings as sold at a selling price
+- See invested amount, weight, current value, and profit or loss on the dashboard
+- Chart cumulative invested value against current value over time
+- Save a custom selling price and chart that history, with an optional Gemini pass for the chart
+- Keep investment routes limited to the signed-in user
+
+<a id="architecture"></a>
+
+## 🏗️ Architecture
+
+The React app sends the `authToken` cookie to the Express API. Auth and investment routes both read and write MongoDB. Investment totals also use the live XAU/INR quote, converted to INR per milligram.
 
 ```mermaid
 flowchart LR
@@ -55,26 +104,31 @@ flowchart LR
   Investments --> Gold["Gold price API"]
 ```
 
-Every JSON response uses the same envelope:
+<a id="getting-started"></a>
 
-```json
-{ "success": true, "data": {}, "message": "Login successful" }
-```
+## 🚀 Getting Started
 
-Failed requests use `"success": false` and `"data": null`.
+### 📋 Prerequisites
 
-## Getting started
+- Node.js 20 or newer
+- npm
+- MongoDB
 
-Use **Node.js 20+** and a MongoDB database.
+### 💻 Run Locally
 
-### 1. Clone
+Clone the project:
 
 ```bash
 git clone https://github.com/itskaushikverma/Gold-Tracker.git
+```
+
+Move into the project folder:
+
+```bash
 cd Gold-Tracker
 ```
 
-### 2. API
+Start the API:
 
 ```bash
 cd backend
@@ -85,9 +139,7 @@ npm start
 
 The API listens on [http://localhost:5000](http://localhost:5000).
 
-### 3. Web app
-
-In a second terminal:
+In a second terminal, start the web app:
 
 ```bash
 cd frontend
@@ -100,9 +152,9 @@ Open [http://localhost:5173](http://localhost:5173).
 
 Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mount. The app sends cookies with every request.
 
-## Environment
+### 🔐 Environment
 
-### `backend/.env`
+`backend/.env`
 
 | Variable         | Purpose                                                      |
 | ---------------- | ------------------------------------------------------------ |
@@ -112,13 +164,38 @@ Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mou
 | `FRONTEND_URL`   | Allowed browser origin, for example `http://localhost:5173`. |
 | `GEMINI_API_KEY` | Optional. Required only for the AI selling-price chart.      |
 
-### `frontend/.env`
+`frontend/.env`
 
 | Variable       | Purpose                         |
 | -------------- | ------------------------------- |
 | `VITE_API_URL` | API base URL, including `/api`. |
 
-## API
+<a id="available-scripts"></a>
+
+## 📜 Available Scripts
+
+From the repository root:
+
+- `npm run lint` — lint the web app and the API
+- `npm run format` — format the repo with Prettier
+- `npm run check` — run lint, then format
+
+From `frontend/`:
+
+- `npm run dev` — start the local development server
+- `npm run build` — build the app for production
+- `npm run preview` — preview the production build locally
+- `npm run lint` — run ESLint checks
+
+From `backend/`:
+
+- `npm start` — start the API
+- `npm run lint` — run ESLint checks
+- `npm test` — run the Node test runner
+
+<a id="api"></a>
+
+## 🔌 API
 
 Investment routes require the `authToken` cookie from login or register.
 
@@ -139,38 +216,81 @@ Investment routes require the `authToken` cookie from login or register.
 
 `getdetails` and `getPerformance` accept an optional `customGoldSellingPrice` query value. That value is used for the calculation only. Saving a custom price is the separate POST.
 
-## Project structure
+<a id="project-structure"></a>
+
+## 🧩 Project Structure
 
 ```text
 .
-├── backend/          Express API
+├── backend/
+│   ├── config/
 │   ├── controllers/
 │   ├── middleware/
 │   ├── model/
 │   ├── routes/
 │   ├── services/
-│   └── utils/
-└── frontend/         React app
-    └── src/
-        ├── components/
-        ├── pages/
-        ├── redux/
-        └── services/
+│   ├── utils/
+│   └── index.js
+├── frontend/
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── redux/
+│       ├── services/
+│       ├── App.jsx
+│       └── main.jsx
+└── docs/
+    └── screenshots/
 ```
 
----
+<a id="deployment"></a>
+
+## 🌐 Deployment
+
+Build the web app:
+
+```bash
+cd frontend
+npm run build
+npm run preview
+```
+
+Run the API with the production environment variables set in `backend/.env`:
+
+```bash
+cd backend
+npm start
+```
+
+<a id="contributing"></a>
+
+## 🤝 Contributing
+
+Contributions, issues, and feature suggestions are welcome.
+
+If you would like to contribute:
+
+- fork the repository
+- create a feature branch
+- commit your changes
+- open a pull request
 
 <!-- AUTHOR:START -->
-## 👨‍💻 Author
-
-**Kaushik Verma**
-
-<p align="left">
-  <a href="https://www.kaushikverma.com" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Portfolio-114B5F?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Portfolio" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/itskaushikverma" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>&nbsp;&nbsp;
-  <a href="https://www.linkedin.com/in/itskaushikverma" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>&nbsp;&nbsp;
-  <a href="https://x.com/SilentK68296830" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/X-111111?style=for-the-badge&logo=x&logoColor=white" alt="X" /></a>&nbsp;&nbsp;
-  <a href="https://www.instagram.com/itskaushikverma" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" /></a>&nbsp;&nbsp;
-  <a href="mailto:kaushikverma321@gmail.com" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" /></a>
-</p>
+<h2 id="contact" style="margin: 12px 0 8px">👤 Author</h2>
+<div align="center" style="margin: 0">
+  <img src="https://github.com/itskaushikverma.png" alt="Developer" width="100" height="100" style="border-radius:50%; width:100px; height:100px; object-fit:cover; display:block; margin:0 auto"/>
+  <h3 style="margin: 8px 0 4px">Kaushik Verma</h3>
+  <p style="margin: 0 0 8px">
+    <a href="mailto:kaushikverma321@gmail.com"><img src="https://img.shields.io/badge/Email-kaushikverma321@gmail.com-EA4335?style=flat-square&logo=gmail" alt="Email" /></a>
+    <a href="https://www.kaushikverma.com"><img src="https://img.shields.io/badge/Website-https://www.kaushikverma.com-000000?style=flat-square&logo=vercel" alt="Portfolio" /></a>
+    <a href="https://github.com/itskaushikverma"><img src="https://img.shields.io/badge/GitHub-itskaushikverma-181717?style=flat-square&logo=github" alt="GitHub" /></a>
+    <a href="https://www.linkedin.com/in/itskaushikverma"><img src="https://img.shields.io/badge/LinkedIn-https://www.linkedin.com/in/itskaushikverma-0077B5?style=flat-square&logo=linkedin" alt="LinkedIn" /></a>
+    <a href="https://x.com/SilentK68296830"><img src="https://img.shields.io/badge/Twitter-https://x.com/SilentK68296830-1DA1F2?style=flat-square&logo=twitter" alt="Twitter" /></a>
+  </p>
+  <p style="margin: 0">Open to product feedback, collaboration, and thoughtful conversation.</p>
+</div>
+<div align="center" style="margin: 8px 0 0">
+  <p style="margin: 0 0 4px">If you found this project helpful, please consider giving it a ⭐️</p>
+  <a href="https://github.com/itskaushikverma/Gold-Tracker"><img src="https://img.shields.io/github/stars/itskaushikverma/Gold-Tracker?style=social" alt="GitHub stars" /></a>
+</div>
 <!-- AUTHOR:END -->
