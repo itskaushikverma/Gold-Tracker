@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { RiRefreshLine } from '@remixicon/react';
 import { useDispatch } from 'react-redux';
@@ -17,7 +17,7 @@ export default function PasswordForm({ formData, onBack }) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     mode: 'onTouched',
@@ -27,7 +27,7 @@ export default function PasswordForm({ formData, onBack }) {
     },
   });
 
-  const password = watch('password');
+  const password = useWatch({ control, name: 'password' });
 
   const onSubmit = async (data) => {
     try {

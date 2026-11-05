@@ -28,7 +28,7 @@ export default function Footer() {
   ].filter((item) => item.href);
 
   return (
-    <footer className="text-muted-foreground h-full relative border-t py-2 backdrop-blur-[2px]">
+    <footer className="text-muted-foreground relative h-full border-t py-2 backdrop-blur-[2px]">
       <div className="flex flex-col items-center justify-center gap-1">
         <p className="text-sm">
           Made by{' '}
@@ -36,7 +36,7 @@ export default function Footer() {
             href={links.portfolio}
             target="_blank"
             rel="noreferrer"
-            className="text-foreground font-medium underline-offset-4 hover:underline transition-all duration-200"
+            className="text-foreground font-medium underline-offset-4 transition-all duration-200 hover:underline"
           >
             Kaushik Verma
           </a>

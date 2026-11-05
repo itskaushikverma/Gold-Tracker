@@ -9,7 +9,7 @@ export const getDetails = async (req, res) => {
     const { sellPriceOverride: sellPriceOverrideString } = req.query;
     const user_id = req.user.id;
 
-    if (!user_id) 
+    if (!user_id)
       return res.status(400).json({
         success: false,
         data: null,
@@ -62,7 +62,9 @@ export const getDetails = async (req, res) => {
 
     const enrichedInvestments = investments.map((investment) => {
       const isSold = investment?.isSell?.status;
-      const currentValue = isSold ? investment?.isSell?.amount : round(Number(investment.weight) * Number(pricePerMg));
+      const currentValue = isSold
+        ? investment?.isSell?.amount
+        : round(Number(investment.weight) * Number(pricePerMg));
       const profitLoss = round(currentValue - Number(investment.investedValue));
       const percentage = round((Math.abs(profitLoss) / Number(investment.investedValue)) * 100);
       const isPositive = profitLoss >= 0;
@@ -84,7 +86,9 @@ export const getDetails = async (req, res) => {
     data.currentInvestmentValue = round(data.totalPurchasedGoldWeight * pricePerMg);
     data.totalProfitLoss = round(data.currentInvestmentValue - data.totalInvestedAmount);
     data.isPositive = data.totalProfitLoss >= 0;
-    data.totalProfitLossPercentage = data.totalInvestedAmount? round((Math.abs(data.totalProfitLoss) / data.totalInvestedAmount) * 100): 0;
+    data.totalProfitLossPercentage = data.totalInvestedAmount
+      ? round((Math.abs(data.totalProfitLoss) / data.totalInvestedAmount) * 100)
+      : 0;
 
     return res.status(200).json({
       success: true,

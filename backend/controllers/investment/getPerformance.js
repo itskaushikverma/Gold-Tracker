@@ -11,8 +11,8 @@ export const getPerformance = async (req, res) => {
 
     const validated = validateGetDetailsFields({ sellPriceOverrideString });
 
-    if (validated?.success === false)  return res.status(400).json(validated);
-    
+    if (validated?.success === false) return res.status(400).json(validated);
+
     const sellPriceOverride = validated.sellPriceOverrideString;
 
     const investments = await InvestmentModel.find({ userId: user_id, 'isSell.status': false })
@@ -36,9 +36,13 @@ export const getPerformance = async (req, res) => {
       return res.status(500).json({ success: false, data: null, message: goldPrice.message });
     }
 
-    const overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id }).sort({ date: -1 }).select('sellingPrice');
+    const overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id })
+      .sort({ date: -1 })
+      .select('sellingPrice');
 
-    const pricePerMg = sellPriceOverride? overrideSellingPrice?.sellingPrice: goldPrice.data.priceWithGST;
+    const pricePerMg = sellPriceOverride
+      ? overrideSellingPrice?.sellingPrice
+      : goldPrice.data.priceWithGST;
 
     let cumulativeInvested = 0;
     let cumulativeCurrentValue = 0;

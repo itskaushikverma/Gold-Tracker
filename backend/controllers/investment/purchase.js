@@ -14,7 +14,6 @@ export const purchase = async (req, res) => {
         message: 'Not authenticated',
       });
 
-
     const validated = validatePurchaseFields({ date, weight, investedValue });
 
     if (validated?.success === false) {

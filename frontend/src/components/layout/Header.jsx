@@ -60,7 +60,12 @@ export default function Header({
           {dashboardType === 'overview' && (
             <div className="flex flex-wrap gap-3">
               {badges.map((badge) => (
-                <Badge key={badge.title} title={badge.title} value={badge.value} valueClassName={badge.valueClassName} />
+                <Badge
+                  key={badge.title}
+                  title={badge.title}
+                  value={badge.value}
+                  valueClassName={badge.valueClassName}
+                />
               ))}
             </div>
           )}

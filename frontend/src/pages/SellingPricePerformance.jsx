@@ -131,9 +131,8 @@ export default function SellingPricePerformance() {
   });
 
   useEffect(() => {
-    if (isActualError)  toast.error(actualError?.data?.message);
-
-    if (isAiError)  toast.error(aiError?.data?.message);
+    if (isActualError) toast.error(actualError?.data?.message);
+    if (isAiError) toast.error(aiError?.data?.message);
   }, [isActualError, actualError, isAiError, aiError]);
 
   const activeTabConfig = useMemo(() => TABS.find((tab) => tab.key === activeTab), [activeTab]);
@@ -168,15 +167,14 @@ export default function SellingPricePerformance() {
       ? { r: dotRadius, fill: activeTabConfig.color, stroke: '#0f172a', strokeWidth: 1 }
       : false;
 
-  if (isActualLoading || isActualFetching) return <PerformanceSkeleton />
-
+  if (isActualLoading || isActualFetching) return <PerformanceSkeleton />;
 
   return (
     <MotionDiv
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex h-full min-h-0 flex-col overflow-hidden gap-6"
+      className="flex h-full min-h-0 flex-col gap-6 overflow-hidden"
     >
       <Header
         title="Selling Price Performance"

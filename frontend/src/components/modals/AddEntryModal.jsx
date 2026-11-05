@@ -81,7 +81,10 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   whileTap={{ scale: 0.95, y: 2 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                   type="button"
-                  onClick={() => {reset(); onClose();}}
+                  onClick={() => {
+                    reset();
+                    onClose();
+                  }}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
                   <RiCloseLine className="h-5 w-5" />

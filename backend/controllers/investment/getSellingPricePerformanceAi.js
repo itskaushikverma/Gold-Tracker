@@ -19,7 +19,7 @@ export const getSellingPricePerformanceAi = async (req, res) => {
       .lean();
 
     const latestByDate = new Map();
-    
+
     for (const entry of customPrices) {
       const dateKey = new Date(entry.date).toISOString().split('T')[0];
       latestByDate.set(dateKey, {

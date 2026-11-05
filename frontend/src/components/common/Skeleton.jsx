@@ -14,7 +14,7 @@ export const HeaderSkeleton = () => {
 
 export const DashboardSkeleton = () => {
   return (
-    <div className='flex h-full min-h-0 flex-col gap-6'>
+    <div className="flex h-full min-h-0 flex-col gap-6">
       <HeaderSkeleton />
 
       <div className="flex min-h-0 flex-1 flex-col gap-8">

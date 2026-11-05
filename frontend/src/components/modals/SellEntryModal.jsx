@@ -13,7 +13,7 @@ import { useToast } from 'react-toast-kit-js';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { cn } from '../../lib/utils';
 import CustomInput from '../common/CustomInput';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale }) {
   const toast = useToast();
@@ -23,7 +23,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -34,7 +34,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
   const totalWeight = itemForSale?.weight;
   const totalInvested = itemForSale?.investedValue;
 
-  const watchedSellingPrice = watch('sellingPrice');
+  const watchedSellingPrice = useWatch({ control, name: 'sellingPrice' });
   const sellingPriceNumber =
     watchedSellingPrice === undefined || watchedSellingPrice === 0
       ? 0

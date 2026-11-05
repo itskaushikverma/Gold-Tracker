@@ -40,8 +40,7 @@ export default function Dashboard() {
   );
 
   useEffect(() => {
-    if (isError)
-      toast.error(error?.data?.message);
+    if (isError) toast.error(error?.data?.message);
   }, [isError, error]);
 
   if (isLoading || isFetching) return <DashboardSkeleton />;
@@ -54,9 +53,14 @@ export default function Dashboard() {
         transition={{ duration: 0.4 }}
         className="flex h-full min-h-0 w-full flex-col gap-6 overflow-hidden"
       >
-        <Header dashboardType="overview" details={data} title="Overview" description="Track your gold investment portfolio and real-time performance." />
+        <Header
+          dashboardType="overview"
+          details={data}
+          title="Overview"
+          description="Track your gold investment portfolio and real-time performance."
+        />
         <div className="flex w-full gap-4 overflow-x-auto pt-1 pb-2 md:gap-6">
-          <div className="min-w-70 w-full flex-1 shrink-0 md:min-w-80">
+          <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
               title="Total Invested"
               value={formatCurrency(data?.totalInvestedAmount || 0)}
@@ -64,7 +68,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="min-w-70 w-full flex-1 shrink-0 md:min-w-80">
+          <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
               title="Current Value"
               value={formatCurrency(data?.currentInvestmentValue || 0)}
@@ -72,7 +76,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="min-w-70 w-full flex-1 shrink-0 md:min-w-80">
+          <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
               title="Total Profit / Loss"
               value={formatCurrency(data?.totalProfitLoss || 0)}
@@ -182,7 +186,9 @@ export default function Dashboard() {
                         </td>
                         <td className="px-4 py-3 text-right font-mono text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                           <div className="flex flex-col items-end">
-                            <span className={cn(item?.isPositive ? 'text-emerald-400' : 'text-red-400')}>
+                            <span
+                              className={cn(item?.isPositive ? 'text-emerald-400' : 'text-red-400')}
+                            >
                               {item?.isPositive ? '+' : ''}
                               {formatCurrency(item?.profitLoss)}
                             </span>

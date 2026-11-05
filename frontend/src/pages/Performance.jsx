@@ -55,13 +55,10 @@ export default function Performance() {
     isFetching,
     error,
     isError,
-  } = useGetPerformanceQuery(
-    { sellPriceOverride },
-    { skip: !isAuthenticated },
-  );
+  } = useGetPerformanceQuery({ sellPriceOverride }, { skip: !isAuthenticated });
 
   useEffect(() => {
-    if (isError)  toast.error(error?.data?.message);
+    if (isError) toast.error(error?.data?.message);
   }, [isError, error]);
 
   const chartData = (getPerformance?.data?.performance || []).map((item) => ({
@@ -79,9 +76,12 @@ export default function Performance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex h-full min-h-0 flex-col overflow-hidden gap-6"
+      className="flex h-full min-h-0 flex-col gap-6 overflow-hidden"
     >
-      <Header title="Performance History" description="Visualize your investment growth over time." />
+      <Header
+        title="Performance History"
+        description="Visualize your investment growth over time."
+      />
       <div className="h-full min-h-0 flex-1 rounded-2xl border border-slate-800/80 bg-slate-900/40 p-4 shadow-xl backdrop-blur-md md:p-6">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>

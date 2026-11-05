@@ -33,14 +33,14 @@ export default function DashboardCard({
         >
           {icon}
         </div>
-        <h3 className="text-sm text-nowrap font-medium text-slate-400 transition-colors group-hover:text-slate-300">
+        <h3 className="text-sm font-medium text-nowrap text-slate-400 transition-colors group-hover:text-slate-300">
           {title}
         </h3>
       </div>
       <div className="relative z-10 flex items-baseline gap-2">
         <div
           className={cn(
-            'text-2xl font-bold md:text-3xl text-nowrap',
+            'text-2xl font-bold text-nowrap md:text-3xl',
             trend ? (isPositive ? 'text-emerald-400' : 'text-red-400') : 'text-slate-100',
           )}
         >

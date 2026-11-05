@@ -1,7 +1,15 @@
 import express from 'express';
 import trimRequest from 'trim-request';
 import { protect } from '../middleware/protect.js';
-import { purchase, sell, getDetails, getPerformance, getSellingPricePerformance, getSellingPricePerformanceAi, setCustomSellingPrice} from '../controllers/investment/index.js';
+import {
+  purchase,
+  sell,
+  getDetails,
+  getPerformance,
+  getSellingPricePerformance,
+  getSellingPricePerformanceAi,
+  setCustomSellingPrice,
+} from '../controllers/investment/index.js';
 
 const investmentRouter = express.Router();
 

@@ -95,8 +95,6 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     return { success: false, data: null, message: 'Purchase date cannot be in the future' };
   }
 
-
-
   if (!validator.isFloat(String(weight), { gt: 0 })) {
     return {
       success: false,

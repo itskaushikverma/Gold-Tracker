@@ -70,9 +70,7 @@ function SidebarNavItem({ to, label, icon: Icon, activeBg, activeBar, activeIcon
           <Icon
             className={cn(
               'h-5 w-5 shrink-0',
-              isActive
-                ? activeIcon
-                : 'text-slate-500 transition-colors group-hover:text-slate-300',
+              isActive ? activeIcon : 'text-slate-500 transition-colors group-hover:text-slate-300',
             )}
           />
           <span className="truncate">{label}</span>

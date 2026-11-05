@@ -5,7 +5,7 @@ export const getSellingPricePerformance = async (req, res) => {
   try {
     const user_id = req.user.id;
 
-    if (!user_id) 
+    if (!user_id)
       return res.status(400).json({
         success: false,
         data: null,

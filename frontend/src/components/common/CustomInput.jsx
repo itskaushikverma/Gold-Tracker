@@ -33,7 +33,9 @@ export default function CustomInput({
 
     try {
       input.showPicker();
-    } catch {}
+    } catch {
+      return;
+    }
   };
 
   return (
