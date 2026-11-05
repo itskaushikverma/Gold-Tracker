@@ -5,11 +5,31 @@ export const getSellingPricePerformanceAi = async (req, res) => {
   try {
     const user_id = req.user.id;
 
+    if (!user_id) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: 'Not authenticated',
+      });
+    }
+
     const customPrices = await CustomSellingPriceModel.find({ userId: user_id })
-      .sort({ date: 1 })
+      .sort({ date: 1, createdAt: 1 })
+      .select('date sellingPrice createdAt')
       .lean();
 
-    if (customPrices.length === 0) {
+    const latestByDate = new Map();
+    
+    for (const entry of customPrices) {
+      const dateKey = new Date(entry.date).toISOString().split('T')[0];
+      latestByDate.set(dateKey, {
+        date: entry.date,
+        sellingPrice: entry.sellingPrice,
+      });
+    }
+    const uniqueCustomPrices = Array.from(latestByDate.values());
+
+    if (uniqueCustomPrices.length === 0) {
       return res.status(200).json({
         success: true,
         data: {
@@ -30,7 +50,7 @@ export const getSellingPricePerformanceAi = async (req, res) => {
       });
     }
 
-    const chart = await generateSellingPriceChart(customPrices);
+    const chart = await generateSellingPriceChart(uniqueCustomPrices);
 
     return res.status(200).json({
       success: true,

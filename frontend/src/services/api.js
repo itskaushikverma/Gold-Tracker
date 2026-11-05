@@ -8,9 +8,7 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: baseQuery,
-  tagTypes: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE', 'SELLING_PRICE_PERFORMANCE'],
-
+  baseQuery,
   endpoints: (builder) => ({
     health: builder.query({
       query: () => ({
@@ -26,6 +24,7 @@ export const api = createApi({
         body,
       }),
     }),
+
     register: builder.mutation({
       query: (body) => ({
         url: ENDPOINTS.REGISTER,
@@ -33,6 +32,7 @@ export const api = createApi({
         body,
       }),
     }),
+
     login: builder.mutation({
       query: (body) => ({
         url: ENDPOINTS.LOGIN,
@@ -40,6 +40,7 @@ export const api = createApi({
         body,
       }),
     }),
+
     logout: builder.mutation({
       query: () => ({
         url: ENDPOINTS.LOGOUT,
@@ -71,23 +72,23 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['SELLING_PRICE_PERFORMANCE'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'SELLING_PRICE_PERFORMANCE'],
     }),
 
     getDetails: builder.query({
-      query: ({ customGoldSellingPrice } = {}) => ({
+      query: ({ sellPriceOverride }) => ({
         url: ENDPOINTS.GET_DETAILS,
         method: 'GET',
-        params: customGoldSellingPrice ? { customGoldSellingPrice } : undefined,
+        params: { sellPriceOverride },
       }),
       providesTags: ['INVESTMENT_DETAILS'],
     }),
 
     getPerformance: builder.query({
-      query: ({ customGoldSellingPrice } = {}) => ({
+      query: ({ sellPriceOverride }) => ({
         url: ENDPOINTS.GET_PERFORMANCE,
         method: 'GET',
-        params: customGoldSellingPrice ? { customGoldSellingPrice } : undefined,
+        params: { sellPriceOverride },
       }),
       providesTags: ['INVESTMENT_PERFORMANCE'],
     }),

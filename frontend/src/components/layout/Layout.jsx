@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { RiMenuLine, RiSidebarUnfoldLine } from '@remixicon/react';
-import { cn } from '../lib/utils';
-import logo from '../assets/gold.svg';
-import { MotionButton } from './common/MotionWrapper';
+import { RiMenuLine } from '@remixicon/react';
+import logo from '../../assets/gold.svg';
+import { MotionButton } from '../common/MotionWrapper';
 
 export default function Layout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -38,24 +37,15 @@ export default function Layout() {
           onToggleDesktop={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
         />
 
-        <main
-          className={cn(
-            'relative h-dvh w-full flex-1 overflow-y-auto transition-all duration-300 lg:h-screen',
-            !desktopSidebarOpen ? 'lg:pl-0' : '',
-          )}
-        >
-          {!desktopSidebarOpen && (
-            <MotionButton
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.95, y: 2 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              onClick={() => setDesktopSidebarOpen(true)}
-              className="fixed top-6 left-6 z-40 hidden rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:bg-slate-800 hover:text-white lg:flex"
-            >
-              <RiSidebarUnfoldLine className="h-5 w-5" />
-            </MotionButton>
-          )}
-          <Outlet />
+        <main className="relative flex h-dvh w-full flex-1 flex-col overflow-hidden transition-all duration-300 lg:h-screen">
+          <div className="h-full overflow-y-auto p-4 md:p-8">
+            <Outlet
+              context={{
+                sidebarClosed: !desktopSidebarOpen,
+                onOpenSidebar: () => setDesktopSidebarOpen(true),
+              }}
+            />
+          </div>
         </main>
       </div>
     </div>

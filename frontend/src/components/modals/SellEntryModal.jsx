@@ -7,12 +7,12 @@ import {
   RiMoneyRupeeCircleLine,
   RiScalesLine,
 } from '@remixicon/react';
-import { MotionButton, MotionDiv } from './common/MotionWrapper';
-import { useSellMutation } from '../services/api';
+import { MotionButton, MotionDiv } from '../common/MotionWrapper';
+import { useSellMutation } from '../../services/api';
 import { useToast } from 'react-toast-kit-js';
-import { formatCurrency } from '../utils/formatCurrency';
-import { cn } from '../lib/utils';
-import CustomInput from './common/CustomInput';
+import { formatCurrency } from '../../utils/formatCurrency';
+import { cn } from '../../lib/utils';
+import CustomInput from '../common/CustomInput';
 import { useForm } from 'react-hook-form';
 
 export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale }) {

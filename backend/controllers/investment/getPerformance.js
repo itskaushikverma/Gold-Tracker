@@ -1,25 +1,24 @@
+import CustomSellingPriceModel from '../../model/customSellingPriceModel.js';
 import InvestmentModel from '../../model/investmentModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
-import { validateInvestmentQuery } from '../../utils/validator.js';
+import { validateGetDetailsFields } from '../../utils/validator.js';
 
 export const getPerformance = async (req, res) => {
   try {
-    const { customGoldSellingPrice } = req.query;
+    const { sellPriceOverride: sellPriceOverrideString } = req.query;
     const user_id = req.user.id;
 
-    const validationError = validateInvestmentQuery({ customGoldSellingPrice });
-    if (validationError) {
-      return res.status(400).json({
-        success: false,
-        data: null,
-        message: validationError.message,
-      });
-    }
+    const validated = validateGetDetailsFields({ sellPriceOverrideString });
+
+    if (validated?.success === false)  return res.status(400).json(validated);
+    
+    const sellPriceOverride = validated.sellPriceOverrideString;
 
     const investments = await InvestmentModel.find({ userId: user_id, 'isSell.status': false })
       .sort({ date: 1 })
-      .lean();
+      .lean()
+      .select('date investedValue weight');
 
     if (!investments || investments.length === 0) {
       return res.status(200).json({
@@ -37,19 +36,16 @@ export const getPerformance = async (req, res) => {
       return res.status(500).json({ success: false, data: null, message: goldPrice.message });
     }
 
-    const currentPrice = goldPrice.data.priceWithGST;
+    const overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id }).sort({ date: -1 }).select('sellingPrice');
+
+    const pricePerMg = sellPriceOverride? overrideSellingPrice?.sellingPrice: goldPrice.data.priceWithGST;
 
     let cumulativeInvested = 0;
     let cumulativeCurrentValue = 0;
 
     const performance = investments.map((investment) => {
-      cumulativeInvested += investment.investedValue;
-      cumulativeCurrentValue +=
-        customGoldSellingPrice &&
-        !isNaN(customGoldSellingPrice) &&
-        Number(customGoldSellingPrice) > 0
-          ? investment.weight * customGoldSellingPrice
-          : investment.weight * currentPrice;
+      cumulativeInvested += Number(investment.investedValue);
+      cumulativeCurrentValue += Number(investment.weight) * Number(pricePerMg);
 
       return {
         date: investment.date,

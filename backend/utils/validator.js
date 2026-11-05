@@ -1,9 +1,7 @@
 import validator from 'validator';
+import { round } from './roundToDecimal.js';
 
 const NAME_PATTERN = /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/;
-const MAX_WEIGHT_MG = 1000000;
-const MAX_INVESTED_VALUE = 100000000;
-const EARLIEST_PURCHASE_DATE = new Date('2000-01-01T00:00:00.000Z');
 
 const isValidName = (name) => NAME_PATTERN.test(name);
 
@@ -97,11 +95,9 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     return { success: false, data: null, message: 'Purchase date cannot be in the future' };
   }
 
-  if (purchaseDate < EARLIEST_PURCHASE_DATE) {
-    return { success: false, data: null, message: 'Purchase date cannot be before 2000' };
-  }
 
-  if (!validator.isFloat(String(weight), { gt: 0, max: MAX_WEIGHT_MG })) {
+
+  if (!validator.isFloat(String(weight), { gt: 0 })) {
     return {
       success: false,
       data: null,
@@ -109,7 +105,7 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     };
   }
 
-  if (!validator.isFloat(String(investedValue), { gt: 0, max: MAX_INVESTED_VALUE })) {
+  if (!validator.isFloat(String(investedValue), { gt: 0 })) {
     return {
       success: false,
       data: null,
@@ -117,7 +113,19 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     };
   }
 
-  return null;
+  const roundedInvestedValue = round(investedValue);
+
+  if (!roundedInvestedValue) {
+    return { success: false, data: null, message: 'Invalid invested value' };
+  }
+
+  const roundedWeight = round(weight);
+
+  if (!roundedWeight) {
+    return { success: false, data: null, message: 'Invalid weight' };
+  }
+
+  return { roundedWeight, roundedInvestedValue };
 };
 
 export const validateSellFields = ({ investment_id, sellingPrice }) => {
@@ -141,23 +149,87 @@ export const validateSellFields = ({ investment_id, sellingPrice }) => {
     };
   }
 
-  return null;
-};
+  const sellingPriceRounded = round(sellingPrice);
 
-export const validateInvestmentQuery = ({ customGoldSellingPrice }) => {
-  if (
-    customGoldSellingPrice !== undefined &&
-    customGoldSellingPrice !== null &&
-    customGoldSellingPrice !== ''
-  ) {
-    if (!validator.isFloat(String(customGoldSellingPrice), { gt: 0 })) {
-      return {
-        success: false,
-        data: null,
-        message: 'Custom gold selling price must be a number greater than 0',
-      };
-    }
+  if (!sellingPriceRounded) {
+    return { success: false, data: null, message: 'Invalid selling price' };
   }
 
-  return null;
+  return { sellingPriceRounded };
+};
+
+export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
+  if (sellingPrice === undefined || sellingPrice === null || sellingPrice === '') {
+    return {
+      success: false,
+      data: null,
+      message: 'Selling price is required',
+    };
+  }
+
+  if (!date) {
+    return {
+      success: false,
+      data: null,
+      message: 'Date is required',
+    };
+  }
+
+  if (!validator.isISO8601(String(date)) && !validator.isDate(String(date))) {
+    return { success: false, data: null, message: 'Invalid date format' };
+  }
+
+  const entryDate = new Date(date);
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
+  if (Number.isNaN(entryDate.getTime())) {
+    return { success: false, data: null, message: 'Invalid date format' };
+  }
+
+  if (entryDate > endOfToday) {
+    return { success: false, data: null, message: 'Date cannot be in the future' };
+  }
+
+  if (!validator.isFloat(String(sellingPrice), { gt: 0 })) {
+    return {
+      success: false,
+      data: null,
+      message: 'Selling price must be a number greater than 0',
+    };
+  }
+
+  const sellingPriceRounded = round(sellingPrice);
+
+  if (!sellingPriceRounded) {
+    return { success: false, data: null, message: 'Invalid selling price' };
+  }
+
+  return { sellingPriceRounded, date: entryDate };
+};
+
+export const validateGetDetailsFields = ({ sellPriceOverrideString }) => {
+  if (
+    sellPriceOverrideString === undefined ||
+    sellPriceOverrideString === null ||
+    sellPriceOverrideString === ''
+  ) {
+    return {
+      success: false,
+      data: null,
+      message: 'sellPriceOverride is required',
+    };
+  }
+
+  if (!validator.isBoolean(String(sellPriceOverrideString))) {
+    return {
+      success: false,
+      data: null,
+      message: 'sellPriceOverride must be a boolean',
+    };
+  }
+
+  return {
+    sellPriceOverrideString: sellPriceOverrideString === true || sellPriceOverrideString === 'true',
+  };
 };

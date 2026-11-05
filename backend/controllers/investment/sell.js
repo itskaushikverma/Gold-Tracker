@@ -1,5 +1,4 @@
 import InvestmentModel from '../../model/investmentModel.js';
-import { round } from '../../utils/roundToDecimal.js';
 import { validateSellFields } from '../../utils/validator.js';
 
 export const sell = async (req, res) => {
@@ -7,48 +6,47 @@ export const sell = async (req, res) => {
     const { investment_id, sellingPrice } = req.body;
     const user_id = req.user.id;
 
-    const validationError = validateSellFields({ investment_id, sellingPrice });
-    if (validationError) {
+    if (!user_id)
       return res.status(400).json({
         success: false,
         data: null,
-        message: validationError.message,
+        message: 'Unauthorized: User ID is required',
+      });
+
+    const validated = validateSellFields({ investment_id, sellingPrice });
+
+    if (validated?.success === false) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: validated.message,
       });
     }
 
-    const investment = await InvestmentModel.findOne({ _id: investment_id, userId: user_id });
-
-    if (!investment)
-      return res.status(404).json({ success: false, data: null, message: 'Investment not found' });
-
-    const result = await InvestmentModel.updateOne(
+    const investment = await InvestmentModel.findOneAndUpdate(
       { _id: investment_id, userId: user_id, 'isSell.status': false },
       {
         $set: {
           'isSell.status': true,
-          'isSell.amount': round(Number(sellingPrice)),
+          'isSell.amount': validated.sellingPriceRounded,
         },
       },
+      { new: true },
     );
 
-    if (result.matchedCount === 0) {
-      return res.status(400).json({
-        success: false,
-        data: null,
-        message: 'Investment not found or already sold',
-      });
-    }
+    if (!investment)
+      return res.status(404).json({ success: false, data: null, message: 'Investment not found' });
 
     return res.status(200).json({
       success: true,
       data: null,
-      message: `Successfully sold investment with Weight ${investment.weight}`,
+      message: `Successfully sold ${investment.weight} mg`,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       data: null,
-      message: error.message || 'Selling failed',
+      message: error.message,
     });
   }
 };

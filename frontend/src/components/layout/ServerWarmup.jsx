@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import Logo from './Logo';
-import LoaderAnimation from './LoaderAnimation';
-import { useHealthQuery } from '../services/api';
+import Logo from '../common/Logo';
+import LoaderAnimation from '../common/LoaderAnimation';
+import { useHealthQuery } from '../../services/api';
 
 const RETRY_MS = 3000;
 const message = 'Waking up the server...';

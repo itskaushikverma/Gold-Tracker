@@ -1,35 +1,30 @@
 import { AnimatePresence } from 'motion/react';
 import { RiAddLine, RiCloseLine, RiMoneyRupeeCircleLine } from '@remixicon/react';
 import { useForm } from 'react-hook-form';
-import { MotionButton, MotionDiv } from './common/MotionWrapper';
-import CustomInput from './common/CustomInput';
-import { useSetCustomSellingPriceMutation } from '../services/api';
+import { MotionButton, MotionDiv } from '../common/MotionWrapper';
+import CustomInput from '../common/CustomInput';
+import { useSetCustomSellingPriceMutation } from '../../services/api';
 import { useToast } from 'react-toast-kit-js';
 
-export default function SetCustomGoldPriceModal({
-  isOpen,
-  onClose,
-  customGoldSellingPrice,
-  setCustomGoldSellingPrice,
-}) {
+export default function SetCustomGoldPriceModal({ isOpen, onClose }) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     mode: 'onChange',
-    defaultValues: {
-      price: customGoldSellingPrice ?? '',
-    },
   });
 
   const toast = useToast();
-  const [savePrice, { isLoading }] = useSetCustomSellingPriceMutation();
+
+  const [setCustomSellingPrice, { isLoading }] = useSetCustomSellingPriceMutation();
 
   const onSubmit = async ({ price }) => {
     try {
-      const resp = await savePrice({ sellingPrice: price }).unwrap();
-      setCustomGoldSellingPrice(price);
+      const resp = await setCustomSellingPrice({
+        sellingPrice: price,
+        date: new Date().toISOString(),
+      }).unwrap();
       onClose();
       toast.success(resp?.message);
     } catch (err) {
@@ -81,7 +76,7 @@ export default function SetCustomGoldPriceModal({
                 <CustomInput
                   register={register}
                   type="number"
-                  label="Custom Gold Price (Rs)"
+                  label="Set Custom Gold Price (Rs)"
                   placeholder="e.g. 5000"
                   icon={RiMoneyRupeeCircleLine}
                   name="price"

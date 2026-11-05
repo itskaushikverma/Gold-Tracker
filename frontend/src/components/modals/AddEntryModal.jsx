@@ -7,10 +7,11 @@ import {
   RiScalesLine,
 } from '@remixicon/react';
 import { useForm } from 'react-hook-form';
-import { usePurchaseMutation } from '../services/api';
-import { MotionButton, MotionDiv } from './common/MotionWrapper';
-import CustomInput from './common/CustomInput';
+import { usePurchaseMutation } from '../../services/api';
+import { MotionButton, MotionDiv } from '../common/MotionWrapper';
+import CustomInput from '../common/CustomInput';
 import { useToast } from 'react-toast-kit-js';
+import { toIsoWithCurrentTime } from '../../utils/formatDate';
 
 export default function AddEntryModal({ isOpen, onClose }) {
   const toast = useToast();
@@ -32,7 +33,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
   const onSubmit = async (data) => {
     try {
       const payload = {
-        date: data.date,
+        date: toIsoWithCurrentTime(data.date),
         weight: parseFloat(data.weight),
         investedValue: parseFloat(data.investedValue),
       };
@@ -80,7 +81,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   whileTap={{ scale: 0.95, y: 2 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                   type="button"
-                  onClick={onClose}
+                  onClick={() => {reset(); onClose();}}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
                   <RiCloseLine className="h-5 w-5" />
@@ -96,7 +97,6 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   icon={RiCalendarLine}
                   name={'date'}
                   errors={errors}
-                  autoFocus
                   disabled={isLoading || isSubmitting}
                 />
 
@@ -113,6 +113,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   icon={RiScalesLine}
                   name={'weight'}
                   errors={errors}
+                  autoFocus
                   disabled={isLoading || isSubmitting}
                 />
 

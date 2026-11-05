@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { RiMailLine, RiRefreshLine } from '@remixicon/react';
 import { useLoginMutation } from '../services/api';
-import { setCredentials } from '../redux/slices/authSlice';
+import { setCredentials } from '../redux/slices/sessionSlice';
 import CustomInput from '../components/common/CustomInput';
 import CustomPassword from '../components/common/CustomPassword';
 import { MotionForm, MotionButton } from '../components/common/MotionWrapper';
@@ -35,7 +35,6 @@ export default function Login() {
       if (resp?.success) {
         dispatch(
           setCredentials({
-            user_id: resp?.data?.user_id,
             isAuthenticated: resp?.data?.isAuthenticated,
           }),
         );
@@ -50,7 +49,7 @@ export default function Login() {
     }
   };
   return (
-    <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden p-4 font-sans">
+    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden p-4 font-sans">
       <div className="w-full max-w-md space-y-6 rounded-3xl border border-slate-800/80 p-8 shadow-2xl shadow-black/50 backdrop-blur-xs">
         <div className="flex flex-col items-center space-y-2 text-center">
           <div className="h-16 w-16">

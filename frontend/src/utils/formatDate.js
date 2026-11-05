@@ -5,3 +5,18 @@ export const formatDate = (dateString) => {
     day: 'numeric',
   }).format(new Date(dateString));
 };
+
+export const toIsoWithCurrentTime = (date) => {
+  const [year, month, day] = String(date).split('-').map(Number);
+  const now = new Date();
+
+  return new Date(
+    year,
+    month - 1,
+    day,
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds(),
+    now.getMilliseconds(),
+  ).toISOString();
+};

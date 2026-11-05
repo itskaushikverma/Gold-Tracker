@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { round } from './roundToDecimal.js';
 
 const TROY_OUNCE = 31.1034768;
 const MG_PER_GRAM = 1000;
@@ -23,9 +24,9 @@ export const getGoldPrice = async () => {
 
     let sellingPrice = priceWithoutGST * (1 - SELL_SPREAD / 100);
 
-    priceWithoutGST = Number(priceWithoutGST.toFixed(2));
-    priceWithGST = Number(priceWithGST.toFixed(2));
-    sellingPrice = Number(sellingPrice.toFixed(2));
+    priceWithoutGST = round(priceWithoutGST);
+    priceWithGST = round(priceWithGST);
+    sellingPrice = round(sellingPrice);
 
     return {
       success: true,

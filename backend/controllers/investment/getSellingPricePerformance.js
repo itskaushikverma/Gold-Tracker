@@ -5,8 +5,16 @@ export const getSellingPricePerformance = async (req, res) => {
   try {
     const user_id = req.user.id;
 
+    if (!user_id) 
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: 'Not authenticated',
+      });
+
     const customPrices = await CustomSellingPriceModel.find({ userId: user_id })
       .sort({ date: 1 })
+      .select('date sellingPrice')
       .lean();
 
     const performanceMap = new Map();

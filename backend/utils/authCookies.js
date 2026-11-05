@@ -11,10 +11,10 @@ const cookieOptions = (maxAge) => ({
 
 export const setAuthCookie = (res, userId) => {
   const token = jwt.sign({ id: String(userId), purpose: 'AUTH' }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
+    expiresIn: '1d',
   });
 
-  res.cookie('authToken', token, cookieOptions(7 * 24 * 60 * 60 * 1000));
+  res.cookie('authToken', token, cookieOptions(24 * 60 * 60 * 1000));
 };
 
 const baseCookieOptions = () => ({

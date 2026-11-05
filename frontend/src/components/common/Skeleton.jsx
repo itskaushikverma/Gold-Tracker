@@ -4,31 +4,36 @@ export const Skeleton = ({ className, ...props }) => {
   return <div className={cn('animate-pulse rounded-md bg-slate-800/50', className)} {...props} />;
 };
 
+export const HeaderSkeleton = () => {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-30 rounded-2xl" />
+    </div>
+  );
+};
+
 export const DashboardSkeleton = () => {
   return (
-    <div className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-64" />
+    <div className='flex h-full min-h-0 flex-col gap-6'>
+      <HeaderSkeleton />
+
+      <div className="flex min-h-0 flex-1 flex-col gap-8">
+        <div className="grid shrink-0 grid-cols-1 gap-6 md:grid-cols-3">
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+        </div>
+        <Skeleton className="min-h-0 flex-1 rounded-2xl" />
       </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-      </div>
-      <Skeleton className="h-100 rounded-2xl" />
     </div>
   );
 };
 
 export const PerformanceSkeleton = () => {
   return (
-    <div className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-64" />
-        <Skeleton className="h-4 w-80" />
-      </div>
-      <Skeleton className="h-125 rounded-2xl" />
+    <div className="flex h-full min-h-0 flex-col gap-6">
+      <HeaderSkeleton />
+      <Skeleton className="min-h-0 flex-1 rounded-2xl" />
     </div>
   );
 };

@@ -33,11 +33,12 @@ export default function CustomPassword({
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="new-password"
-          className={`peer w-full cursor-pointer rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-2 ${
+          className={cn(
+            'peer w-full cursor-pointer rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-2',
             errors?.[name]
               ? 'border-red-500/50 text-red-200 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50'
-              : 'border-slate-800 text-slate-200 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50'
-          }`}
+              : 'border-slate-800 text-slate-200 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50',
+          )}
         />
         <RiLockLine
           className={cn(

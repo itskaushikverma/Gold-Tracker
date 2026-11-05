@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RiRefreshLine } from '@remixicon/react';
 import { useDispatch } from 'react-redux';
 import { useRegisterMutation } from '../../services/api';
-import { setCredentials } from '../../redux/slices/authSlice';
+import { setCredentials } from '../../redux/slices/sessionSlice';
 import CustomPassword from '../common/CustomPassword';
 import { MotionButton, MotionForm } from '../common/MotionWrapper';
 import { useToast } from 'react-toast-kit-js';
@@ -35,7 +35,6 @@ export default function PasswordForm({ formData, onBack }) {
       if (resp?.success) {
         dispatch(
           setCredentials({
-            user_id: resp?.data?.user_id,
             isAuthenticated: resp?.data?.isAuthenticated,
           }),
         );

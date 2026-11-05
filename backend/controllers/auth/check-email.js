@@ -8,6 +8,7 @@ export const checkEmail = async (req, res) => {
     const { email, firstName, lastName } = req.body;
 
     const validationError = validateCheckEmailFields({ firstName, lastName, email });
+    
     if (validationError) {
       return res.status(400).json({
         success: validationError.success,

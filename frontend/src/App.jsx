@@ -3,26 +3,26 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import { lazy, Suspense } from 'react';
 import BackgroundAnimation from './components/common/BackgroundAnimation';
-import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute';
-import ServerWarmup from './components/ServerWarmup';
-import SellingPricePerformance from './pages/SellingPricePerformance.jsx';
+import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import ServerWarmup from './components/layout/ServerWarmup';
 
-const Layout = lazy(() => import('./components/Layout'));
+const Layout = lazy(() => import('./components/layout/Layout'));
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Performance = lazy(() => import('./pages/Performance'));
-const Signup = lazy(() => import('./pages/Signup.jsx'));
+const SellingPricePerformance = lazy(() => import('./pages/SellingPricePerformance'));
+const Signup = lazy(() => import('./pages/Signup'));
 
 export default function App() {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
 
   return (
     <Router>
-      <div className="overflow-x-hidden overflow-y-auto">
-        <div className="pointer-events-none fixed inset-0 bg-slate-950" />
-        <div className="relative z-10 mb-19 flex h-screen flex-col">
-          <BackgroundAnimation />
+      <BackgroundAnimation />
+      <div className="overflow-y-auto">
+        <div className="relative z-10 mb-20 flex h-screen flex-col">
+          <div className="absolute bottom-0 h-[50%] w-full bg-[linear-gradient(180deg,#02061800_0%,#020618_90%,#020618_100%)]" />
           <ServerWarmup>
             <Suspense
               fallback={
@@ -57,7 +57,7 @@ export default function App() {
             </Suspense>
           </ServerWarmup>
         </div>
-        <div className="fixed bottom-0 z-0 h-18 w-full">
+        <div className="fixed bottom-0 z-0 h-20 w-full">
           <Footer />
         </div>
       </div>
