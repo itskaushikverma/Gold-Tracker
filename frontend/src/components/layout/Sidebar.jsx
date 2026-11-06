@@ -2,8 +2,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   RiCloseLine,
   RiDashboardLine,
+  RiFileList3Line,
   RiLineChartLine,
   RiLogoutBoxRLine,
+  RiShieldCheckLine,
   RiSidebarFoldLine,
 } from '@remixicon/react';
 import { cn } from '../../lib/utils';
@@ -40,6 +42,25 @@ const NAV_ITEMS = [
     activeBg: 'bg-cyan-500/10 text-cyan-50',
     activeBar: 'bg-cyan-500',
     activeIcon: 'text-cyan-400',
+  },
+];
+
+const LEGAL_ITEMS = [
+  {
+    to: '/privacy',
+    label: 'Privacy Policy',
+    icon: RiShieldCheckLine,
+    activeBg: 'bg-slate-500/10 text-slate-50',
+    activeBar: 'bg-slate-400',
+    activeIcon: 'text-slate-300',
+  },
+  {
+    to: '/terms',
+    label: 'Terms & Conditions',
+    icon: RiFileList3Line,
+    activeBg: 'bg-slate-500/10 text-slate-50',
+    activeBar: 'bg-slate-400',
+    activeIcon: 'text-slate-300',
   },
 ];
 
@@ -177,6 +198,14 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
               onCheckedChange={onSellPriceOverrideChange}
             />
           </MotionLabel>
+
+          <div className="mt-6 mb-4 pl-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+            Legal
+          </div>
+
+          {LEGAL_ITEMS.map((item) => (
+            <SidebarNavItem key={item.to} {...item} onNavigate={onClose} />
+          ))}
         </nav>
 
         <div className="w-full shrink-0 space-y-3 border-t border-slate-800/50 p-4">

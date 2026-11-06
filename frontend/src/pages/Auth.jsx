@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import GoogleAuthButton from '../components/auth/GoogleAuthButton';
 import Logo from '../components/common/Logo';
 
@@ -12,6 +13,24 @@ export default function Auth() {
         </div>
 
         <GoogleAuthButton />
+
+        <p className="text-center text-xs leading-relaxed text-slate-500">
+          By continuing, you agree to our{' '}
+          <Link
+            to="/terms"
+            className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+          >
+            Terms &amp; Conditions
+          </Link>{' '}
+          and{' '}
+          <Link
+            to="/privacy"
+            className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );
