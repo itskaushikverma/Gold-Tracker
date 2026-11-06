@@ -47,7 +47,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function Performance() {
   const toast = useToast();
-  const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
   const sellPriceOverride = useSelector((state) => state.session.sellPriceOverride);
   const {
     data: getPerformance,
@@ -55,7 +54,7 @@ export default function Performance() {
     isFetching,
     error,
     isError,
-  } = useGetPerformanceQuery({ sellPriceOverride }, { skip: !isAuthenticated });
+  } = useGetPerformanceQuery({ sellPriceOverride });
 
   useEffect(() => {
     if (isError) toast.error(error?.data?.message);

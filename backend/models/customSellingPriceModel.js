@@ -5,12 +5,10 @@ const customSellingPriceSchema = new mongoose.Schema(
     date: {
       type: Date,
       required: true,
-      trim: true,
     },
     sellingPrice: {
       type: Number,
       required: true,
-      trim: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

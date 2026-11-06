@@ -1,17 +1,10 @@
-import InvestmentModel from '../../model/investmentModel.js';
+import InvestmentModel from '../../models/investmentModel.js';
 import { validateSellFields } from '../../utils/validator.js';
 
 export const sell = async (req, res) => {
   try {
     const { investment_id, sellingPrice } = req.body;
     const user_id = req.user.id;
-
-    if (!user_id)
-      return res.status(400).json({
-        success: false,
-        data: null,
-        message: 'Unauthorized: User ID is required',
-      });
 
     const validated = validateSellFields({ investment_id, sellingPrice });
 

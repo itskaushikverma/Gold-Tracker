@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import UserModel from '../model/userModel.js';
+import UserModel from '../models/userModel.js';
 
 export const protect = async (req, res, next) => {
   try {
@@ -23,7 +23,7 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    const user = await UserModel.findById(decoded.id).select('_id email');
+    const user = await UserModel.findById(decoded.id).select('_id email firstName lastName avatar');
 
     if (!user) {
       return res.status(401).json({
@@ -33,7 +33,13 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    req.user = { id: user._id.toString(), email: user.email };
+    req.user = {
+      id: user._id.toString(),
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatar: user.avatar,
+    };
     next();
   } catch {
     return res.status(401).json({

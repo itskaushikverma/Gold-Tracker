@@ -1,75 +1,6 @@
 import validator from 'validator';
 import { round } from './roundToDecimal.js';
 
-const NAME_PATTERN = /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/;
-
-const isValidName = (name) => NAME_PATTERN.test(name);
-
-export const validateCheckEmailFields = ({ firstName, lastName, email }) => {
-  if (!firstName || !lastName || !email) {
-    return { success: false, data: null, message: 'All fields are required' };
-  }
-
-  if (
-    !validator.isLength(firstName, { min: 3, max: 16 }) ||
-    !validator.isLength(lastName, { min: 3, max: 16 })
-  ) {
-    return {
-      success: false,
-      data: null,
-      message: 'First Name and Last Name must be between 3 and 16 characters',
-    };
-  }
-
-  if (!isValidName(firstName) || !isValidName(lastName)) {
-    return {
-      success: false,
-      data: null,
-      message:
-        'First Name and Last Name can only contain letters, spaces, hyphens, and apostrophes',
-    };
-  }
-
-  if (!validator.isEmail(email)) {
-    return { success: false, data: null, message: 'Invalid Email' };
-  }
-
-  return null;
-};
-
-export const validateRegisterFields = ({ password, confirmPassword }) => {
-  if (!password || !confirmPassword) {
-    return { success: false, data: null, message: 'All fields are required' };
-  }
-
-  if (password !== confirmPassword) {
-    return { success: false, data: null, message: 'Passwords do not match' };
-  }
-
-  if (!validator.isStrongPassword(password)) {
-    return {
-      success: false,
-      data: null,
-      message:
-        'Password must be 8 characters long, contain atleast one number, lowercase, uppercase letters and a symbol',
-    };
-  }
-
-  return null;
-};
-
-export const validateLoginFields = ({ email, password }) => {
-  if (!email || !password) {
-    return { success: false, data: null, message: 'Email and password are required' };
-  }
-
-  if (!validator.isEmail(email)) {
-    return { success: false, data: null, message: 'Invalid Email' };
-  }
-
-  return null;
-};
-
 export const validatePurchaseFields = ({ date, weight, investedValue }) => {
   if (!date || !weight || !investedValue) {
     return {
@@ -228,6 +159,6 @@ export const validateGetDetailsFields = ({ sellPriceOverrideString }) => {
   }
 
   return {
-    sellPriceOverrideString: sellPriceOverrideString === true || sellPriceOverrideString === 'true',
+    sellPriceOverrideString: String(sellPriceOverrideString) === 'true',
   };
 };

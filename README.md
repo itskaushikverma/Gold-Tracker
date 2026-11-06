@@ -4,7 +4,7 @@
   </p>
   <h1 align="center" style="text-align: center">Gold Tracker</h1>
   <p align="center" style="text-align: center">
-    A full-stack gold portfolio built with React, Vite, and Express — sign in, record a purchase, and follow its value against the live INR price.
+    A full-stack gold portfolio built with React, Vite, and Express — sign in with Google, record a purchase, and follow its value against the live INR price.
   </p>
   <p align="center" style="display: flex; align-items: center; justify-content: center; gap:10px;">
     <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
@@ -45,7 +45,7 @@ Gold Tracker is a small portfolio app with a React client and an Express API. Af
 Each JSON response uses the same envelope:
 
 ```json
-{ "success": true, "data": {}, "message": "Login successful" }
+{ "success": true, "data": {}, "message": "Google authentication successful" }
 ```
 
 Failed requests use `"success": false` and `"data": null`.
@@ -56,7 +56,7 @@ Failed requests use `"success": false` and `"data": null`.
 
 <table>
   <tr>
-    <td width="50%" align="center"><img src="./docs/screenshots/signup.png" alt="Gold Tracker create account screen" width="420" /></td>
+    <td width="50%" align="center"><img src="./docs/screenshots/auth.png" alt="Gold Tracker auth screen (Continue with Google)" width="420" /></td>
     <td width="50%" align="center"><img src="./docs/screenshots/dashboard.png" alt="Gold Tracker dashboard" width="420" /></td>
   </tr>
 </table>
@@ -73,14 +73,16 @@ Failed requests use `"success": false` and `"data": null`.
 - 📈 Recharts
 - 🚂 Express 5
 - 🍃 MongoDB + Mongoose
-- 🔐 JWT + bcrypt
+- 🔐 Google SSO + JWT
 - 🧹 ESLint + Prettier
 
 <a id="features"></a>
 
 ## 🌟 Features
 
-- Check an email, set a password, sign in, and stay signed in with an httpOnly JWT cookie
+- Continue with Google on a single `/auth` page (sign-in and sign-up are the same flow)
+- Stay signed in across refreshes via an httpOnly JWT cookie and `GET /api/auth/me`
+- Show the signed-in Google name, email, and avatar in the sidebar
 - Record a purchase with a date, a weight in milligrams, and the amount invested
 - Mark one of your holdings as sold at a selling price
 - See invested amount, weight, current value, and profit or loss on the dashboard
@@ -92,12 +94,14 @@ Failed requests use `"success": false` and `"data": null`.
 
 ## 🏗️ Architecture
 
-The React app sends the `authToken` cookie to the Express API. Auth and investment routes both read and write MongoDB. Investment totals also use the live XAU/INR quote, converted to INR per milligram.
+The React app signs in with Google Identity Services, posts the ID token to `POST /api/auth`, and then sends the `authToken` cookie on later requests. On load it calls `GET /api/auth/me` to restore the session. Auth and investment routes both read and write MongoDB. Investment totals also use the live XAU/INR quote, converted to INR per milligram.
 
 ```mermaid
 flowchart LR
-  Browser["React app<br/>localhost:5173"] -->|authToken cookie| API["Express API<br/>localhost:5000"]
-  API --> Auth["/api/auth"]
+  Browser["React app<br/>localhost:5173"] -->|Google ID token| API["Express API<br/>localhost:5000"]
+  Browser -->|authToken cookie| API
+  API --> Google["Google token verify"]
+  API --> Auth["/api/auth<br/>POST / · GET /me · POST /logout"]
   API --> Investments["/api/investment"]
   Auth --> Mongo[(MongoDB)]
   Investments --> Mongo
@@ -128,6 +132,12 @@ Move into the project folder:
 cd Gold-Tracker
 ```
 
+### 🔑 Google OAuth setup
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/apis/credentials) and create an OAuth 2.0 **Web** client ID.
+2. Under **Authorized JavaScript origins**, add `http://localhost:5173` (and your production frontend origin when you deploy).
+3. Copy the **Client ID** (ends with `.apps.googleusercontent.com`) into both `backend/.env` (`GOOGLE_CLIENT_ID`) and `frontend/.env` (`VITE_GOOGLE_CLIENT_ID`). Use the same value in both — do **not** put the Client Secret (`GOCSPX-…`) in either env file. This flow only verifies the Google ID token.
+
 Start the API:
 
 ```bash
@@ -150,25 +160,27 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
-Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mount. The app sends cookies with every request.
+Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mount. Fill in the Google Client ID in both env files before signing in. The app sends cookies with every request.
 
 ### 🔐 Environment
 
 `backend/.env`
 
-| Variable         | Purpose                                                      |
-| ---------------- | ------------------------------------------------------------ |
-| `PORT`           | API port. Local default is `5000`.                           |
-| `MONGO_URI`      | MongoDB connection string.                                   |
-| `JWT_SECRET`     | Signing secret. Use at least 32 characters.                  |
-| `FRONTEND_URL`   | Allowed browser origin, for example `http://localhost:5173`. |
-| `GEMINI_API_KEY` | Optional. Required only for the AI selling-price chart.      |
+| Variable           | Purpose                                                      |
+| ------------------ | ------------------------------------------------------------ |
+| `PORT`             | API port. Local default is `5000`.                           |
+| `MONGO_URI`        | MongoDB connection string.                                   |
+| `JWT_SECRET`       | Signing secret. Use at least 32 characters.                  |
+| `FRONTEND_URL`     | Allowed browser origin, for example `http://localhost:5173`. |
+| `GOOGLE_CLIENT_ID` | Google OAuth Web Client ID (same as the frontend value).     |
+| `GEMINI_API_KEY`   | Optional. Required only for the AI selling-price chart.      |
 
 `frontend/.env`
 
-| Variable       | Purpose                         |
-| -------------- | ------------------------------- |
-| `VITE_API_URL` | API base URL, including `/api`. |
+| Variable                | Purpose                                               |
+| ----------------------- | ----------------------------------------------------- |
+| `VITE_API_URL`          | API base URL, including `/api`.                       |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth Web Client ID from Google Cloud Console. |
 
 <a id="available-scripts"></a>
 
@@ -197,24 +209,27 @@ From `backend/`:
 
 ## 🔌 API
 
-Investment routes require the `authToken` cookie from login or register.
+Investment routes require the `authToken` cookie from Google sign-in.
 
 | Method | Path                                           | Auth |
 | ------ | ---------------------------------------------- | ---- |
-| `POST` | `/api/auth/check-email`                        | No   |
-| `POST` | `/api/auth/register`                           | No   |
-| `POST` | `/api/auth/login`                              | No   |
-| `POST` | `/api/auth/logout`                             | Yes  |
+| `POST` | `/api/auth`                                    | No   |
+| `GET`  | `/api/auth/me`                                 | Yes  |
+| `POST` | `/api/auth/logout`                             | No   |
 | `POST` | `/api/investment/purchase`                     | Yes  |
 | `POST` | `/api/investment/sell`                         | Yes  |
 | `POST` | `/api/investment/setCustomSellingPrice`        | Yes  |
-| `GET`  | `/api/investment/getdetails`                   | Yes  |
+| `GET`  | `/api/investment/getDetails`                   | Yes  |
 | `GET`  | `/api/investment/getPerformance`               | Yes  |
 | `GET`  | `/api/investment/getSellingPricePerformance`   | Yes  |
 | `GET`  | `/api/investment/getSellingPricePerformanceAi` | Yes  |
 | `GET`  | `/api/health`                                  | No   |
 
-`getdetails` and `getPerformance` accept an optional `customGoldSellingPrice` query value. That value is used for the calculation only. Saving a custom price is the separate POST.
+`POST /api/auth` accepts `{ "credential": "<Google ID token>" }`, verifies it with Google, creates or finds the user, and sets the `authToken` cookie. The response includes `user_email`, `user_name`, and `user_avatar`.
+
+`GET /api/auth/me` reads the cookie and returns the same profile fields so the frontend can restore the session after a refresh.
+
+`getDetails` and `getPerformance` require a boolean `sellPriceOverride` query param. When `true`, calculations use the latest saved custom selling price instead of the live gold quote. Saving a custom price is the separate POST.
 
 <a id="project-structure"></a>
 
@@ -224,9 +239,10 @@ Investment routes require the `authToken` cookie from login or register.
 .
 ├── backend/
 │   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── model/
+│   ├── controllers/auth/          # google, me, logout
+│   ├── controllers/investment/
+│   ├── middleware/protect.js
+│   ├── models/                    # user, investment, customSellingPrice
 │   ├── routes/
 │   ├── services/
 │   ├── utils/
@@ -234,13 +250,19 @@ Investment routes require the `authToken` cookie from login or register.
 ├── frontend/
 │   └── src/
 │       ├── components/
-│       ├── pages/
+│       │   ├── auth/GoogleAuthButton.jsx
+│       │   ├── common/
+│       │   ├── dashboard/DashboardCard.jsx
+│       │   ├── layout/               # AuthBootstrap, Sidebar, …
+│       │   ├── modals/               # AddEntry, SellEntry, SetCustomSellingPrice
+│       │   └── ui/Switch.jsx
+│       ├── constants/apiEndpoints.js
+│       ├── pages/                    # Auth, Dashboard, Performance, …
 │       ├── redux/
-│       ├── services/
+│       ├── services/api.js
 │       ├── App.jsx
 │       └── main.jsx
-└── docs/
-    └── screenshots/
+└── docs/screenshots/                 # auth.png, dashboard.png
 ```
 
 <a id="deployment"></a>
@@ -255,7 +277,7 @@ npm run build
 npm run preview
 ```
 
-Run the API with the production environment variables set in `backend/.env`:
+Run the API with the production environment variables set in `backend/.env`, including `GOOGLE_CLIENT_ID`, `JWT_SECRET`, `MONGO_URI`, and `FRONTEND_URL`. On the frontend host, set `VITE_API_URL` and `VITE_GOOGLE_CLIENT_ID`, and add the production origin to the Google OAuth client's Authorized JavaScript origins.
 
 ```bash
 cd backend

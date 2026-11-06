@@ -1,6 +1,5 @@
-import { checkEmail } from './check-email.js';
-import { register } from './register.js';
-import { login } from './login.js';
+import { googleAuth } from './google.js';
 import { logout } from './logout.js';
+import { getMe } from './me.js';
 
-export { register, checkEmail, login, logout };
+export { googleAuth, logout, getMe };

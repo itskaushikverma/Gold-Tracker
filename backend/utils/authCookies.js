@@ -2,11 +2,10 @@ import jwt from 'jsonwebtoken';
 
 const isProduction = () => process.env.NODE_ENV === 'production';
 
-const cookieOptions = (maxAge) => ({
+const baseCookieOptions = () => ({
   httpOnly: true,
   secure: isProduction(),
   sameSite: isProduction() ? 'none' : 'lax',
-  maxAge,
 });
 
 export const setAuthCookie = (res, userId) => {
@@ -14,17 +13,10 @@ export const setAuthCookie = (res, userId) => {
     expiresIn: '1d',
   });
 
-  res.cookie('authToken', token, cookieOptions(24 * 60 * 60 * 1000));
-};
-
-const baseCookieOptions = () => ({
-  httpOnly: true,
-  secure: isProduction(),
-  sameSite: isProduction() ? 'none' : 'lax',
-});
-
-export const clearRegisterCookie = (res) => {
-  res.clearCookie('registerToken', baseCookieOptions());
+  res.cookie('authToken', token, {
+    ...baseCookieOptions(),
+    maxAge: 24 * 60 * 60 * 1000,
+  });
 };
 
 export const clearAuthCookie = (res) => {

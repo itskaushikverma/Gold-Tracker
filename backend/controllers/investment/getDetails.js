@@ -1,5 +1,5 @@
-import CustomSellingPriceModel from '../../model/customSellingPriceModel.js';
-import InvestmentModel from '../../model/investmentModel.js';
+import CustomSellingPriceModel from '../../models/customSellingPriceModel.js';
+import InvestmentModel from '../../models/investmentModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
 import { validateGetDetailsFields } from '../../utils/validator.js';
@@ -8,13 +8,6 @@ export const getDetails = async (req, res) => {
   try {
     const { sellPriceOverride: sellPriceOverrideString } = req.query;
     const user_id = req.user.id;
-
-    if (!user_id)
-      return res.status(400).json({
-        success: false,
-        data: null,
-        message: 'Not authenticated',
-      });
 
     const validated = validateGetDetailsFields({ sellPriceOverrideString });
 

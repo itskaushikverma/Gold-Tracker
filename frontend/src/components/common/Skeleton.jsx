@@ -1,10 +1,10 @@
 import { cn } from '../../lib/utils';
 
-export const Skeleton = ({ className, ...props }) => {
+const Skeleton = ({ className, ...props }) => {
   return <div className={cn('animate-pulse rounded-md bg-slate-800/50', className)} {...props} />;
 };
 
-export const HeaderSkeleton = () => {
+const HeaderSkeleton = () => {
   return (
     <div className="space-y-8">
       <Skeleton className="h-30 rounded-2xl" />

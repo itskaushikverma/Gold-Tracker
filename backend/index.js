@@ -11,13 +11,12 @@ app.use(
   cors({
     origin: [process.env.FRONTEND_URL],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
   }),
 );
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const PORT = process.env.PORT;
@@ -25,8 +24,5 @@ const PORT = process.env.PORT;
 connectDB();
 
 app.use('/api', router);
-router.get('/health', (req, res) => {
-  return res.status(200).json({ status: 'ok', timestamp: new Date() });
-});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -10,7 +10,7 @@ export default function ServerWarmup({ children }) {
   const { isSuccess: ready, isError, isFetching, refetch } = useHealthQuery();
 
   useEffect(() => {
-    if (!isError || isFetching || ready) return undefined;
+    if (ready || !isError || isFetching) return undefined;
 
     const retryId = window.setTimeout(() => {
       refetch();

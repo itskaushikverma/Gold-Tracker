@@ -7,12 +7,12 @@ import {
   RiSidebarFoldLine,
 } from '@remixicon/react';
 import { cn } from '../../lib/utils';
-import logo from '../../assets/gold.svg';
+import Logo from '../common/Logo';
 import { MotionButton, MotionLabel } from '../common/MotionWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setSellPriceOverride } from '../../redux/slices/sessionSlice';
-import { api, useLogoutMutation } from '../../services/api';
-import { Switch } from '../ui/switch';
+import { useLogoutMutation } from '../../services/api';
+import { Switch } from '../ui/Switch';
 
 const SIDEBAR_WIDTH = 'w-100';
 
@@ -84,12 +84,12 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApi] = useLogoutMutation();
-  const sellPriceOverride = useSelector((state) => state.session.sellPriceOverride);
+  const { sellPriceOverride, userEmail, userName, userAvatar } = useSelector(
+    (state) => state.session,
+  );
 
   const onSellPriceOverrideChange = (checked) => {
     dispatch(setSellPriceOverride(checked));
-    dispatch(api.util.prefetch('getDetails', { sellPriceOverride: checked }, { force: true }));
-    dispatch(api.util.prefetch('getPerformance', { sellPriceOverride: checked }, { force: true }));
   };
 
   const onLogout = async () => {
@@ -99,7 +99,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
       // clear local session even if logout request fails
     }
     dispatch(logout());
-    navigate('/login');
+    navigate('/auth');
   };
 
   return (
@@ -124,9 +124,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
       >
         <div className="flex w-full shrink-0 items-center justify-between border-b border-slate-800/50 p-6">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="h-10 w-10 shrink-0">
-              <img src={logo} alt="logo" className="h-full w-full object-contain" />
-            </div>
+            <Logo size={40} className="shrink-0" />
             <div className="min-w-0 overflow-hidden whitespace-nowrap">
               <h1 className="text-lg leading-tight font-bold tracking-tight text-slate-100">
                 Gold Tracker
@@ -181,7 +179,28 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
           </MotionLabel>
         </nav>
 
-        <div className="w-full shrink-0 border-t border-slate-800/50 p-4">
+        <div className="w-full shrink-0 space-y-3 border-t border-slate-800/50 p-4">
+          <div className="flex items-center gap-3 px-1">
+            {userAvatar ? (
+              <img
+                src={userAvatar}
+                alt=""
+                referrerPolicy="no-referrer"
+                className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-slate-700"
+              />
+            ) : (
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-800 text-sm font-semibold text-slate-300 ring-1 ring-slate-700">
+                {(userName || userEmail || '?').charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="min-w-0">
+              {userName ? (
+                <p className="truncate text-sm font-medium text-slate-100">{userName}</p>
+              ) : null}
+              {userEmail ? <p className="truncate text-xs text-slate-400">{userEmail}</p> : null}
+            </div>
+          </div>
+
           <MotionButton
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.95, y: 2 }}

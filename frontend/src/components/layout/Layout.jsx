@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { RiMenuLine } from '@remixicon/react';
-import logo from '../../assets/gold.svg';
+import Logo from '../common/Logo';
 import { MotionButton } from '../common/MotionWrapper';
 
 export default function Layout() {
@@ -14,9 +14,7 @@ export default function Layout() {
       <div className="relative z-10 flex h-screen w-full flex-col overflow-hidden lg:flex-row">
         <div className="sticky top-0 z-30 flex shrink-0 items-center justify-between border-b border-slate-800/50 bg-slate-900/50 p-4 backdrop-blur-md lg:hidden">
           <h1 className="flex items-center gap-4 text-lg font-bold tracking-tight text-slate-100">
-            <div className="h-8 w-8">
-              <img src={logo} alt="logo" className="h-full w-full object-contain" />
-            </div>
+            <Logo size={32} />
             Gold Tracker
           </h1>
           <MotionButton

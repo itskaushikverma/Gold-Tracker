@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ENDPOINTS } from '../constants/api-endpoints';
+import { ENDPOINTS } from '../constants/apiEndpoints';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -17,27 +17,18 @@ export const api = createApi({
       }),
     }),
 
-    checkEmail: builder.mutation({
+    googleAuth: builder.mutation({
       query: (body) => ({
-        url: ENDPOINTS.CHECK_EMAIL,
+        url: ENDPOINTS.GOOGLE_AUTH,
         method: 'POST',
         body,
       }),
     }),
 
-    register: builder.mutation({
-      query: (body) => ({
-        url: ENDPOINTS.REGISTER,
-        method: 'POST',
-        body,
-      }),
-    }),
-
-    login: builder.mutation({
-      query: (body) => ({
-        url: ENDPOINTS.LOGIN,
-        method: 'POST',
-        body,
+    getMe: builder.query({
+      query: () => ({
+        url: ENDPOINTS.ME,
+        method: 'GET',
       }),
     }),
 
@@ -113,9 +104,8 @@ export const api = createApi({
 
 export const {
   useHealthQuery,
-  useCheckEmailMutation,
-  useRegisterMutation,
-  useLoginMutation,
+  useGoogleAuthMutation,
+  useGetMeQuery,
   useLogoutMutation,
   usePurchaseMutation,
   useSellMutation,

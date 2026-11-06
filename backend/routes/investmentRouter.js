@@ -19,18 +19,14 @@ investmentRouter.route('/purchase').post(trimRequest.all, purchase);
 
 investmentRouter.route('/sell').post(trimRequest.all, sell);
 
-investmentRouter.route('/getdetails').get(trimRequest.all, getDetails);
+investmentRouter.route('/getDetails').get(getDetails);
 
 investmentRouter.route('/setCustomSellingPrice').post(trimRequest.all, setCustomSellingPrice);
 
-investmentRouter.route('/getPerformance').get(trimRequest.all, getPerformance);
+investmentRouter.route('/getPerformance').get(getPerformance);
 
-investmentRouter
-  .route('/getSellingPricePerformance')
-  .get(trimRequest.all, getSellingPricePerformance);
+investmentRouter.route('/getSellingPricePerformance').get(getSellingPricePerformance);
 
-investmentRouter
-  .route('/getSellingPricePerformanceAi')
-  .get(trimRequest.all, getSellingPricePerformanceAi);
+investmentRouter.route('/getSellingPricePerformanceAi').get(getSellingPricePerformanceAi);
 
 export default investmentRouter;

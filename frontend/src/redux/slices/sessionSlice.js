@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: null,
   sellPriceOverride: false,
+  userEmail: null,
+  userName: null,
+  userAvatar: null,
 };
 
 const sessionSlice = createSlice({
@@ -10,10 +13,16 @@ const sessionSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { isAuthenticated } = action.payload;
+      const { isAuthenticated, userEmail, userName, userAvatar } = action.payload;
       state.isAuthenticated = isAuthenticated;
+      state.userEmail = userEmail;
+      state.userName = userName;
+      state.userAvatar = userAvatar;
     },
-    logout: () => initialState,
+    logout: () => ({
+      ...initialState,
+      isAuthenticated: false,
+    }),
     setSellPriceOverride: (state, action) => {
       state.sellPriceOverride = action.payload;
     },

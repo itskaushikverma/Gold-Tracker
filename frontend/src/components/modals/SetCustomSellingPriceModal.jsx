@@ -6,7 +6,7 @@ import CustomInput from '../common/CustomInput';
 import { useSetCustomSellingPriceMutation } from '../../services/api';
 import { useToast } from 'react-toast-kit-js';
 
-export default function SetCustomGoldPriceModal({ isOpen, onClose }) {
+export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
   const {
     register,
     handleSubmit,

@@ -16,7 +16,7 @@ import DashboardCard from '../components/dashboard/DashboardCard';
 import SellEntryModal from '../components/modals/SellEntryModal';
 import { DashboardSkeleton } from '../components/common/Skeleton';
 import { useToast } from 'react-toast-kit-js';
-import SetCustomGoldPriceModal from '@/components/modals/SetCustomGoldPriceModal';
+import SetCustomSellingPriceModal from '@/components/modals/SetCustomSellingPriceModal';
 
 export default function Dashboard() {
   const toast = useToast();
@@ -25,7 +25,6 @@ export default function Dashboard() {
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [itemForSale, setItemForSale] = useState(null);
 
-  const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
   const sellPriceOverride = useSelector((state) => state.session.sellPriceOverride);
 
   const {
@@ -34,10 +33,7 @@ export default function Dashboard() {
     isFetching,
     isError,
     error,
-  } = useGetDetailsQuery(
-    { sellPriceOverride },
-    { skip: !isAuthenticated, refetchOnMountOrArgChange: true },
-  );
+  } = useGetDetailsQuery({ sellPriceOverride }, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (isError) toast.error(error?.data?.message);
@@ -175,7 +171,7 @@ export default function Dashboard() {
                         <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                           <div
                             className={cn(
-                              'mx-auto flex w-fit items-center justify-center rounded-lg shadow-inner transition-all duration-300 group-focus-within:border-blue-500/50 group-hover:border-slate-600',
+                              'mx-auto flex w-fit items-center justify-center rounded-lg shadow-inner transition-all duration-300 group-hover:border-slate-600',
                               !isSell && 'border border-slate-700/50 bg-slate-950/50',
                             )}
                           >
@@ -219,10 +215,10 @@ export default function Dashboard() {
       </MotionDiv>
       <SellEntryModal
         isOpen={isSellModalOpen}
-        setIsSellModalOpen={setIsSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
         itemForSale={itemForSale}
       />
-      <SetCustomGoldPriceModal
+      <SetCustomSellingPriceModal
         isOpen={isCustomSellingPriceModalOpen}
         onClose={() => setIsCustomSellingPriceModalOpen(false)}
       />

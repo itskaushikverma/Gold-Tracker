@@ -1,21 +1,13 @@
-import CustomSellingPriceModel from '../../model/customSellingPriceModel.js';
+import CustomSellingPriceModel from '../../models/customSellingPriceModel.js';
 import { generateSellingPriceChart } from '../../services/geminiChartService.js';
 
 export const getSellingPricePerformanceAi = async (req, res) => {
   try {
     const user_id = req.user.id;
 
-    if (!user_id) {
-      return res.status(400).json({
-        success: false,
-        data: null,
-        message: 'Not authenticated',
-      });
-    }
-
     const customPrices = await CustomSellingPriceModel.find({ userId: user_id })
       .sort({ date: 1, createdAt: 1 })
-      .select('date sellingPrice createdAt')
+      .select('date sellingPrice')
       .lean();
 
     const latestByDate = new Map();

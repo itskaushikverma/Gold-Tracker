@@ -1,5 +1,5 @@
-import CustomSellingPriceModel from '../../model/customSellingPriceModel.js';
-import InvestmentModel from '../../model/investmentModel.js';
+import CustomSellingPriceModel from '../../models/customSellingPriceModel.js';
+import InvestmentModel from '../../models/investmentModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
 import { validateGetDetailsFields } from '../../utils/validator.js';

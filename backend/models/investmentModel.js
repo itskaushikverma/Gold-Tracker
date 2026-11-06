@@ -5,17 +5,14 @@ const investmentSchema = new mongoose.Schema(
     date: {
       type: Date,
       required: true,
-      trim: true,
     },
     weight: {
       type: Number,
       required: true,
-      trim: true,
     },
     investedValue: {
       type: Number,
       required: true,
-      trim: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +27,6 @@ const investmentSchema = new mongoose.Schema(
       amount: {
         type: Number,
         default: 0,
-        trim: true,
       },
     },
   },

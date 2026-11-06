@@ -35,9 +35,6 @@ export const getGoldPrice = async () => {
         priceWithoutGST,
         priceWithGST,
         sellingPrice,
-        currency: data.currency,
-        unit: 'mg',
-        updatedAt: data.updatedAt,
       },
     };
   } catch (err) {

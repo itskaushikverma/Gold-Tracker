@@ -9,7 +9,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { useSelector } from 'react-redux';
 import {
   useGetSellingPricePerformanceQuery,
   useGetSellingPricePerformanceAiQuery,
@@ -104,7 +103,6 @@ function ChartLoader({ color }) {
 }
 
 export default function SellingPricePerformance() {
-  const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('actual');
 
@@ -115,7 +113,6 @@ export default function SellingPricePerformance() {
     isError: isActualError,
     error: actualError,
   } = useGetSellingPricePerformanceQuery(undefined, {
-    skip: !isAuthenticated,
     refetchOnMountOrArgChange: true,
   });
 
@@ -126,7 +123,7 @@ export default function SellingPricePerformance() {
     isError: isAiError,
     error: aiError,
   } = useGetSellingPricePerformanceAiQuery(undefined, {
-    skip: !isAuthenticated,
+    skip: activeTab !== 'ai',
     refetchOnMountOrArgChange: true,
   });
 

@@ -15,7 +15,7 @@ import { cn } from '../../lib/utils';
 import CustomInput from '../common/CustomInput';
 import { useForm, useWatch } from 'react-hook-form';
 
-export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale }) {
+export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
   const toast = useToast();
   const [sell, { isLoading }] = useSellMutation();
 
@@ -45,8 +45,8 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
   const profitLoss = totalCurrentValue - totalInvested;
   const isProfitable = profitLoss >= 0;
 
-  const onClose = () => {
-    setIsSellModalOpen(false);
+  const handleClose = () => {
+    onClose();
     reset();
   };
 
@@ -58,7 +58,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
       };
       const resp = await sell(payload).unwrap();
       if (resp?.success) {
-        onClose();
+        handleClose();
         toast.success(resp?.message);
       }
     } catch (err) {
@@ -74,7 +74,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
           >
             <MotionDiv
@@ -98,7 +98,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.95, y: 2 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
                 >
                   <RiCloseLine className="h-5 w-5" />
@@ -193,7 +193,7 @@ export default function SellEntryModal({ isOpen, setIsSellModalOpen, itemForSale
                     whileTap={{ scale: 0.95, y: 2 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="button"
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="flex-1 cursor-pointer rounded-xl border border-transparent bg-slate-800/50 px-4 py-2.5 font-medium text-slate-300 transition-colors hover:border-slate-700 hover:bg-slate-800 hover:text-white"
                   >
                     Cancel
