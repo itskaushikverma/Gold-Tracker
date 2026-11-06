@@ -20,7 +20,7 @@ export default function ServerWarmup({ children }) {
   }, [isError, isFetching, ready, refetch]);
 
   if (ready) {
-    return children;
+    return <div className="flex h-full min-h-0 flex-col">{children}</div>;
   }
 
   return (

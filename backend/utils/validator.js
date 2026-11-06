@@ -30,7 +30,7 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     return {
       success: false,
       data: null,
-      message: 'Weight must be greater than 0 and at most 1000000 mg',
+      message: 'Weight must be greater than 0',
     };
   }
 
@@ -38,7 +38,7 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     return {
       success: false,
       data: null,
-      message: 'Invested amount must be greater than 0 and at most 100000000',
+      message: 'Invested amount must be greater than 0',
     };
   }
 

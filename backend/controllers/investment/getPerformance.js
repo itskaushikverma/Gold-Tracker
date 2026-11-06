@@ -20,7 +20,7 @@ export const getPerformance = async (req, res) => {
       .lean()
       .select('date investedValue weight');
 
-    if (!investments || investments.length === 0) {
+    if (investments.length === 0) {
       return res.status(200).json({
         success: true,
         data: {

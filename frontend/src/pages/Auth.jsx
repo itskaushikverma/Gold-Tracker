@@ -4,7 +4,7 @@ import Logo from '../components/common/Logo';
 
 export default function Auth() {
   return (
-    <div className="flex h-full flex-col items-center justify-center p-4 font-sans">
+    <div className="flex h-full flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6 rounded-3xl border border-slate-800/80 p-8 shadow-2xl shadow-black/50 backdrop-blur-xs">
         <div className="flex flex-col items-center space-y-2 text-center">
           <Logo size={64} className="justify-center" />

@@ -143,8 +143,10 @@ export default function Dashboard() {
                           setItemForSale(item);
                         }}
                         className={cn(
-                          'group cursor-default transition-all duration-300',
-                          isSell ? 'bg-rose-500/5' : 'hover:bg-slate-800/50',
+                          'group transition-all duration-300',
+                          isSell
+                            ? 'cursor-default bg-rose-500/5'
+                            : 'cursor-pointer hover:bg-slate-800/50',
                         )}
                       >
                         <td className="px-4 py-3 text-left text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
