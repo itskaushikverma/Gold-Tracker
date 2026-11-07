@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { PanelLeftOpen, Plus } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { MotionButton, MotionDiv } from '../common/MotionWrapper';
 import AddEntryModal from '../modals/AddEntryModal';
 import Badge from '../common/Badge';
 import { cn } from '../../lib/utils';
-import { RiSidebarUnfoldLine } from '@remixicon/react';
 
 export default function Header({
   details,
@@ -127,7 +126,7 @@ export default function Header({
               onClick={onOpenSidebar}
               className="hidden cursor-pointer rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 shadow-lg backdrop-blur-md transition-all hover:bg-slate-800 hover:text-white lg:inline-flex"
             >
-              <RiSidebarUnfoldLine className="h-5 w-5" />
+              <PanelLeftOpen className="h-5 w-5" />
             </MotionButton>
           )}
         </div>
