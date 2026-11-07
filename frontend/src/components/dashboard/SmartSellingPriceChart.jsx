@@ -11,8 +11,8 @@ export default function SmartSellingPriceChart({ data, isLoading, errorMessage }
   if (chartData.length === 0) {
     return (
       <div className="flex h-full min-h-80 flex-col items-center justify-center gap-2 text-sm text-slate-500">
-        No Chart available yet.
-        {errorMessage && <div className="text-sm text-red-500">{errorMessage}</div>}
+        No chart data yet.
+        {errorMessage && <div className="text-sm text-rose-400">{errorMessage}</div>}
       </div>
     );
   }

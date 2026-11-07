@@ -1,13 +1,5 @@
 import { AnimatePresence } from 'motion/react';
-import {
-  RiArrowRightDownLine,
-  RiArrowRightUpLine,
-  RiCheckboxLine,
-  RiCloseLine,
-  RiMoneyRupeeCircleLine,
-  RiScalesLine,
-  RiWeightFill,
-} from '@remixicon/react';
+import { CircleCheck, IndianRupee, Scale, TrendingDown, TrendingUp, Weight, X } from 'lucide-react';
 import { MotionButton, MotionDiv } from '../common/MotionWrapper';
 import { useSellMutation } from '../../services/api';
 import { useToast } from 'react-toast-kit-js';
@@ -71,167 +63,159 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <MotionDiv
+          key="sell-entry-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleClose}
+          className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
+        >
           <MotionDiv
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={handleClose}
-            className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm lg:p-0"
+            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 10 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl md:p-8"
           >
-            <MotionDiv
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl md:p-8"
-            >
-              <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-rose-500 to-orange-400" />
-              <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-rose-500/10 blur-3xl" />
+            <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-rose-500 to-orange-400" />
+            <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-rose-500/10 blur-3xl" />
 
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="flex items-center gap-2 text-xl font-bold text-white">
-                  <div className="rounded-lg bg-rose-500/10 p-2 text-rose-400">
-                    <RiCheckboxLine className="h-5 w-5" />
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-xl font-bold text-white">
+                <div className="rounded-lg bg-rose-500/10 p-2 text-rose-400">
+                  <CircleCheck className="h-5 w-5" />
+                </div>
+                Confirm Sale
+              </h2>
+              <MotionButton
+                onClick={handleClose}
+                className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
+              >
+                <X className="h-5 w-5" />
+              </MotionButton>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="relative z-10">
+              <div className="mb-8 space-y-4">
+                <div className="flex flex-col gap-3">
+                  <CustomInput
+                    register={register}
+                    type="number"
+                    rules={{
+                      required: { value: true, message: 'Selling price is required' },
+                      validate: (v) => Number(v) > 0 || 'Amount should be greater than 0',
+                      valueAsNumber: true,
+                    }}
+                    label="Selling Price (₹)"
+                    placeholder="e.g. 5000"
+                    icon={IndianRupee}
+                    name={'sellingPrice'}
+                    errors={errors}
+                    autoFocus
+                    disabled={isLoading || isSubmitting}
+                    iconColorClassName="text-emerald-400"
+                  />
+                  <CustomInput
+                    register={register}
+                    type="number"
+                    rules={{
+                      required: { value: true, message: 'Gold rate is required' },
+                      validate: (v) => Number(v) > 0 || 'Gold rate should be greater than 0',
+                      valueAsNumber: true,
+                    }}
+                    label="Gold Rate (₹/mg)"
+                    placeholder="e.g. 500.5"
+                    icon={Weight}
+                    name={'goldRate'}
+                    errors={errors}
+                    disabled={isLoading || isSubmitting}
+                    iconColorClassName="text-amber-400"
+                  />
+                </div>
+
+                <p className="text-sm text-slate-400">Sale summary</p>
+
+                <div className="flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
+                  <div className="flex items-center gap-3">
+                    <Scale className="h-5 w-5 text-amber-400" />
+                    <span className="font-medium text-amber-300">Total Weight</span>
                   </div>
-                  Confirm Sale
-                </h2>
-                <MotionButton
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.95, y: 2 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                  onClick={handleClose}
-                  className="cursor-pointer rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
-                >
-                  <RiCloseLine className="h-5 w-5" />
-                </MotionButton>
-              </div>
+                  <span className="font-mono font-semibold text-amber-400">{totalWeight} mg</span>
+                </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="relative z-10">
-                <div className="mb-8 space-y-4">
-                  <div className="flex flex-col gap-3">
-                    <CustomInput
-                      register={register}
-                      type="number"
-                      rules={{
-                        required: { value: true, message: 'Selling Price Required' },
-                        validate: (v) => Number(v) > 0 || 'Amount should be greater than 0',
-                        valueAsNumber: true,
-                      }}
-                      label="Selling Price"
-                      placeholder="e.g. 5000"
-                      icon={RiMoneyRupeeCircleLine}
-                      name={'sellingPrice'}
-                      errors={errors}
-                      autoFocus
-                      disabled={isLoading || isSubmitting}
-                      iconColorClassName="peer-focus:text-green-400 peer-[:not(:placeholder-shown)]:text-green-400"
-                    />
-                    <CustomInput
-                      register={register}
-                      type="number"
-                      rules={{
-                        required: { value: true, message: 'Gold Rate is required' },
-                        validate: (v) => Number(v) > 0 || 'Amount should be greater than 0',
-                        valueAsNumber: true,
-                      }}
-                      label="Gold Rate (Rs/mg)"
-                      placeholder="e.g. 500.5"
-                      icon={RiWeightFill}
-                      name={'goldRate'}
-                      errors={errors}
-                      disabled={isLoading || isSubmitting}
-                      iconColorClassName="peer-focus:text-amber-400 peer-[:not(:placeholder-shown)]:text-amber-400"
-                    />
+                <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-slate-400">Money Put In</span>
+                    <span className="font-mono font-medium text-slate-200">
+                      {formatCurrency(totalInvested)}
+                    </span>
                   </div>
-
-                  <p className="text-sm text-slate-300">Here is the summary:</p>
-
-                  <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
-                    <div className="flex items-center gap-3">
-                      <RiScalesLine className="h-5 w-5 text-amber-500/70" />
-                      <span className="font-medium text-slate-300">Total Weight</span>
-                    </div>
-                    <span className="font-mono font-semibold text-amber-400">{totalWeight}mg</span>
-                  </div>
-
-                  <div className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/50 p-4">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-slate-400">Total Invested</span>
-                      <span className="font-mono font-medium text-slate-200">
-                        {formatCurrency(totalInvested)}
-                      </span>
-                    </div>
-                    <div className="text-slate-600">→</div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-xs text-slate-400">Sell Value</span>
-                      <span className="font-mono text-lg font-bold text-slate-100">
-                        {formatCurrency(totalCurrentValue)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    className={cn(
-                      'flex items-center justify-between rounded-xl border p-4',
-                      isProfitable
-                        ? 'border-emerald-500/20 bg-emerald-500/10'
-                        : 'border-rose-500/20 bg-rose-500/10',
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      {isProfitable ? (
-                        <RiArrowRightUpLine className="h-5 w-5 text-emerald-500" />
-                      ) : (
-                        <RiArrowRightDownLine className="h-5 w-5 text-rose-500" />
-                      )}
-                      <span
-                        className={cn(
-                          'font-medium',
-                          isProfitable ? 'text-emerald-400' : 'text-rose-400',
-                        )}
-                      >
-                        {isProfitable ? 'Net Profit' : 'Net Loss'}
-                      </span>
-                    </div>
-                    <span
-                      className={cn(
-                        'font-mono text-lg font-bold',
-                        isProfitable ? 'text-emerald-400' : 'text-rose-400',
-                      )}
-                    >
-                      {isProfitable ? '+' : ''}
-                      {formatCurrency(profitLoss)}
+                  <div className="text-slate-600">→</div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-slate-400">Sell Value</span>
+                    <span className="font-mono text-lg font-bold text-slate-100">
+                      {formatCurrency(totalCurrentValue)}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex gap-3">
-                  <MotionButton
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.95, y: 2 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    type="button"
-                    onClick={handleClose}
-                    className="flex-1 cursor-pointer rounded-xl border border-transparent bg-slate-800/50 px-4 py-2.5 font-medium text-slate-300 transition-colors hover:border-slate-700 hover:bg-slate-800 hover:text-white"
+                <div
+                  className={cn(
+                    'flex items-center justify-between rounded-xl border p-4',
+                    isProfitable
+                      ? 'border-emerald-500/20 bg-emerald-500/10'
+                      : 'border-rose-500/20 bg-rose-500/10',
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    {isProfitable ? (
+                      <TrendingUp className="h-5 w-5 text-emerald-400" />
+                    ) : (
+                      <TrendingDown className="h-5 w-5 text-rose-400" />
+                    )}
+                    <span
+                      className={cn(
+                        'font-medium',
+                        isProfitable ? 'text-emerald-400' : 'text-rose-400',
+                      )}
+                    >
+                      {isProfitable ? 'Net Profit' : 'Net Loss'}
+                    </span>
+                  </div>
+                  <span
+                    className={cn(
+                      'font-mono text-lg font-bold',
+                      isProfitable ? 'text-emerald-400' : 'text-rose-400',
+                    )}
                   >
-                    Cancel
-                  </MotionButton>
-                  <MotionButton
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.95, y: 2 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    type="submit"
-                    disabled={isLoading}
-                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isLoading ? 'Selling...' : 'Confirm Sell'}
-                  </MotionButton>
+                    {isProfitable ? '+' : ''}
+                    {formatCurrency(profitLoss)}
+                  </span>
                 </div>
-              </form>
-            </MotionDiv>
+              </div>
+
+              <div className="flex gap-3">
+                <MotionButton
+                  type="button"
+                  onClick={handleClose}
+                  className="flex-1 cursor-pointer rounded-xl border border-transparent bg-slate-800/50 px-4 py-2.5 font-medium text-slate-300 transition-colors hover:border-slate-700 hover:bg-slate-800 hover:text-white"
+                >
+                  Cancel
+                </MotionButton>
+                <MotionButton
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isLoading ? 'Selling...' : 'Confirm Sell'}
+                </MotionButton>
+              </div>
+            </form>
           </MotionDiv>
-        </>
+        </MotionDiv>
       )}
     </AnimatePresence>
   );

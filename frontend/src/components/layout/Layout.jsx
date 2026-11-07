@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { RiMenuLine } from '@remixicon/react';
+import { Menu } from 'lucide-react';
 import Logo from '../common/Logo';
 import { MotionButton } from '../common/MotionWrapper';
 
@@ -18,13 +18,10 @@ export default function Layout() {
             Gold Tracker
           </h1>
           <MotionButton
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.95, y: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={() => setMobileSidebarOpen(true)}
             className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
           >
-            <RiMenuLine className="h-6 w-6" />
+            <Menu className="h-6 w-6" />
           </MotionButton>
         </div>
 
@@ -35,7 +32,7 @@ export default function Layout() {
           onToggleDesktop={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
         />
 
-        <main className="relative flex h-dvh w-full flex-1 flex-col overflow-hidden transition-all duration-300 lg:h-screen">
+        <main className="relative flex h-dvh w-full flex-1 flex-col overflow-hidden lg:h-screen">
           <div className="h-full overflow-y-auto p-4 md:p-8">
             <Outlet
               context={{

@@ -1,9 +1,28 @@
 import { motion } from 'motion/react';
 
-export const MotionDiv = motion.div;
+export function MotionDiv(props) {
+  return <motion.div {...props} />;
+}
 
-export const MotionButton = motion.button;
+export function MotionSpan(props) {
+  return <motion.span {...props} />;
+}
 
-export const MotionLabel = motion.label;
+export function MotionTr(props) {
+  return <motion.tr {...props} />;
+}
 
-export const MotionTr = motion.tr;
+export function MotionLabel(props) {
+  return <motion.label {...props} />;
+}
+
+export function MotionButton({
+  whileHover = { scale: 1.02 },
+  whileTap = { scale: 0.97 },
+  transition = { type: 'spring', stiffness: 380, damping: 28 },
+  ...props
+}) {
+  return (
+    <motion.button whileHover={whileHover} whileTap={whileTap} transition={transition} {...props} />
+  );
+}

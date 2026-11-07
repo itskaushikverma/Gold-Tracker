@@ -19,7 +19,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
         </Link>
         <Link
           to={homePath}
-          className="cursor-pointer text-sm text-slate-400 underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer text-sm text-slate-400 underline underline-offset-4 transition-colors hover:text-slate-200"
         >
           {homeLabel}
         </Link>
@@ -42,7 +42,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
       >
         <Link
           to="/privacy"
-          className="cursor-pointer underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer underline underline-offset-4 transition-colors hover:text-slate-200"
         >
           Privacy Policy
         </Link>
@@ -51,7 +51,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
         </span>
         <Link
           to="/terms"
-          className="cursor-pointer underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer underline underline-offset-4 transition-colors hover:text-slate-200"
         >
           Terms &amp; Conditions
         </Link>

@@ -1,9 +1,3 @@
-import {
-  RiArrowRightDownLine,
-  RiArrowRightUpLine,
-  RiMoneyRupeeCircleLine,
-  RiPencilLine,
-} from '@remixicon/react';
 import { useSelector } from 'react-redux';
 import { useGetDetailsQuery } from '../services/api';
 import { MotionButton, MotionDiv, MotionTr } from '../components/common/MotionWrapper';
@@ -17,6 +11,7 @@ import SellEntryModal from '../components/modals/SellEntryModal';
 import { DashboardSkeleton } from '../components/common/Skeleton';
 import { useToast } from 'react-toast-kit-js';
 import SetCustomSellingPriceModal from '@/components/modals/SetCustomSellingPriceModal';
+import { IndianRupee, Pencil, TrendingDown, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const toast = useToast();
@@ -44,43 +39,43 @@ export default function Dashboard() {
   return (
     <>
       <MotionDiv
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="flex h-full min-h-0 w-full flex-col gap-6 overflow-hidden"
       >
         <Header
           dashboardType="overview"
           details={data}
           title="My Gold"
-          description="See your gold and how much it’s worth today."
+          description="Track your holdings and see what they’re worth today."
         />
         <div className="flex w-full gap-4 overflow-x-auto pt-1 pb-2 md:gap-6">
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
               title="Money Put In"
               value={formatCurrency(data?.totalInvestedAmount || 0)}
-              icon={<RiMoneyRupeeCircleLine className="h-6 w-6" />}
+              icon={<IndianRupee className="h-6 w-6" />}
             />
           </div>
 
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
-              title="What It’s Worth Now"
+              title="Current Value"
               value={formatCurrency(data?.currentInvestmentValue || 0)}
-              icon={<RiArrowRightUpLine className="h-6 w-6" />}
+              icon={<TrendingUp className="h-6 w-6" />}
             />
           </div>
 
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
-              title="Profit or Loss"
+              title="Profit / Loss"
               value={formatCurrency(data?.totalProfitLoss || 0)}
               icon={
                 data?.isPositive ? (
-                  <RiArrowRightUpLine className="h-6 w-6" />
+                  <TrendingUp className="h-6 w-6" />
                 ) : (
-                  <RiArrowRightDownLine className="h-6 w-6" />
+                  <TrendingDown className="h-6 w-6" />
                 )
               }
               trend
@@ -94,13 +89,10 @@ export default function Dashboard() {
           <div className="flex items-center justify-between bg-slate-900/20 p-4">
             <h2 className="text-lg font-semibold text-white md:text-xl">Investment History</h2>
             <MotionButton
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.95, y: 2 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               onClick={() => setIsCustomSellingPriceModalOpen(true)}
-              className="flex cursor-pointer items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400 transition-colors duration-300 hover:border-blue-500 hover:bg-blue-500/80 hover:text-white"
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-xs font-medium text-violet-400 transition-colors duration-300 hover:border-violet-500 hover:bg-violet-500/80 hover:text-white"
             >
-              <RiPencilLine className="h-3.5 w-3.5" />
+              <Pencil className="h-3.5 w-3.5" />
               Set Custom Price
             </MotionButton>
           </div>
@@ -117,16 +109,16 @@ export default function Dashboard() {
                       Weight
                     </th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      Gold Rate
+                      Sell / Buy Rate
                     </th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
                       Money Put In
                     </th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      What It’s Worth Now
+                      Current Value
                     </th>
                     <th className="px-4 py-3 text-right tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      Profit or Loss
+                      Profit / Loss
                     </th>
                   </tr>
                 </thead>
@@ -168,7 +160,7 @@ export default function Dashboard() {
                             isSell ? 'text-rose-400' : 'text-amber-400/80',
                           )}
                         >
-                          {item.weight}mg
+                          {item.weight} mg
                         </td>
                         <td className="px-4 py-3 text-center font-mono text-sm text-nowrap md:px-6 md:py-4 md:text-base">
                           <span
@@ -176,7 +168,7 @@ export default function Dashboard() {
                               item?.goldRate?.sell
                                 ? item?.isPositive
                                   ? 'text-emerald-400'
-                                  : 'text-red-400'
+                                  : 'text-rose-400'
                                 : 'text-slate-500',
                             )}
                           >
@@ -211,7 +203,9 @@ export default function Dashboard() {
                         <td className="px-4 py-3 text-right font-mono text-sm font-medium text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                           <div className="flex flex-col items-end">
                             <span
-                              className={cn(item?.isPositive ? 'text-emerald-400' : 'text-red-400')}
+                              className={cn(
+                                item?.isPositive ? 'text-emerald-400' : 'text-rose-400',
+                              )}
                             >
                               {item?.isPositive ? '+' : ''}
                               {formatCurrency(item?.profitLoss)}
@@ -220,8 +214,8 @@ export default function Dashboard() {
                               className={cn(
                                 'mt-1 rounded-md px-2 py-0.5 text-xs',
                                 item?.isPositive
-                                  ? 'bg-emerald-500/10 text-emerald-500'
-                                  : 'bg-red-500/10 text-red-500',
+                                  ? 'bg-emerald-500/10 text-emerald-400'
+                                  : 'bg-rose-500/10 text-rose-400',
                               )}
                             >
                               {item?.percentage}%
@@ -234,8 +228,9 @@ export default function Dashboard() {
                 </tbody>
               </table>
             ) : (
-              <div className="flex h-full min-h-60 items-center justify-center text-slate-500">
-                No active investments found
+              <div className="flex h-full min-h-60 flex-col items-center justify-center gap-1 text-slate-500">
+                <p>No investments yet.</p>
+                <p className="text-sm text-slate-600">Add gold to start tracking.</p>
               </div>
             )}
           </div>

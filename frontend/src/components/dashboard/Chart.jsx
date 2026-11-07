@@ -12,7 +12,7 @@ import {
 
 const SECOND_SERIES = {
   dataKey: 'value',
-  name: 'What It’s Worth Now',
+  name: 'Current Value',
   color: '#22d3ee',
   id: 'colorValue',
 };

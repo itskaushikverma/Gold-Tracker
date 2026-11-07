@@ -1,11 +1,12 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { RiRefreshLine } from '@remixicon/react';
+import { Loader2 } from 'lucide-react';
 import { useToast } from 'react-toast-kit-js';
 import { useGoogleAuthMutation } from '../../services/api';
 import { setCredentials } from '../../redux/slices/sessionSlice';
 import { cn } from '../../lib/utils';
+import { MotionSpan } from '../common/MotionWrapper';
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -112,22 +113,38 @@ export default function GoogleAuthButton() {
   }, []);
 
   return (
-    <div className="relative w-full">
+    <div className="relative min-h-10 w-full">
       <div
         ref={buttonRef}
-        className={cn('flex w-full justify-center', isLoading && 'pointer-events-none opacity-40')}
+        className={cn(
+          'flex w-full justify-center',
+          isLoading && 'pointer-events-none opacity-40',
+          !scriptReady && 'invisible',
+        )}
       />
 
       {!scriptReady && (
-        <div className="absolute inset-0 flex h-10 w-full cursor-wait items-center justify-center gap-2 rounded-full bg-white text-sm font-medium text-black">
-          <RiRefreshLine className="h-4 w-4 animate-spin" />
+        <div className="absolute inset-0 flex h-10 w-full cursor-wait items-center justify-center gap-2 rounded-full border border-slate-700 bg-slate-900 text-sm font-medium text-slate-300">
+          <MotionSpan
+            className="inline-flex"
+            animate={{ rotate: 360 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+          >
+            <Loader2 className="h-4 w-4 text-blue-400" />
+          </MotionSpan>
           Loading Google…
         </div>
       )}
 
       {isLoading && (
-        <div className="absolute inset-0 flex cursor-wait items-center justify-center rounded-full bg-[#131314]/70">
-          <RiRefreshLine className="h-5 w-5 animate-spin text-white" />
+        <div className="absolute inset-0 flex cursor-wait items-center justify-center rounded-full bg-slate-950/80 backdrop-blur-[1px]">
+          <MotionSpan
+            className="inline-flex"
+            animate={{ rotate: 360 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+          >
+            <Loader2 className="h-5 w-5 text-blue-400" />
+          </MotionSpan>
         </div>
       )}
     </div>

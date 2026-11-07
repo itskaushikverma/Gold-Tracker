@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  RiGithubFill,
+  RiGithubLine,
   RiGlobalLine,
   RiInstagramLine,
-  RiLinkedinFill,
+  RiLinkedinLine,
   RiMailLine,
-  RiTwitterXFill,
+  RiTwitterXLine,
 } from '@remixicon/react';
 
 export default function Footer() {
@@ -20,23 +20,23 @@ export default function Footer() {
 
   const items = [
     { href: links.portfolio, label: 'Portfolio', icon: RiGlobalLine },
-    { href: links.github, label: 'GitHub', icon: RiGithubFill },
-    { href: links.linkedin, label: 'LinkedIn', icon: RiLinkedinFill },
-    { href: links.twitter, label: 'X', icon: RiTwitterXFill },
+    { href: links.github, label: 'GitHub', icon: RiGithubLine },
+    { href: links.linkedin, label: 'LinkedIn', icon: RiLinkedinLine },
+    { href: links.twitter, label: 'X', icon: RiTwitterXLine },
     { href: links.instagram, label: 'Instagram', icon: RiInstagramLine },
     { href: links.email ? `mailto:${links.email}` : '', label: 'Email', icon: RiMailLine },
   ].filter((item) => item.href);
 
   return (
-    <footer className="text-muted-foreground relative h-full border-t py-2 backdrop-blur-[2px]">
+    <footer className="text-muted-foreground relative h-full border-t border-slate-800/60 py-2 backdrop-blur-[2px]">
       <div className="flex flex-col items-center justify-center gap-1">
-        <p className="text-sm">
+        <p className="text-sm text-slate-400">
           Made by{' '}
           <a
             href={links.portfolio}
             target="_blank"
             rel="noreferrer"
-            className="text-foreground cursor-pointer font-medium underline-offset-4 transition-all duration-200 hover:underline"
+            className="cursor-pointer font-medium text-slate-200 underline underline-offset-4 transition-colors hover:text-white"
           >
             Kaushik Verma
           </a>
@@ -49,7 +49,7 @@ export default function Footer() {
               target={href.startsWith('mailto:') ? undefined : '_blank'}
               rel={href.startsWith('mailto:') ? undefined : 'noreferrer'}
               aria-label={label}
-              className="hover:text-foreground cursor-pointer rounded-md p-1.5 transition-colors"
+              className="cursor-pointer rounded-md p-1.5 text-slate-500 transition-colors hover:text-slate-200"
             >
               <Icon className="size-5" />
             </a>

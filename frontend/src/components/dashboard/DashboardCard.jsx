@@ -11,7 +11,7 @@ export default function DashboardCard({
   return (
     <div
       className={cn(
-        'group relative w-full cursor-default overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/40 p-5 shadow-sm backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-1 md:p-6',
+        'group relative w-full cursor-default overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/40 p-5 shadow-sm backdrop-blur-md md:p-6',
         trend
           ? isPositive
             ? 'hover:border-emerald-700/80 hover:shadow-[0_8px_30px_rgb(16,185,129,0.1)]'
@@ -23,11 +23,11 @@ export default function DashboardCard({
       <div className="relative z-10 mb-4 flex items-center gap-4">
         <div
           className={cn(
-            'rounded-xl p-3 transition-all duration-300 group-hover:scale-110',
+            'rounded-xl p-3',
             trend
               ? isPositive
                 ? 'bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20'
-                : 'bg-red-500/10 text-red-400 group-hover:bg-red-500/20'
+                : 'bg-rose-500/10 text-rose-400 group-hover:bg-rose-500/20'
               : 'bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20',
           )}
         >
@@ -41,7 +41,7 @@ export default function DashboardCard({
         <div
           className={cn(
             'text-2xl font-bold text-nowrap md:text-3xl',
-            trend ? (isPositive ? 'text-emerald-400' : 'text-red-400') : 'text-slate-100',
+            trend ? (isPositive ? 'text-emerald-400' : 'text-rose-400') : 'text-slate-100',
           )}
         >
           {trend && isPositive ? '+' : ''}

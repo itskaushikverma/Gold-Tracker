@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { RiAddLine, RiSidebarUnfoldLine } from '@remixicon/react';
+import { Plus } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { MotionButton, MotionDiv } from '../common/MotionWrapper';
 import AddEntryModal from '../modals/AddEntryModal';
 import Badge from '../common/Badge';
 import { cn } from '../../lib/utils';
+import { RiSidebarUnfoldLine } from '@remixicon/react';
 
 export default function Header({
   details,
@@ -23,26 +24,26 @@ export default function Header({
   const badges = [
     {
       title: 'Total Weight',
-      value: `${details?.totalPurchasedGoldWeight || 0}mg`,
+      value: `${details?.totalPurchasedGoldWeight || 0} mg`,
       valueClassName: 'text-amber-400',
     },
     {
-      title: 'Current Price (with GST 3%)',
+      title: 'Price with GST',
       value: `${formatCurrency(details?.currentGoldPriceWithGST || 0)}/mg`,
       valueClassName: 'text-emerald-400',
     },
     {
-      title: 'Current Price (without GST)',
+      title: 'Price without GST',
       value: `${formatCurrency(details?.currentGoldPriceWithoutGST || 0)}/mg`,
       valueClassName: 'text-blue-400',
     },
     {
       title: 'Selling Price',
       value: `${formatCurrency(details?.currentGoldSellingPrice || 0)}/mg`,
-      valueClassName: 'text-green-400',
+      valueClassName: 'text-emerald-400',
     },
     {
-      title: 'Override Selling Price',
+      title: 'Custom Selling Price',
       value: `${formatCurrency(details?.overrideSellingPrice || 0)}/mg`,
       valueClassName: 'text-violet-400',
     },
@@ -74,13 +75,10 @@ export default function Header({
         <div className="flex shrink-0 items-center gap-3">
           {dashboardType === 'overview' && (
             <MotionButton
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.95, y: 2 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               onClick={() => setIsAddModalOpen(true)}
               className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] md:w-fit"
             >
-              <RiAddLine className="h-5 w-5" />
+              <Plus className="h-5 w-5" />
               Add Gold
             </MotionButton>
           )}
@@ -102,7 +100,7 @@ export default function Header({
                         backgroundColor: `${tab.color}26`,
                         boxShadow: `inset 0 0 0 1px ${tab.color}66`,
                       }}
-                      transition={{ type: 'spring', duration: 0.5, bounce: 0.15 }}
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
                   <span

@@ -1,14 +1,16 @@
+import { AnimatePresence } from 'motion/react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
-  RiCloseLine,
-  RiDashboardLine,
-  RiLineChartLine,
-  RiLogoutBoxRLine,
-  RiSidebarFoldLine,
-} from '@remixicon/react';
+  ChartCandlestick,
+  LayoutDashboard,
+  LogOut,
+  PanelLeftClose,
+  TrendingUp,
+  X,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Logo from '../common/Logo';
-import { MotionButton, MotionLabel } from '../common/MotionWrapper';
+import { MotionButton, MotionDiv, MotionLabel } from '../common/MotionWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setSellPriceOverride } from '../../redux/slices/sessionSlice';
 import { api, useLogoutMutation } from '../../services/api';
@@ -20,7 +22,7 @@ const NAV_ITEMS = [
   {
     to: '/home',
     label: 'Home',
-    icon: RiDashboardLine,
+    icon: LayoutDashboard,
     activeBg: 'bg-blue-500/10 text-blue-50',
     activeBar: 'bg-blue-500',
     activeIcon: 'text-blue-400',
@@ -28,7 +30,7 @@ const NAV_ITEMS = [
   {
     to: '/my-growth',
     label: 'My Growth',
-    icon: RiLineChartLine,
+    icon: TrendingUp,
     activeBg: 'bg-cyan-500/10 text-cyan-50',
     activeBar: 'bg-cyan-500',
     activeIcon: 'text-cyan-400',
@@ -36,10 +38,10 @@ const NAV_ITEMS = [
   {
     to: '/sell-price-history',
     label: 'Sell Price History',
-    icon: RiLineChartLine,
-    activeBg: 'bg-cyan-500/10 text-cyan-50',
-    activeBar: 'bg-cyan-500',
-    activeIcon: 'text-cyan-400',
+    icon: ChartCandlestick,
+    activeBg: 'bg-amber-500/10 text-amber-50',
+    activeBar: 'bg-amber-500',
+    activeIcon: 'text-amber-400',
   },
 ];
 
@@ -105,13 +107,20 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
 
   return (
     <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm lg:hidden"
-          onClick={onClose}
-          aria-hidden
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <MotionDiv
+            key="mobile-sidebar-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm lg:hidden"
+            onClick={onClose}
+            aria-hidden
+          />
+        )}
+      </AnimatePresence>
 
       <aside
         className={cn(
@@ -135,25 +144,19 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
           </div>
 
           <MotionButton
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.95, y: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onClose}
             className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:hidden"
             aria-label="Close sidebar"
           >
-            <RiCloseLine className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </MotionButton>
 
           <MotionButton
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.95, y: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onToggleDesktop}
             className="-mr-2 hidden shrink-0 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:flex"
             aria-label="Collapse sidebar"
           >
-            <RiSidebarFoldLine className="h-5 w-5" />
+            <PanelLeftClose className="h-5 w-5" />
           </MotionButton>
         </div>
 
@@ -168,10 +171,9 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
 
           <MotionLabel
             htmlFor="sell-price-override"
-            whileHover={{ scale: 1.02, y: -2 }}
             className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-400 transition-colors duration-200 hover:bg-slate-800/50 hover:text-slate-200"
           >
-            <span className="truncate">Custom Selling Price</span>
+            <span className="truncate">Use Custom Price</span>
             <Switch
               id="sell-price-override"
               checked={sellPriceOverride}
@@ -203,13 +205,10 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
           </div>
 
           <MotionButton
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.95, y: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onLogout}
-            className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-red-500/50 px-3 py-2.5 font-medium text-slate-400 transition-colors duration-200 hover:border-red-500 hover:bg-red-500/10 hover:text-red-400"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-500/10 px-3 py-2.5 font-medium text-red-400 ring-1 ring-red-500/30 transition-colors duration-200 hover:bg-red-500/20 hover:text-red-300 hover:ring-red-500/50"
           >
-            <RiLogoutBoxRLine className="h-5 w-5 shrink-0" />
+            <LogOut className="h-5 w-5 shrink-0" />
             Logout
           </MotionButton>
 
@@ -217,7 +216,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             <Link
               to="/terms"
               onClick={onClose}
-              className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+              className="cursor-pointer text-slate-400 underline underline-offset-4 hover:text-slate-200"
             >
               Terms &amp; Conditions
             </Link>{' '}
@@ -225,7 +224,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             <Link
               to="/privacy"
               onClick={onClose}
-              className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+              className="cursor-pointer text-slate-400 underline underline-offset-4 hover:text-slate-200"
             >
               Privacy Policy
             </Link>
