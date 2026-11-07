@@ -7,7 +7,6 @@ import {
   getDetails,
   getPerformance,
   getSellingPricePerformance,
-  getSellingPricePerformanceAi,
   setCustomSellingPrice,
 } from '../controllers/investment/index.js';
 
@@ -26,7 +25,5 @@ investmentRouter.route('/setCustomSellingPrice').post(trimRequest.all, setCustom
 investmentRouter.route('/getPerformance').get(getPerformance);
 
 investmentRouter.route('/getSellingPricePerformance').get(getSellingPricePerformance);
-
-investmentRouter.route('/getSellingPricePerformanceAi').get(getSellingPricePerformanceAi);
 
 export default investmentRouter;

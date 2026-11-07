@@ -22,7 +22,7 @@ export default function Layout() {
             whileTap={{ scale: 0.95, y: 2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={() => setMobileSidebarOpen(true)}
-            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
+            className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
           >
             <RiMenuLine className="h-6 w-6" />
           </MotionButton>

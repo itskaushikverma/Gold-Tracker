@@ -6,6 +6,7 @@ import {
   RiCloseLine,
   RiMoneyRupeeCircleLine,
   RiScalesLine,
+  RiWeightFill,
 } from '@remixicon/react';
 import { MotionButton, MotionDiv } from '../common/MotionWrapper';
 import { useSellMutation } from '../../services/api';
@@ -27,7 +28,8 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      sellingPrice: 0,
+      sellingPrice: '',
+      goldRate: '',
     },
   });
 
@@ -35,12 +37,11 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
   const totalInvested = itemForSale?.investedValue;
 
   const watchedSellingPrice = useWatch({ control, name: 'sellingPrice' });
-  const sellingPriceNumber =
-    watchedSellingPrice === undefined || watchedSellingPrice === 0
-      ? 0
-      : Number(watchedSellingPrice);
+  const sellingPriceNumber = Number(watchedSellingPrice);
   const totalCurrentValue =
-    sellingPriceNumber != 0 ? sellingPriceNumber : itemForSale?.currentValue;
+    Number.isFinite(sellingPriceNumber) && sellingPriceNumber > 0
+      ? sellingPriceNumber
+      : itemForSale?.currentValue;
 
   const profitLoss = totalCurrentValue - totalInvested;
   const isProfitable = profitLoss >= 0;
@@ -55,6 +56,7 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
       const payload = {
         investment_id: itemForSale?._id,
         sellingPrice: data.sellingPrice,
+        goldRate: data.goldRate,
       };
       const resp = await sell(payload).unwrap();
       if (resp?.success) {
@@ -107,7 +109,7 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
 
               <form onSubmit={handleSubmit(onSubmit)} className="relative z-10">
                 <div className="mb-8 space-y-4">
-                  <div>
+                  <div className="flex flex-col gap-3">
                     <CustomInput
                       register={register}
                       type="number"
@@ -123,6 +125,23 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
                       errors={errors}
                       autoFocus
                       disabled={isLoading || isSubmitting}
+                      iconColorClassName="peer-focus:text-green-400 peer-[:not(:placeholder-shown)]:text-green-400"
+                    />
+                    <CustomInput
+                      register={register}
+                      type="number"
+                      rules={{
+                        required: { value: true, message: 'Gold Rate is required' },
+                        validate: (v) => Number(v) > 0 || 'Amount should be greater than 0',
+                        valueAsNumber: true,
+                      }}
+                      label="Gold Rate (Rs/mg)"
+                      placeholder="e.g. 500.5"
+                      icon={RiWeightFill}
+                      name={'goldRate'}
+                      errors={errors}
+                      disabled={isLoading || isSubmitting}
+                      iconColorClassName="peer-focus:text-amber-400 peer-[:not(:placeholder-shown)]:text-amber-400"
                     />
                   </div>
 
@@ -204,7 +223,7 @@ export default function SellEntryModal({ isOpen, onClose, itemForSale }) {
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400"
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-rose-600 to-orange-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-rose-500/20 transition-colors hover:from-rose-500 hover:to-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isLoading ? 'Selling...' : 'Confirm Sell'}
                   </MotionButton>

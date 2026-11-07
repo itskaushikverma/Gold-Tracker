@@ -87,6 +87,7 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
                     min: { value: 1, message: 'Price should be greater than 0' },
                     valueAsNumber: true,
                   }}
+                  iconColorClassName="peer-focus:text-green-400 peer-[:not(:placeholder-shown)]:text-green-400"
                 />
 
                 <div className="flex gap-3 pt-4">
@@ -107,7 +108,7 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
                     disabled={isSubmitting || isLoading || !isValid}
-                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50"
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Set Gold Price
                   </MotionButton>

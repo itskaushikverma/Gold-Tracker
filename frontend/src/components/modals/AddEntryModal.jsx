@@ -5,6 +5,7 @@ import {
   RiCloseLine,
   RiMoneyRupeeCircleLine,
   RiScalesLine,
+  RiWeightFill,
 } from '@remixicon/react';
 import { useForm } from 'react-hook-form';
 import { usePurchaseMutation } from '../../services/api';
@@ -27,6 +28,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
       date: new Date().toISOString().split('T')[0],
       weight: '',
       investedValue: '',
+      goldRate: '',
     },
   });
 
@@ -36,6 +38,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
         date: toIsoWithCurrentTime(data.date),
         weight: parseFloat(data.weight),
         investedValue: parseFloat(data.investedValue),
+        goldRate: parseFloat(data.goldRate),
       };
       const resp = await purchase(payload).unwrap();
       if (resp?.success) {
@@ -118,6 +121,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   errors={errors}
                   autoFocus
                   disabled={isLoading || isSubmitting}
+                  iconColorClassName="peer-focus:text-amber-400 peer-[:not(:placeholder-shown)]:text-amber-400"
                 />
 
                 <CustomInput
@@ -133,6 +137,24 @@ export default function AddEntryModal({ isOpen, onClose }) {
                   icon={RiMoneyRupeeCircleLine}
                   name={'investedValue'}
                   errors={errors}
+                  disabled={isLoading || isSubmitting}
+                  iconColorClassName="peer-focus:text-green-400 peer-[:not(:placeholder-shown)]:text-green-400"
+                />
+
+                <CustomInput
+                  register={register}
+                  type="number"
+                  rules={{
+                    required: { value: true, message: 'Gold Rate is required' },
+                    min: { value: 1, message: 'Gold Rate should be greater than 0' },
+                    valueAsNumber: true,
+                  }}
+                  label="Gold Rate (Rs/mg)"
+                  placeholder="e.g. 500.5"
+                  icon={RiWeightFill}
+                  name={'goldRate'}
+                  errors={errors}
+                  iconColorClassName="peer-focus:text-amber-400 peer-[:not(:placeholder-shown)]:text-amber-400"
                   disabled={isLoading || isSubmitting}
                 />
 
@@ -154,7 +176,7 @@ export default function AddEntryModal({ isOpen, onClose }) {
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     type="submit"
                     disabled={isLoading || isSubmitting || !isValid}
-                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50"
+                    className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-cyan-500 px-4 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isLoading || isSubmitting ? 'Adding...' : 'Add Entry'}
                   </MotionButton>

@@ -13,6 +13,7 @@ export default function CustomInput({
   placeholder,
   step,
   autoFocus = false,
+  iconColorClassName,
 }) {
   const inputRef = useRef(null);
   const registration = register(name, rules);
@@ -59,9 +60,10 @@ export default function CustomInput({
           autoComplete="off"
           onClick={openDatePicker}
           className={cn(
-            'peer w-full cursor-pointer rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-4',
-            type === 'date' &&
-              'relative [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:bg-transparent [&::-webkit-calendar-picker-indicator]:opacity-0',
+            'peer w-full rounded-xl border bg-slate-950/50 py-2.5 pl-10 font-sans transition-all duration-300 outline-none placeholder:text-slate-600 focus:pr-10 focus:pl-4 disabled:cursor-not-allowed disabled:opacity-50 [:not(:placeholder-shown)]:pr-10 [:not(:placeholder-shown)]:pl-4',
+            type === 'date'
+              ? 'relative cursor-pointer [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:bg-transparent [&::-webkit-calendar-picker-indicator]:opacity-0'
+              : 'cursor-text',
             errors?.[name]
               ? 'border-red-500/50 text-red-200 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50'
               : 'border-slate-800 text-slate-200 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50',
@@ -72,7 +74,13 @@ export default function CustomInput({
         <Icon
           className={cn(
             'pointer-events-none absolute top-1/2 left-3 h-5 w-5 translate-y-0.75 transition-all duration-500 peer-focus:left-[calc(100%-28px)] peer-[:not(:placeholder-shown)]:left-[calc(100%-28px)]',
-            errors?.[name] ? 'text-red-500' : 'text-slate-500 peer-focus:text-blue-500',
+            errors?.[name]
+              ? 'text-red-500'
+              : cn(
+                  'text-slate-500',
+                  iconColorClassName ||
+                    'peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:text-blue-500',
+                ),
           )}
         />
       </div>

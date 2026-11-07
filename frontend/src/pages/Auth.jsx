@@ -18,14 +18,14 @@ export default function Auth() {
           By continuing, you agree to our{' '}
           <Link
             to="/terms"
-            className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+            className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
           >
             Terms &amp; Conditions
           </Link>{' '}
           and{' '}
           <Link
             to="/privacy"
-            className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+            className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
           >
             Privacy Policy
           </Link>

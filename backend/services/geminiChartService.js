@@ -7,10 +7,10 @@ const ai = new GoogleGenAI({
 export const generateSellingPriceChart = async (customPrices) => {
   const inputData = customPrices
     .map((item) => ({
-      date: new Date(item.date).toISOString(),
+      date: new Date(item.date).getTime(),
       value: Number(item.sellingPrice),
     }))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .sort((a, b) => a.date - b.date);
 
   const prompt = `
 You are a professional data visualization expert.
@@ -19,7 +19,7 @@ Analyze the following selling price time-series data and generate a complete
 chart configuration that can be consumed by Chart.js.
 
 The input contains:
-- date: ISO-8601 timestamp
+- date: Unix timestamp in milliseconds (epoch ms)
 - value: selling price
 
 IMPORTANT:
@@ -33,7 +33,7 @@ DATA:
 - Do NOT modify the values.
 - Do NOT round the values.
 - Sort the data chronologically.
-- Keep dates as ISO-8601 strings.
+- Keep dates as Unix timestamps in milliseconds (numbers).
 - Values must remain numbers.
 
 CHART:
@@ -133,7 +133,7 @@ Return EXACTLY this structure:
 
   "data": [
     {
-      "date": "ISO-8601 DATE",
+      "date": 1719792000000,
       "value": 123.45
     }
   ]
@@ -163,8 +163,6 @@ ${JSON.stringify(inputData)}
 
     return chart;
   } catch (error) {
-    console.error('Gemini chart generation failed:', error);
-
-    throw new Error('Failed to generate selling price chart', { cause: error });
+    throw new Error(JSON.parse(error.message)?.error?.message, { cause: error });
   }
 };

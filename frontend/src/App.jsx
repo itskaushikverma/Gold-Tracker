@@ -40,12 +40,12 @@ function WarmupLayout() {
 
 function AuthRoute() {
   const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Auth />;
+  return isAuthenticated ? <Navigate to="/home" replace /> : <Auth />;
 }
 
 function CatchAllRedirect() {
   const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
-  return <Navigate to={isAuthenticated ? '/dashboard' : '/auth'} replace />;
+  return <Navigate to={isAuthenticated ? '/home' : '/auth'} replace />;
 }
 
 export default function App() {
@@ -64,16 +64,13 @@ export default function App() {
 
                 <Route element={<ProtectedRoute />}>
                   <Route element={<Layout />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/performance" element={<Performance />} />
-                    <Route
-                      path="/selling-price-performance"
-                      element={<SellingPricePerformance />}
-                    />
+                    <Route path="/home" element={<Dashboard />} />
+                    <Route path="/my-growth" element={<Performance />} />
+                    <Route path="/sell-price-history" element={<SellingPricePerformance />} />
                   </Route>
                 </Route>
 
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="*" element={<CatchAllRedirect />} />
               </Route>
             </Routes>

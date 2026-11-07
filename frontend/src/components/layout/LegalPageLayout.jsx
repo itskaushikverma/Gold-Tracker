@@ -4,7 +4,7 @@ import Logo from '../common/Logo';
 
 export default function LegalPageLayout({ title, lastUpdated, children }) {
   const isAuthenticated = useSelector((state) => state.session.isAuthenticated);
-  const homePath = isAuthenticated ? '/dashboard' : '/auth';
+  const homePath = isAuthenticated ? '/home' : '/auth';
   const homeLabel = isAuthenticated ? 'Back to dashboard' : 'Back to sign in';
 
   return (
@@ -12,14 +12,14 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
       <div className="flex w-full max-w-5xl shrink-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
           to={homePath}
-          className="inline-flex items-center gap-3 text-slate-200 transition-colors hover:text-white"
+          className="inline-flex cursor-pointer items-center gap-3 text-slate-200 transition-colors hover:text-white"
         >
           <Logo size={40} />
           <span className="text-lg font-bold tracking-tight">Gold Tracker</span>
         </Link>
         <Link
           to={homePath}
-          className="text-sm text-slate-400 underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer text-sm text-slate-400 underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
         >
           {homeLabel}
         </Link>
@@ -31,7 +31,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
           <p className="text-sm text-slate-400">Last updated: {lastUpdated}</p>
         </header>
 
-        <div className="min-h-0 flex-1 space-y-8 overflow-y-auto text-sm leading-relaxed text-slate-300 md:text-base [&_a]:text-blue-400 [&_a]:underline-offset-4 hover:[&_a]:underline [&_code]:rounded [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-slate-200 [&_h2]:mb-3 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_li]:mt-1.5 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:space-y-1.5 [&_ol]:pl-5 [&_p]:mt-3 [&_p:first-child]:mt-0 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:pl-5">
+        <div className="min-h-0 flex-1 space-y-8 overflow-y-auto text-sm leading-relaxed text-slate-300 md:text-base [&_a]:cursor-pointer [&_a]:text-blue-400 [&_a]:underline-offset-4 hover:[&_a]:underline [&_code]:rounded [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-slate-200 [&_h2]:mb-3 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_li]:mt-1.5 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:space-y-1.5 [&_ol]:pl-5 [&_p]:mt-3 [&_p:first-child]:mt-0 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:pl-5">
           {children}
         </div>
       </article>
@@ -42,7 +42,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
       >
         <Link
           to="/privacy"
-          className="underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
         >
           Privacy Policy
         </Link>
@@ -51,7 +51,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
         </span>
         <Link
           to="/terms"
-          className="underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
+          className="cursor-pointer underline-offset-4 transition-colors hover:text-slate-200 hover:underline"
         >
           Terms &amp; Conditions
         </Link>

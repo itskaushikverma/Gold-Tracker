@@ -36,7 +36,7 @@ export default function Footer() {
             href={links.portfolio}
             target="_blank"
             rel="noreferrer"
-            className="text-foreground font-medium underline-offset-4 transition-all duration-200 hover:underline"
+            className="text-foreground cursor-pointer font-medium underline-offset-4 transition-all duration-200 hover:underline"
           >
             Kaushik Verma
           </a>
@@ -49,7 +49,7 @@ export default function Footer() {
               target={href.startsWith('mailto:') ? undefined : '_blank'}
               rel={href.startsWith('mailto:') ? undefined : 'noreferrer'}
               aria-label={label}
-              className="hover:text-foreground rounded-md p-1.5 transition-colors"
+              className="hover:text-foreground cursor-pointer rounded-md p-1.5 transition-colors"
             >
               <Icon className="size-5" />
             </a>

@@ -3,10 +3,10 @@ import { validateSellFields } from '../../utils/validator.js';
 
 export const sell = async (req, res) => {
   try {
-    const { investment_id, sellingPrice } = req.body;
+    const { investment_id, sellingPrice, goldRate } = req.body;
     const user_id = req.user.id;
 
-    const validated = validateSellFields({ investment_id, sellingPrice });
+    const validated = validateSellFields({ investment_id, sellingPrice, goldRate });
 
     if (validated?.success === false) {
       return res.status(400).json({
@@ -22,6 +22,7 @@ export const sell = async (req, res) => {
         $set: {
           'isSell.status': true,
           'isSell.amount': validated.sellingPriceRounded,
+          'goldRate.sell': validated.roundedGoldRate,
         },
       },
       { new: true },

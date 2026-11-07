@@ -85,17 +85,10 @@ export const api = createApi({
     }),
 
     getSellingPricePerformance: builder.query({
-      query: () => ({
+      query: ({ scope } = {}) => ({
         url: ENDPOINTS.GET_SELLING_PRICE_PERFORMANCE,
         method: 'GET',
-      }),
-      providesTags: ['SELLING_PRICE_PERFORMANCE'],
-    }),
-
-    getSellingPricePerformanceAi: builder.query({
-      query: () => ({
-        url: ENDPOINTS.GET_SELLING_PRICE_PERFORMANCE_AI,
-        method: 'GET',
+        params: { scope },
       }),
       providesTags: ['SELLING_PRICE_PERFORMANCE'],
     }),
@@ -113,5 +106,4 @@ export const {
   useGetDetailsQuery,
   useGetPerformanceQuery,
   useGetSellingPricePerformanceQuery,
-  useGetSellingPricePerformanceAiQuery,
 } = api;

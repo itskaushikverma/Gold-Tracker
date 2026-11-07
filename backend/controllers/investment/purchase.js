@@ -3,11 +3,11 @@ import { validatePurchaseFields } from '../../utils/validator.js';
 
 export const purchase = async (req, res) => {
   try {
-    const { date, weight, investedValue } = req.body;
+    const { date, weight, investedValue, goldRate } = req.body;
 
     const user_id = req.user.id;
 
-    const validated = validatePurchaseFields({ date, weight, investedValue });
+    const validated = validatePurchaseFields({ date, weight, investedValue, goldRate });
 
     if (validated?.success === false) {
       return res.status(400).json({
@@ -21,6 +21,9 @@ export const purchase = async (req, res) => {
       date,
       weight: validated.roundedWeight,
       investedValue: validated.roundedInvestedValue,
+      goldRate: {
+        purchase: validated.roundedGoldRate,
+      },
       userId: user_id,
     });
 

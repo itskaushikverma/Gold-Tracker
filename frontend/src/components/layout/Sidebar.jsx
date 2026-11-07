@@ -11,31 +11,31 @@ import Logo from '../common/Logo';
 import { MotionButton, MotionLabel } from '../common/MotionWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setSellPriceOverride } from '../../redux/slices/sessionSlice';
-import { useLogoutMutation } from '../../services/api';
+import { api, useLogoutMutation } from '../../services/api';
 import { Switch } from '../ui/Switch';
 
 const SIDEBAR_WIDTH = 'w-100';
 
 const NAV_ITEMS = [
   {
-    to: '/dashboard',
-    label: 'Dashboard',
+    to: '/home',
+    label: 'Home',
     icon: RiDashboardLine,
     activeBg: 'bg-blue-500/10 text-blue-50',
     activeBar: 'bg-blue-500',
     activeIcon: 'text-blue-400',
   },
   {
-    to: '/performance',
-    label: 'Performance',
+    to: '/my-growth',
+    label: 'My Growth',
     icon: RiLineChartLine,
     activeBg: 'bg-cyan-500/10 text-cyan-50',
     activeBar: 'bg-cyan-500',
     activeIcon: 'text-cyan-400',
   },
   {
-    to: '/selling-price-performance',
-    label: 'Selling Price Performance',
+    to: '/sell-price-history',
+    label: 'Sell Price History',
     icon: RiLineChartLine,
     activeBg: 'bg-cyan-500/10 text-cyan-50',
     activeBar: 'bg-cyan-500',
@@ -50,7 +50,7 @@ function SidebarNavItem({ to, label, icon: Icon, activeBg, activeBar, activeIcon
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          'group relative flex items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 font-medium transition-colors duration-200',
+          'group relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 font-medium transition-colors duration-200',
           isActive
             ? cn(activeBg, 'shadow-[inset_0px_1px_0px_0px_rgba(255,255,255,0.05)]')
             : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200',
@@ -99,6 +99,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
       // clear local session even if logout request fails
     }
     dispatch(logout());
+    dispatch(api.util.resetApiState());
     navigate('/auth');
   };
 
@@ -138,7 +139,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             whileTap={{ scale: 0.95, y: 2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onClose}
-            className="shrink-0 rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:hidden"
+            className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:hidden"
             aria-label="Close sidebar"
           >
             <RiCloseLine className="h-5 w-5" />
@@ -149,7 +150,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             whileTap={{ scale: 0.95, y: 2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onToggleDesktop}
-            className="-mr-2 hidden shrink-0 rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:flex"
+            className="-mr-2 hidden shrink-0 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white lg:flex"
             aria-label="Collapse sidebar"
           >
             <RiSidebarFoldLine className="h-5 w-5" />
@@ -206,7 +207,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             whileTap={{ scale: 0.95, y: 2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             onClick={onLogout}
-            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-400 transition-colors duration-200 hover:bg-red-500/10 hover:text-red-400"
+            className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-red-500/50 px-3 py-2.5 font-medium text-slate-400 transition-colors duration-200 hover:border-red-500 hover:bg-red-500/10 hover:text-red-400"
           >
             <RiLogoutBoxRLine className="h-5 w-5 shrink-0" />
             Logout
@@ -216,7 +217,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             <Link
               to="/terms"
               onClick={onClose}
-              className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+              className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
             >
               Terms &amp; Conditions
             </Link>{' '}
@@ -224,7 +225,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             <Link
               to="/privacy"
               onClick={onClose}
-              className="text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+              className="cursor-pointer text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
             >
               Privacy Policy
             </Link>

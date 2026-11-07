@@ -21,8 +21,14 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT;
 
-connectDB();
-
 app.use('/api', router);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+};
+
+startServer().catch((error) => {
+  console.error('[Server] Failed to start:', error);
+  process.exit(1);
+});

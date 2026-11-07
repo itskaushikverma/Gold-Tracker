@@ -33,7 +33,7 @@ export default function Dashboard() {
     isFetching,
     isError,
     error,
-  } = useGetDetailsQuery({ sellPriceOverride }, { refetchOnMountOrArgChange: true });
+  } = useGetDetailsQuery({ sellPriceOverride });
 
   useEffect(() => {
     if (isError) toast.error(error?.data?.message);
@@ -52,13 +52,13 @@ export default function Dashboard() {
         <Header
           dashboardType="overview"
           details={data}
-          title="Overview"
-          description="Track your gold investment portfolio and real-time performance."
+          title="My Gold"
+          description="See your gold and how much it’s worth today."
         />
         <div className="flex w-full gap-4 overflow-x-auto pt-1 pb-2 md:gap-6">
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
-              title="Total Invested"
+              title="Money Put In"
               value={formatCurrency(data?.totalInvestedAmount || 0)}
               icon={<RiMoneyRupeeCircleLine className="h-6 w-6" />}
             />
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
-              title="Current Value"
+              title="What It’s Worth Now"
               value={formatCurrency(data?.currentInvestmentValue || 0)}
               icon={<RiArrowRightUpLine className="h-6 w-6" />}
             />
@@ -74,7 +74,7 @@ export default function Dashboard() {
 
           <div className="w-full min-w-70 flex-1 shrink-0 md:min-w-80">
             <DashboardCard
-              title="Total Profit / Loss"
+              title="Profit or Loss"
               value={formatCurrency(data?.totalProfitLoss || 0)}
               icon={
                 data?.isPositive ? (
@@ -117,13 +117,16 @@ export default function Dashboard() {
                       Weight
                     </th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      Invested Amount
+                      Gold Rate
                     </th>
                     <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      Current Value
+                      Money Put In
+                    </th>
+                    <th className="px-4 py-3 text-center tracking-wider text-nowrap uppercase md:px-6 md:py-4">
+                      What It’s Worth Now
                     </th>
                     <th className="px-4 py-3 text-right tracking-wider text-nowrap uppercase md:px-6 md:py-4">
-                      Profit/Loss
+                      Profit or Loss
                     </th>
                   </tr>
                 </thead>
@@ -166,6 +169,29 @@ export default function Dashboard() {
                           )}
                         >
                           {item.weight}mg
+                        </td>
+                        <td className="px-4 py-3 text-center font-mono text-sm text-nowrap md:px-6 md:py-4 md:text-base">
+                          <span
+                            className={cn(
+                              item?.goldRate?.sell
+                                ? item?.isPositive
+                                  ? 'text-emerald-400'
+                                  : 'text-red-400'
+                                : 'text-slate-500',
+                            )}
+                          >
+                            {item?.goldRate?.sell ? formatCurrency(item.goldRate.sell) : '--'}
+                          </span>
+                          <span className="text-slate-600">/</span>
+                          <span
+                            className={cn(
+                              item?.goldRate?.purchase ? 'text-blue-400' : 'text-slate-500',
+                            )}
+                          >
+                            {item?.goldRate?.purchase
+                              ? formatCurrency(item.goldRate.purchase)
+                              : '--'}
+                          </span>
                         </td>
                         <td className="px-4 py-3 text-center font-mono text-sm text-nowrap text-slate-300 md:px-6 md:py-4 md:text-base">
                           {formatCurrency(item.investedValue)}

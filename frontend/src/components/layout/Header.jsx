@@ -78,7 +78,7 @@ export default function Header({
               whileTap={{ scale: 0.95, y: 2 }}
               transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               onClick={() => setIsAddModalOpen(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] md:w-fit"
+              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2.5 font-medium text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] md:w-fit"
             >
               <RiAddLine className="h-5 w-5" />
               Add Gold
@@ -92,7 +92,7 @@ export default function Header({
                   key={tab.key}
                   type="button"
                   onClick={() => onTabChange?.(tab.key)}
-                  className="relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
+                  className="relative cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
                 >
                   {activeTab === tab.key && (
                     <MotionDiv
@@ -112,7 +112,7 @@ export default function Header({
                     )}
                   >
                     {tab.label}
-                    {tab.key === 'ai' && isAiBusy && (
+                    {tab.key === 'smart' && isAiBusy && (
                       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-400" />
                     )}
                   </span>
@@ -127,7 +127,7 @@ export default function Header({
               whileTap={{ scale: 0.95, y: 2 }}
               transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               onClick={onOpenSidebar}
-              className="hidden rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 shadow-lg backdrop-blur-md transition-all hover:bg-slate-800 hover:text-white lg:inline-flex"
+              className="hidden cursor-pointer rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 shadow-lg backdrop-blur-md transition-all hover:bg-slate-800 hover:text-white lg:inline-flex"
             >
               <RiSidebarUnfoldLine className="h-5 w-5" />
             </MotionButton>

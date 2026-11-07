@@ -18,7 +18,7 @@ export const getDetails = async (req, res) => {
     const investments = await InvestmentModel.find({ userId: user_id })
       .sort({ date: -1, createdAt: -1 })
       .lean()
-      .select('date weight investedValue isSell');
+      .select('date weight investedValue goldRate isSell');
 
     const goldPrice = await getGoldPrice();
 

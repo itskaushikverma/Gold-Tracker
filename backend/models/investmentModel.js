@@ -14,6 +14,16 @@ const investmentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    goldRate: {
+      purchase: {
+        type: Number,
+        required: true,
+      },
+      sell: {
+        type: Number,
+        default: 0,
+      },
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

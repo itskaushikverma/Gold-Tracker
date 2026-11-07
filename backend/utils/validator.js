@@ -1,13 +1,21 @@
 import validator from 'validator';
 import { round } from './roundToDecimal.js';
 
-export const validatePurchaseFields = ({ date, weight, investedValue }) => {
-  if (!date || !weight || !investedValue) {
-    return {
-      success: false,
-      data: null,
-      message: 'Date, weight, and amount are required',
-    };
+export const validatePurchaseFields = ({ date, weight, investedValue, goldRate }) => {
+  if (!date) {
+    return { success: false, data: null, message: 'Date is required' };
+  }
+
+  if (!weight) {
+    return { success: false, data: null, message: 'Weight is required' };
+  }
+
+  if (!investedValue) {
+    return { success: false, data: null, message: 'Invested amount is required' };
+  }
+
+  if (!goldRate) {
+    return { success: false, data: null, message: 'Gold rate is required' };
   }
 
   if (!validator.isISO8601(String(date)) && !validator.isDate(String(date))) {
@@ -15,14 +23,17 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
   }
 
   const purchaseDate = new Date(date);
-  const endOfToday = new Date();
-  endOfToday.setHours(23, 59, 59, 999);
 
   if (Number.isNaN(purchaseDate.getTime())) {
     return { success: false, data: null, message: 'Invalid date format' };
   }
 
-  if (purchaseDate > endOfToday) {
+  const now = new Date();
+  const endOfTodayUtc = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999),
+  );
+
+  if (purchaseDate > endOfTodayUtc) {
     return { success: false, data: null, message: 'Purchase date cannot be in the future' };
   }
 
@@ -42,6 +53,14 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     };
   }
 
+  if (!validator.isFloat(String(goldRate), { gt: 0 })) {
+    return {
+      success: false,
+      data: null,
+      message: 'Gold rate must be greater than 0',
+    };
+  }
+
   const roundedInvestedValue = round(investedValue);
 
   if (!roundedInvestedValue) {
@@ -54,16 +73,26 @@ export const validatePurchaseFields = ({ date, weight, investedValue }) => {
     return { success: false, data: null, message: 'Invalid weight' };
   }
 
-  return { roundedWeight, roundedInvestedValue };
+  const roundedGoldRate = round(goldRate);
+
+  if (!roundedGoldRate) {
+    return { success: false, data: null, message: 'Invalid gold rate' };
+  }
+
+  return { roundedWeight, roundedInvestedValue, roundedGoldRate };
 };
 
-export const validateSellFields = ({ investment_id, sellingPrice }) => {
-  if (!investment_id || !sellingPrice) {
-    return {
-      success: false,
-      data: null,
-      message: 'Investment ID and Selling Price are required',
-    };
+export const validateSellFields = ({ investment_id, sellingPrice, goldRate }) => {
+  if (!investment_id) {
+    return { success: false, data: null, message: 'Investment ID is required' };
+  }
+
+  if (!sellingPrice) {
+    return { success: false, data: null, message: 'Selling price is required' };
+  }
+
+  if (!goldRate) {
+    return { success: false, data: null, message: 'Gold rate is required' };
   }
 
   if (!validator.isMongoId(String(investment_id))) {
@@ -78,13 +107,27 @@ export const validateSellFields = ({ investment_id, sellingPrice }) => {
     };
   }
 
+  if (!validator.isFloat(String(goldRate), { gt: 0 })) {
+    return {
+      success: false,
+      data: null,
+      message: 'Gold rate must be greater than 0',
+    };
+  }
+
   const sellingPriceRounded = round(sellingPrice);
 
   if (!sellingPriceRounded) {
     return { success: false, data: null, message: 'Invalid selling price' };
   }
 
-  return { sellingPriceRounded };
+  const roundedGoldRate = round(goldRate);
+
+  if (!roundedGoldRate) {
+    return { success: false, data: null, message: 'Invalid gold rate' };
+  }
+
+  return { sellingPriceRounded, roundedGoldRate };
 };
 
 export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
@@ -109,14 +152,17 @@ export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
   }
 
   const entryDate = new Date(date);
-  const endOfToday = new Date();
-  endOfToday.setHours(23, 59, 59, 999);
 
   if (Number.isNaN(entryDate.getTime())) {
     return { success: false, data: null, message: 'Invalid date format' };
   }
 
-  if (entryDate > endOfToday) {
+  const now = new Date();
+  const endOfTodayUtc = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999),
+  );
+
+  if (entryDate > endOfTodayUtc) {
     return { success: false, data: null, message: 'Date cannot be in the future' };
   }
 
@@ -161,4 +207,25 @@ export const validateGetDetailsFields = ({ sellPriceOverrideString }) => {
   return {
     sellPriceOverrideString: String(sellPriceOverrideString) === 'true',
   };
+};
+
+const SELLING_PRICE_PERFORMANCE_SCOPES = new Set(['my', 'smart', 'global']);
+
+export const validateSellingPricePerformanceScope = ({ scope }) => {
+  if (scope === undefined || scope === null || scope === '') {
+    return { success: false, data: null, message: 'Invalid scope', statusCode: 400 };
+  }
+
+  const normalizedScope = String(scope).trim().toLowerCase();
+
+  if (!SELLING_PRICE_PERFORMANCE_SCOPES.has(normalizedScope)) {
+    return {
+      success: false,
+      data: null,
+      message: 'scope must be "my", "smart", or "global"',
+      statusCode: 400,
+    };
+  }
+
+  return { scope: normalizedScope };
 };

@@ -30,33 +30,38 @@ export const getPerformance = async (req, res) => {
       });
     }
 
-    const goldPrice = await getGoldPrice();
+    let goldPrice = null;
+    let overrideSellingPrice = null;
+    let pricePerMg = null;
 
-    if (!goldPrice.success) {
-      return res.status(500).json({ success: false, data: null, message: goldPrice.message });
+    if (sellPriceOverride) {
+      overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id })
+        .sort({ date: -1 })
+        .select('sellingPrice');
+    } else {
+      goldPrice = await getGoldPrice();
+      if (goldPrice && !goldPrice.success)
+        return res.status(500).json({ success: false, data: null, message: goldPrice.message });
     }
 
-    const overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id })
-      .sort({ date: -1 })
-      .select('sellingPrice');
-
-    const pricePerMg = sellPriceOverride
+    pricePerMg = sellPriceOverride
       ? overrideSellingPrice?.sellingPrice
-      : goldPrice.data.priceWithGST;
+      : goldPrice?.data?.sellingPrice;
 
     let cumulativeInvested = 0;
     let cumulativeCurrentValue = 0;
 
-    const performance = investments.map((investment) => {
-      cumulativeInvested += Number(investment.investedValue);
-      cumulativeCurrentValue += Number(investment.weight) * Number(pricePerMg);
-
-      return {
-        date: investment.date,
-        invested: round(cumulativeInvested),
-        value: round(cumulativeCurrentValue),
-      };
-    });
+    const performance = investments
+      .map((investment) => {
+        cumulativeInvested += Number(investment.investedValue);
+        cumulativeCurrentValue += Number(investment.weight) * Number(pricePerMg);
+        return {
+          date: new Date(investment.date).getTime(),
+          invested: round(cumulativeInvested),
+          value: round(cumulativeCurrentValue),
+        };
+      })
+      .sort((a, b) => a.date - b.date);
 
     return res.status(200).json({
       success: true,

@@ -5,6 +5,7 @@ import { RiRefreshLine } from '@remixicon/react';
 import { useToast } from 'react-toast-kit-js';
 import { useGoogleAuthMutation } from '../../services/api';
 import { setCredentials } from '../../redux/slices/sessionSlice';
+import { cn } from '../../lib/utils';
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -60,7 +61,7 @@ export default function GoogleAuthButton() {
             userAvatar: resp?.data?.user_avatar || null,
           }),
         );
-        navigate('/dashboard');
+        navigate('/home');
       }
     } catch (err) {
       toast.error(err?.data?.message || err?.message || 'Google authentication failed');
@@ -114,18 +115,18 @@ export default function GoogleAuthButton() {
     <div className="relative w-full">
       <div
         ref={buttonRef}
-        className={`flex w-full justify-center ${isLoading ? 'pointer-events-none opacity-40' : ''}`}
+        className={cn('flex w-full justify-center', isLoading && 'pointer-events-none opacity-40')}
       />
 
       {!scriptReady && (
-        <div className="absolute inset-0 flex h-10 w-full cursor-not-allowed items-center justify-center gap-2 rounded-full bg-white text-sm font-medium text-black">
+        <div className="absolute inset-0 flex h-10 w-full cursor-wait items-center justify-center gap-2 rounded-full bg-white text-sm font-medium text-black">
           <RiRefreshLine className="h-4 w-4 animate-spin" />
           Loading Google…
         </div>
       )}
 
       {isLoading && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-full bg-[#131314]/70">
+        <div className="absolute inset-0 flex cursor-wait items-center justify-center rounded-full bg-[#131314]/70">
           <RiRefreshLine className="h-5 w-5 animate-spin text-white" />
         </div>
       )}

@@ -32,7 +32,6 @@ export const DashboardSkeleton = () => {
 export const PerformanceSkeleton = () => {
   return (
     <div className="flex h-full min-h-0 flex-col gap-6">
-      <HeaderSkeleton />
       <Skeleton className="min-h-0 flex-1 rounded-2xl" />
     </div>
   );

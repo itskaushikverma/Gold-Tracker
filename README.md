@@ -42,13 +42,13 @@
 
 Gold Tracker is a small portfolio app with a React client and an Express API. After sign-in, the dashboard lists purchases and sales, and the performance charts follow each holding against the current gold price.
 
-Each JSON response uses the same envelope:
+Auth and investment JSON responses use the same envelope:
 
 ```json
 { "success": true, "data": {}, "message": "Google authentication successful" }
 ```
 
-Failed requests use `"success": false` and `"data": null`.
+Failed requests use `"success": false` and `"data": null`. `GET /api/health` is the exception and returns `{ "status": "ok", "timestamp": "..." }`.
 
 <a id="screenshots"></a>
 
@@ -83,9 +83,9 @@ Failed requests use `"success": false` and `"data": null`.
 - Continue with Google on a single `/auth` page (sign-in and sign-up are the same flow)
 - Stay signed in across refreshes via an httpOnly JWT cookie and `GET /api/auth/me`
 - Show the signed-in Google name, email, and avatar in the sidebar
-- Record a purchase with a date, a weight in milligrams, and the amount invested
-- Mark one of your holdings as sold at a selling price
-- See invested amount, weight, current value, and profit or loss on the dashboard
+- Record a purchase with a date, weight in milligrams, amount invested, and gold rate (Rs/mg)
+- Mark one of your holdings as sold with a selling price and sell-time gold rate
+- See invested amount, weight, purchase/sell gold rates, current value, and profit or loss on the dashboard
 - Chart cumulative invested value against current value over time
 - Save a custom selling price and chart that history, with an optional Gemini pass for the chart
 - Keep investment routes limited to the signed-in user
@@ -138,27 +138,26 @@ cd Gold-Tracker
 2. Under **Authorized JavaScript origins**, add `http://localhost:5173` (and your production frontend origin when you deploy).
 3. Copy the **Client ID** (ends with `.apps.googleusercontent.com`) into both `backend/.env` (`GOOGLE_CLIENT_ID`) and `frontend/.env` (`VITE_GOOGLE_CLIENT_ID`). Use the same value in both — do **not** put the Client Secret (`GOCSPX-…`) in either env file. This flow only verifies the Google ID token.
 
-Start the API:
+Install dependencies from the repository root:
 
 ```bash
-cd backend
-cp .env.example .env
-npm install
-npm start
+npm run install:all
 ```
 
-The API listens on [http://localhost:5000](http://localhost:5000).
-
-In a second terminal, start the web app:
+Copy the env examples and fill in values (see [Environment](#environment) below):
 
 ```bash
-cd frontend
-cp .env.example .env
-npm install
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+Start the frontend and API together from the repository root:
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:5173](http://localhost:5173). The API listens on [http://localhost:5000](http://localhost:5000).
 
 Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mount. Fill in the Google Client ID in both env files before signing in. The app sends cookies with every request.
 
@@ -166,14 +165,15 @@ Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mou
 
 `backend/.env`
 
-| Variable           | Purpose                                                      |
-| ------------------ | ------------------------------------------------------------ |
-| `PORT`             | API port. Local default is `5000`.                           |
-| `MONGO_URI`        | MongoDB connection string.                                   |
-| `JWT_SECRET`       | Signing secret. Use at least 32 characters.                  |
-| `FRONTEND_URL`     | Allowed browser origin, for example `http://localhost:5173`. |
-| `GOOGLE_CLIENT_ID` | Google OAuth Web Client ID (same as the frontend value).     |
-| `GEMINI_API_KEY`   | Optional. Required only for the AI selling-price chart.      |
+| Variable                          | Purpose                                                           |
+| --------------------------------- | ----------------------------------------------------------------- |
+| `PORT`                            | API port. Local default is `5000`.                                |
+| `MONGO_URI`                       | MongoDB connection string.                                        |
+| `JWT_SECRET`                      | Signing secret. Use at least 32 characters.                       |
+| `FRONTEND_URL`                    | Allowed browser origin, for example `http://localhost:5173`.      |
+| `GOOGLE_CLIENT_ID`                | Google OAuth Web Client ID (same as the frontend value).          |
+| `GEMINI_API_KEY`                  | Optional. Required only for the AI selling-price chart.           |
+| `GLOBAL_SELL_PRICE_OWNER_USER_ID` | MongoDB User `_id` whose sell prices power the Global Prices tab. |
 
 `frontend/.env`
 
@@ -188,22 +188,16 @@ Set `VITE_API_URL` to `http://localhost:5000/api` so requests hit the `/api` mou
 
 From the repository root:
 
+- `npm run install:all` — install root, frontend, and backend dependencies
+- `npm run dev` — start the frontend and API together
 - `npm run lint` — lint the web app and the API
 - `npm run format` — format the repo with Prettier
 - `npm run check` — run lint, then format
 
-From `frontend/`:
+Useful package scripts:
 
-- `npm run dev` — start the local development server
-- `npm run build` — build the app for production
-- `npm run preview` — preview the production build locally
-- `npm run lint` — run ESLint checks
-
-From `backend/`:
-
-- `npm start` — start the API
-- `npm run lint` — run ESLint checks
-- `npm test` — run the Node test runner
+- `frontend`: `npm run build`, `npm run preview`
+- `backend`: `npm start` (API alone)
 
 <a id="api"></a>
 
@@ -211,25 +205,59 @@ From `backend/`:
 
 Investment routes require the `authToken` cookie from Google sign-in.
 
-| Method | Path                                           | Auth |
-| ------ | ---------------------------------------------- | ---- |
-| `POST` | `/api/auth`                                    | No   |
-| `GET`  | `/api/auth/me`                                 | Yes  |
-| `POST` | `/api/auth/logout`                             | No   |
-| `POST` | `/api/investment/purchase`                     | Yes  |
-| `POST` | `/api/investment/sell`                         | Yes  |
-| `POST` | `/api/investment/setCustomSellingPrice`        | Yes  |
-| `GET`  | `/api/investment/getDetails`                   | Yes  |
-| `GET`  | `/api/investment/getPerformance`               | Yes  |
-| `GET`  | `/api/investment/getSellingPricePerformance`   | Yes  |
-| `GET`  | `/api/investment/getSellingPricePerformanceAi` | Yes  |
-| `GET`  | `/api/health`                                  | No   |
+| Method | Path                                         | Auth |
+| ------ | -------------------------------------------- | ---- |
+| `POST` | `/api/auth`                                  | No   |
+| `GET`  | `/api/auth/me`                               | Yes  |
+| `POST` | `/api/auth/logout`                           | No   |
+| `POST` | `/api/investment/purchase`                   | Yes  |
+| `POST` | `/api/investment/sell`                       | Yes  |
+| `POST` | `/api/investment/setCustomSellingPrice`      | Yes  |
+| `GET`  | `/api/investment/getDetails`                 | Yes  |
+| `GET`  | `/api/investment/getPerformance`             | Yes  |
+| `GET`  | `/api/investment/getSellingPricePerformance` | Yes  |
+| `GET`  | `/api/health`                                | No   |
 
 `POST /api/auth` accepts `{ "credential": "<Google ID token>" }`, verifies it with Google, creates or finds the user, and sets the `authToken` cookie. The response includes `user_email`, `user_name`, and `user_avatar`.
 
 `GET /api/auth/me` reads the cookie and returns the same profile fields so the frontend can restore the session after a refresh.
 
+`POST /api/investment/purchase` accepts:
+
+```json
+{
+  "date": "2026-11-07T12:00:00.000Z",
+  "weight": 10.5,
+  "investedValue": 5000,
+  "goldRate": 476.19
+}
+```
+
+That sets `goldRate.purchase` on the investment.
+
+`POST /api/investment/sell` accepts:
+
+```json
+{
+  "investment_id": "<MongoDB ObjectId>",
+  "sellingPrice": 5500,
+  "goldRate": 520.5
+}
+```
+
+That marks the holding sold (`isSell.status`, `isSell.amount`) and sets `goldRate.sell`.
+
+Each investment stores gold rates as:
+
+```json
+{ "goldRate": { "purchase": 476.19, "sell": 0 } }
+```
+
+`sell` stays `0` until the holding is sold. The dashboard shows them as `sell / purchase` (for example `-- / ₹476.19` before sale).
+
 `getDetails` and `getPerformance` require a boolean `sellPriceOverride` query param. When `true`, calculations use the latest saved custom selling price instead of the live gold quote. Saving a custom price is the separate POST.
+
+`getSellingPricePerformance` requires a `scope` query param: `my` (signed-in user), `smart` (AI-formatted chart for the signed-in user), or `global` (owner user from `GLOBAL_SELL_PRICE_OWNER_USER_ID`).
 
 <a id="project-structure"></a>
 
