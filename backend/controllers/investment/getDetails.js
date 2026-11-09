@@ -76,6 +76,8 @@ export const getDetails = async (req, res) => {
       };
     });
 
+    data.totalInvestedAmount = round(data.totalInvestedAmount);
+    data.totalPurchasedGoldWeight = round(data.totalPurchasedGoldWeight);
     data.currentInvestmentValue = round(data.totalPurchasedGoldWeight * pricePerMg);
     data.totalProfitLoss = round(data.currentInvestmentValue - data.totalInvestedAmount);
     data.isPositive = data.totalProfitLoss >= 0;

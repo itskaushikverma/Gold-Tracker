@@ -5,7 +5,7 @@ export default function Footer() {
   const [links, setLinks] = useState(null);
 
   useEffect(() => {
-    axios.get('https://pget.vercel.app/').then(({ data }) => setLinks(data));
+    axios.get('https://profiledata.vercel.app/').then(({ data }) => setLinks(data));
   }, []);
 
   if (!links) return null;

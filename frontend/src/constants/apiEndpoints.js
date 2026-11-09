@@ -1,5 +1,6 @@
 export const ENDPOINTS = {
   GOOGLE_AUTH: '/auth',
+  AUTH_BYPASS: '/auth/bypass',
   ME: '/auth/me',
   LOGOUT: '/auth/logout',
   PURCHASE: '/investment/purchase',
