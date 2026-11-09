@@ -28,7 +28,7 @@ function renderAuthor(data) {
 </div>
 <div align="center" style="margin: 8px 0 0">
   <p style="margin: 0 0 4px">If you found this project helpful, please consider giving it a ⭐️</p>
-  <a href="https://github.com/${data.githubUsername}/template"><img src="https://img.shields.io/github/stars/${data.githubUsername}/template?style=social" alt="GitHub stars" /></a>
+  <a href="https://github.com/${data.githubUsername}/Gold-Tracker"><img src="https://img.shields.io/github/stars/${data.githubUsername}/Gold-Tracker?style=social" alt="GitHub stars" /></a>
 </div>
 ${AUTHOR_END}`;
 }

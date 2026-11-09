@@ -341,6 +341,6 @@ If you would like to contribute:
 </div>
 <div align="center" style="margin: 8px 0 0">
   <p style="margin: 0 0 4px">If you found this project helpful, please consider giving it a ⭐️</p>
-  <a href="https://github.com/itskaushikverma/template"><img src="https://img.shields.io/github/stars/itskaushikverma/template?style=social" alt="GitHub stars" /></a>
+  <a href="https://github.com/itskaushikverma/Gold-Tracker"><img src="https://img.shields.io/github/stars/itskaushikverma/Gold-Tracker?style=social" alt="GitHub stars" /></a>
 </div>
 <!-- AUTHOR:END -->
