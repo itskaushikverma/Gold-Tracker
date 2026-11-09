@@ -25,13 +25,6 @@ export const api = createApi({
       }),
     }),
 
-    authBypass: builder.mutation({
-      query: () => ({
-        url: ENDPOINTS.AUTH_BYPASS,
-        method: 'POST',
-      }),
-    }),
-
     getMe: builder.query({
       query: () => ({
         url: ENDPOINTS.ME,
@@ -105,7 +98,6 @@ export const api = createApi({
 export const {
   useHealthQuery,
   useGoogleAuthMutation,
-  useAuthBypassMutation,
   useGetMeQuery,
   useLogoutMutation,
   usePurchaseMutation,

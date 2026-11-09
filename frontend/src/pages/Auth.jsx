@@ -1,10 +1,7 @@
 import { Link } from 'react-router-dom';
-import BypassAuthButton from '../components/auth/BypassAuthButton';
 import GoogleAuthButton from '../components/auth/GoogleAuthButton';
 import Logo from '../components/common/Logo';
 import { MotionDiv } from '../components/common/MotionWrapper';
-
-const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS === 'true';
 
 export default function Auth() {
   return (
@@ -18,14 +15,10 @@ export default function Auth() {
         <div className="flex flex-col items-center space-y-2 text-center">
           <Logo size={64} className="justify-center" />
           <h1 className="text-2xl font-bold tracking-tight text-white">Welcome to Gold Tracker</h1>
-          <p className="text-sm text-slate-400">
-            {AUTH_BYPASS
-              ? 'Dev bypass enabled — signing in from AUTH_BYPASS_USER_ID'
-              : 'Continue with Google to access your portfolio'}
-          </p>
+          <p className="text-sm text-slate-400">Continue with Google to access your portfolio</p>
         </div>
 
-        {AUTH_BYPASS ? <BypassAuthButton /> : <GoogleAuthButton />}
+        <GoogleAuthButton />
 
         <p className="text-center text-xs leading-relaxed text-slate-500">
           By continuing, you agree to our{' '}
