@@ -1,6 +1,9 @@
 import validator from 'validator';
 import { round } from './roundToDecimal.js';
 
+const SELLING_PRICE_PERFORMANCE_SCOPES = new Set(['my', 'smart', 'global']);
+const PRICE_PERFORMANCE_TYPES = new Set(['sell', 'purchase']);
+
 export const validatePurchaseFields = ({ date, weight, investedValue, goldRate }) => {
   if (!date) {
     return { success: false, data: null, message: 'Date is required' };
@@ -130,12 +133,12 @@ export const validateSellFields = ({ investment_id, sellingPrice, goldRate }) =>
   return { sellingPriceRounded, roundedGoldRate };
 };
 
-export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
-  if (sellingPrice === undefined || sellingPrice === null || sellingPrice === '') {
+export const validateSetCustomPriceFields = ({ price, date, type }) => {
+  if (price === undefined || price === null || price === '') {
     return {
       success: false,
       data: null,
-      message: 'Selling price is required',
+      message: 'Price is required',
     };
   }
 
@@ -144,6 +147,20 @@ export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
       success: false,
       data: null,
       message: 'Date is required',
+    };
+  }
+
+  if (type === undefined || type === null || type === '') {
+    return { success: false, data: null, message: 'Type is required', statusCode: 400 };
+  }
+
+  const normalizedType = String(type).trim().toLowerCase();
+
+  if (!PRICE_PERFORMANCE_TYPES.has(normalizedType)) {
+    return {
+      success: false,
+      data: null,
+      message: 'Type is invalid',
     };
   }
 
@@ -166,7 +183,7 @@ export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
     return { success: false, data: null, message: 'Date cannot be in the future' };
   }
 
-  if (!validator.isFloat(String(sellingPrice), { gt: 0 })) {
+  if (!validator.isFloat(String(price), { gt: 0 })) {
     return {
       success: false,
       data: null,
@@ -174,13 +191,13 @@ export const validateSetCustomSellingPriceFields = ({ sellingPrice, date }) => {
     };
   }
 
-  const sellingPriceRounded = round(sellingPrice);
+  const roundedPrice = round(price);
 
-  if (!sellingPriceRounded) {
+  if (!roundedPrice) {
     return { success: false, data: null, message: 'Invalid selling price' };
   }
 
-  return { sellingPriceRounded, date: entryDate };
+  return { success: true, roundedPrice, date: entryDate, type: normalizedType };
 };
 
 export const validateGetDetailsFields = ({ sellPriceOverrideString }) => {
@@ -209,9 +226,7 @@ export const validateGetDetailsFields = ({ sellPriceOverrideString }) => {
   };
 };
 
-const SELLING_PRICE_PERFORMANCE_SCOPES = new Set(['my', 'smart', 'global']);
-
-export const validateSellingPricePerformanceScope = ({ scope }) => {
+export const validateSellingPricePerformanceScope = ({ scope, type }) => {
   if (scope === undefined || scope === null || scope === '') {
     return { success: false, data: null, message: 'Invalid scope', statusCode: 400 };
   }
@@ -222,10 +237,20 @@ export const validateSellingPricePerformanceScope = ({ scope }) => {
     return {
       success: false,
       data: null,
-      message: 'scope must be "my", "smart", or "global"',
-      statusCode: 400,
+      message: 'Scope is invalid',
     };
   }
 
-  return { scope: normalizedScope };
+  const normalizedType =
+    type === undefined || type === null || type === '' ? 'sell' : String(type).trim().toLowerCase();
+
+  if (!PRICE_PERFORMANCE_TYPES.has(normalizedType)) {
+    return {
+      success: false,
+      data: null,
+      message: 'Type is invalid',
+    };
+  }
+
+  return { success: true, scope: normalizedScope, type: normalizedType };
 };

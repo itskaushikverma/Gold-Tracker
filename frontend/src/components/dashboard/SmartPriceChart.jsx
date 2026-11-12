@@ -1,7 +1,16 @@
 import Chart from '@/components/dashboard/Chart';
 
-export default function SmartSellingPriceChart({ data, isLoading, errorMessage }) {
+export default function SmartPriceChart({ data, isLoading, isError = false, errorMessage }) {
   if (isLoading) return <ChartLoader color="#d95926" />;
+
+  if (isError) {
+    return (
+      <div className="flex h-full min-h-80 flex-col items-center justify-center gap-2 text-sm text-slate-500">
+        <p>Couldn’t load smart chart.</p>
+        {errorMessage ? <div className="text-sm text-rose-400">{errorMessage}</div> : null}
+      </div>
+    );
+  }
 
   const performance = data?.data?.performance;
   const chartData = performance?.data || [];
@@ -12,7 +21,6 @@ export default function SmartSellingPriceChart({ data, isLoading, errorMessage }
     return (
       <div className="flex h-full min-h-80 flex-col items-center justify-center gap-2 text-sm text-slate-500">
         No chart data yet.
-        {errorMessage && <div className="text-sm text-rose-400">{errorMessage}</div>}
       </div>
     );
   }

@@ -3,10 +3,10 @@ import { IndianRupee, Pencil, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { MotionButton, MotionDiv } from '../common/MotionWrapper';
 import CustomInput from '../common/CustomInput';
-import { useSetCustomSellingPriceMutation } from '../../services/api';
+import { useSetCustomPriceMutation } from '../../services/api';
 import { useToast } from 'react-toast-kit-js';
 
-export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
+export default function SetCustomPriceModal({ isOpen, onClose, text }) {
   const {
     register,
     handleSubmit,
@@ -17,18 +17,19 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
 
   const toast = useToast();
 
-  const [setCustomSellingPrice, { isLoading }] = useSetCustomSellingPriceMutation();
+  const [setCustomPrice, { isLoading }] = useSetCustomPriceMutation();
 
   const onSubmit = async ({ price }) => {
     try {
-      const resp = await setCustomSellingPrice({
-        sellingPrice: price,
-        date: new Date().toISOString(),
+      const resp = await setCustomPrice({
+        priceBody: price,
+        typeBody: text.toLowerCase(),
+        dateBody: new Date().toISOString(),
       }).unwrap();
       onClose();
       toast.success(resp?.message);
     } catch (err) {
-      toast.error(err?.data?.message || 'Failed to save custom selling price');
+      toast.error(err?.data?.message);
     }
   };
 
@@ -36,7 +37,7 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <MotionDiv
-          key="custom-selling-price-modal"
+          key="custom-price-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -60,7 +61,7 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
                 <div className="rounded-lg bg-blue-500/10 p-2 text-blue-400">
                   <Pencil className="h-5 w-5" />
                 </div>
-                Set Custom Price
+                Set Custom {text} Price
               </h2>
               <MotionButton
                 type="button"
@@ -75,14 +76,14 @@ export default function SetCustomSellingPriceModal({ isOpen, onClose }) {
               <CustomInput
                 register={register}
                 type="number"
-                label="Custom Selling Price (₹/mg)"
+                label={`Custom ${text} Price (₹/mg)`}
                 placeholder="e.g. 5000"
                 icon={IndianRupee}
                 name="price"
                 errors={errors}
                 autoFocus
                 rules={{
-                  required: { value: true, message: 'Custom selling price is required' },
+                  required: { value: true, message: `Custom ${text} price is required` },
                   min: { value: 1, message: 'Price should be greater than 0' },
                   valueAsNumber: true,
                 }}

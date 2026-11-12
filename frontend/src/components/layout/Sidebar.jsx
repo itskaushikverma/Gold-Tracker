@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   ChartCandlestick,
+  ChartLine,
   LayoutDashboard,
   LogOut,
   PanelLeftClose,
@@ -42,6 +43,14 @@ const NAV_ITEMS = [
     activeBg: 'bg-amber-500/10 text-amber-50',
     activeBar: 'bg-amber-500',
     activeIcon: 'text-amber-400',
+  },
+  {
+    to: '/purchase-price-history',
+    label: 'Purchase Price History',
+    icon: ChartLine,
+    activeBg: 'bg-green-500/10 text-green-50',
+    activeBar: 'bg-green-500',
+    activeIcon: 'text-green-400',
   },
 ];
 
@@ -124,7 +133,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex h-screen shrink-0 flex-col overflow-hidden border-r border-slate-800 bg-slate-900/90 backdrop-blur-xl transition-all duration-300 ease-in-out lg:static',
+          'fixed inset-y-0 left-0 z-50 flex h-dvh shrink-0 flex-col overflow-hidden border-r border-slate-800 bg-slate-900/90 backdrop-blur-xl transition-all duration-300 ease-in-out lg:static lg:h-screen',
           SIDEBAR_WIDTH,
           isOpen ? 'translate-x-0' : '-translate-x-full',
           isDesktopOpen
@@ -173,7 +182,7 @@ export default function Sidebar({ isOpen, onClose, isDesktopOpen = true, onToggl
             htmlFor="sell-price-override"
             className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-400 transition-colors duration-200 hover:bg-slate-800/50 hover:text-slate-200"
           >
-            <span className="truncate">Use Custom Price</span>
+            <span className="truncate">Use Custom Sell Price</span>
             <Switch
               id="sell-price-override"
               checked={sellPriceOverride}

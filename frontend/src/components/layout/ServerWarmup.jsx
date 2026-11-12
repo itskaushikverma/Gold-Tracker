@@ -24,7 +24,7 @@ export default function ServerWarmup({ children }) {
   }
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center p-6">
+    <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center p-6 lg:min-h-screen">
       <div className="flex flex-col items-center text-center">
         <Logo withWordmark size={44} className="mb-6 justify-center" />
         <LoaderAnimation />

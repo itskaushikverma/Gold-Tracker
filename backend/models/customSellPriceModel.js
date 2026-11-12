@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
-const customSellingPriceSchema = new mongoose.Schema(
+const customSellPriceSchema = new mongoose.Schema(
   {
     date: {
       type: Date,
       required: true,
     },
-    sellingPrice: {
+    price: {
       type: Number,
       required: true,
     },
@@ -19,7 +19,6 @@ const customSellingPriceSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const CustomSellingPriceModel =
-  mongoose.models.CustomSellingPrice ||
-  mongoose.model('CustomSellingPrice', customSellingPriceSchema);
-export default CustomSellingPriceModel;
+const CustomSellPriceModel =
+  mongoose.models.CustomSellPrice || mongoose.model('CustomSellPrice', customSellPriceSchema);
+export default CustomSellPriceModel;

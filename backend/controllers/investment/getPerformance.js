@@ -1,4 +1,4 @@
-import CustomSellingPriceModel from '../../models/customSellingPriceModel.js';
+import CustomSellPriceModel from '../../models/customSellPriceModel.js';
 import InvestmentModel from '../../models/investmentModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
@@ -35,18 +35,16 @@ export const getPerformance = async (req, res) => {
     let pricePerMg = null;
 
     if (sellPriceOverride) {
-      overrideSellingPrice = await CustomSellingPriceModel.findOne({ userId: user_id })
+      overrideSellingPrice = await CustomSellPriceModel.findOne({ userId: user_id })
         .sort({ date: -1 })
-        .select('sellingPrice');
+        .select('price');
     } else {
       goldPrice = await getGoldPrice();
       if (goldPrice && !goldPrice.success)
         return res.status(500).json({ success: false, data: null, message: goldPrice.message });
     }
 
-    pricePerMg = sellPriceOverride
-      ? overrideSellingPrice?.sellingPrice
-      : goldPrice?.data?.sellingPrice;
+    pricePerMg = sellPriceOverride ? overrideSellingPrice?.price : goldPrice?.data?.sellingPrice;
 
     let cumulativeInvested = 0;
     let cumulativeCurrentValue = 0;

@@ -10,12 +10,13 @@ import DashboardCard from '../components/dashboard/DashboardCard';
 import SellEntryModal from '../components/modals/SellEntryModal';
 import { DashboardSkeleton } from '../components/common/Skeleton';
 import { useToast } from 'react-toast-kit-js';
-import SetCustomSellingPriceModal from '@/components/modals/SetCustomSellingPriceModal';
+import SetCustomPriceModal from '@/components/modals/SetCustomPriceModal';
 import { IndianRupee, Pencil, TrendingDown, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const toast = useToast();
-  const [isCustomSellingPriceModalOpen, setIsCustomSellingPriceModalOpen] = useState(false);
+  const [isCustomSellPriceModalOpen, setIsCustomSellPriceModalOpen] = useState(false);
+  const [isCustomPurchasePriceModalOpen, setIsCustomPurchasePriceModalOpen] = useState(false);
 
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [itemForSale, setItemForSale] = useState(null);
@@ -88,13 +89,22 @@ export default function Dashboard() {
         <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-slate-800/80 bg-slate-900/40 shadow-xl backdrop-blur-xs">
           <div className="flex items-center justify-between bg-slate-900/20 p-4">
             <h2 className="text-lg font-semibold text-white md:text-xl">Investment History</h2>
-            <MotionButton
-              onClick={() => setIsCustomSellingPriceModalOpen(true)}
-              className="flex cursor-pointer items-center gap-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-xs font-medium text-violet-400 transition-colors duration-300 hover:border-violet-500 hover:bg-violet-500/80 hover:text-white"
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Set Custom Price
-            </MotionButton>
+            <div className="flex items-center gap-2">
+              <MotionButton
+                onClick={() => setIsCustomPurchasePriceModalOpen(true)}
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400 transition-colors duration-300 hover:border-blue-500 hover:bg-blue-500/80 hover:text-white"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Set Custom Purchase Price
+              </MotionButton>
+              <MotionButton
+                onClick={() => setIsCustomSellPriceModalOpen(true)}
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-medium text-emerald-400 transition-colors duration-300 hover:border-emerald-500 hover:bg-emerald-500/80 hover:text-white"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Set Custom Sell Price
+              </MotionButton>
+            </div>
           </div>
 
           <div className="min-h-0 flex-1 overflow-auto">
@@ -241,9 +251,15 @@ export default function Dashboard() {
         onClose={() => setIsSellModalOpen(false)}
         itemForSale={itemForSale}
       />
-      <SetCustomSellingPriceModal
-        isOpen={isCustomSellingPriceModalOpen}
-        onClose={() => setIsCustomSellingPriceModalOpen(false)}
+      <SetCustomPriceModal
+        text="Purchase"
+        isOpen={isCustomPurchasePriceModalOpen}
+        onClose={() => setIsCustomPurchasePriceModalOpen(false)}
+      />
+      <SetCustomPriceModal
+        text="Sell"
+        isOpen={isCustomSellPriceModalOpen}
+        onClose={() => setIsCustomSellPriceModalOpen(false)}
       />
     </>
   );

@@ -6,8 +6,8 @@ import {
   sell,
   getDetails,
   getPerformance,
-  getSellingPricePerformance,
-  setCustomSellingPrice,
+  getCustomPrice,
+  setCustomPrice,
 } from '../controllers/investment/index.js';
 
 const investmentRouter = express.Router();
@@ -20,10 +20,8 @@ investmentRouter.route('/sell').post(trimRequest.all, sell);
 
 investmentRouter.route('/getDetails').get(getDetails);
 
-investmentRouter.route('/setCustomSellingPrice').post(trimRequest.all, setCustomSellingPrice);
-
 investmentRouter.route('/getPerformance').get(getPerformance);
 
-investmentRouter.route('/getSellingPricePerformance').get(getSellingPricePerformance);
+investmentRouter.route('/customPrice').get(getCustomPrice).post(trimRequest.all, setCustomPrice);
 
 export default investmentRouter;

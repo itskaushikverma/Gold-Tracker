@@ -1,4 +1,5 @@
-import CustomSellingPriceModel from '../../models/customSellingPriceModel.js';
+import CustomPurchasePriceModel from '../../models/customPurchasePriceModel.js';
+import CustomSellPriceModel from '../../models/customSellPriceModel.js';
 import InvestmentModel from '../../models/investmentModel.js';
 import { getGoldPrice } from '../../utils/getGoldPrice.js';
 import { round } from '../../utils/roundToDecimal.js';
@@ -25,9 +26,13 @@ export const getDetails = async (req, res) => {
     if (!goldPrice.success)
       return res.status(500).json({ success: false, data: null, message: goldPrice.message });
 
-    const overrideSellingPriceDoc = await CustomSellingPriceModel.findOne({ userId: user_id })
-      .sort({ date: -1 })
-      .select('sellingPrice');
+    const [overrideSellingPriceDoc, overridePurchasePriceDoc] = await Promise.all([
+      CustomSellPriceModel.findOne({ userId: user_id }).sort({ date: -1 }).select('price').lean(),
+      CustomPurchasePriceModel.findOne({ userId: user_id })
+        .sort({ date: -1 })
+        .select('price')
+        .lean(),
+    ]);
 
     const data = {
       totalProfitLoss: 0,
@@ -37,7 +42,8 @@ export const getDetails = async (req, res) => {
       currentGoldPriceWithGST: goldPrice.data.priceWithGST,
       currentGoldPriceWithoutGST: goldPrice.data.priceWithoutGST,
       currentGoldSellingPrice: goldPrice.data.sellingPrice,
-      overrideSellingPrice: overrideSellingPriceDoc?.sellingPrice || 0,
+      overrideSellingPrice: overrideSellingPriceDoc?.price || 0,
+      overridePurchasePrice: overridePurchasePriceDoc?.price || 0,
       isPositive: null,
     };
 

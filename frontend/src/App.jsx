@@ -14,7 +14,7 @@ const Layout = lazy(() => import('./components/layout/Layout'));
 const Auth = lazy(() => import('./pages/Auth'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Performance = lazy(() => import('./pages/Performance'));
-const SellingPricePerformance = lazy(() => import('./pages/SellingPricePerformance'));
+const PriceHistory = lazy(() => import('./pages/PriceHistory'));
 
 const suspenseFallback = (
   <div className="relative z-10 flex h-full items-center justify-center">
@@ -53,7 +53,7 @@ export default function App() {
     <Router>
       <BackgroundAnimation />
       <div className="overflow-y-auto">
-        <div className="relative z-10 mb-20 flex h-screen flex-col">
+        <div className="relative z-10 mb-20 flex h-dvh flex-col lg:h-screen">
           <div className="pointer-events-none absolute bottom-0 z-0 h-[50%] w-full bg-[linear-gradient(180deg,#02061800_0%,#020618_90%,#020618_100%)]" />
           <div className="relative z-10 flex min-h-0 flex-1 flex-col">
             <Routes>
@@ -66,7 +66,14 @@ export default function App() {
                   <Route element={<Layout />}>
                     <Route path="/home" element={<Dashboard />} />
                     <Route path="/my-growth" element={<Performance />} />
-                    <Route path="/sell-price-history" element={<SellingPricePerformance />} />
+                    <Route
+                      path="/sell-price-history"
+                      element={<PriceHistory key="sell" type="sell" />}
+                    />
+                    <Route
+                      path="/purchase-price-history"
+                      element={<PriceHistory key="purchase" type="purchase" />}
+                    />
                   </Route>
                 </Route>
 

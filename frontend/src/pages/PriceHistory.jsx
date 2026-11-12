@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import Header from '../components/layout/Header';
 import { MotionDiv } from '@/components/common/MotionWrapper';
-import MySellingPriceChart from '@/components/dashboard/MySellingPriceChart';
-import SmartSellingPriceChart from '@/components/dashboard/SmartSellingPriceChart';
-import { useGetSellingPricePerformanceQuery } from '@/services/api';
+import MyPriceChart from '@/components/dashboard/MyPriceChart';
+import SmartPriceChart from '@/components/dashboard/SmartPriceChart';
+import { useGetCustomPriceQuery } from '@/services/api';
 import { useToast } from 'react-toast-kit-js';
 
 const TABS = [
@@ -25,13 +25,34 @@ const TABS = [
   },
 ];
 
-export default function SellingPricePerformance() {
+const TYPE_CONFIG = {
+  sell: {
+    label: 'Sell',
+    myName: 'My Sell Prices',
+    smartName: 'Smart Sell Chart',
+    globalName: 'Global Sell Prices',
+    myColor: '#34d399',
+    myId: 'colorMySellPrices',
+  },
+  purchase: {
+    label: 'Purchase',
+    myName: 'My Purchase Prices',
+    smartName: 'Smart Purchase Chart',
+    globalName: 'Global Purchase Prices',
+    myColor: '#60a5fa',
+    myId: 'colorMyPurchasePrices',
+  },
+};
+
+export default function PriceHistory({ type }) {
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('my');
+  const typeConfig = TYPE_CONFIG[type];
 
-  const { currentData, isLoading, isFetching, isError, error } = useGetSellingPricePerformanceQuery(
-    { scope: activeTab },
-  );
+  const { currentData, isLoading, isFetching, isError, error } = useGetCustomPriceQuery({
+    scope: activeTab,
+    type,
+  });
 
   useEffect(() => {
     if (isError) toast.error(error?.data?.message);
@@ -39,17 +60,19 @@ export default function SellingPricePerformance() {
 
   const isBusy = isLoading || isFetching;
   const chartData = isError ? undefined : currentData;
+  const errorMessage = isError ? error?.data?.message : undefined;
 
   return (
     <MotionDiv
+      key={type}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="flex h-full min-h-0 flex-col gap-6 overflow-hidden"
     >
       <Header
-        title="Sell Price History"
-        description="Track the custom sell prices you’ve set over time."
+        title={`${typeConfig.label} Price History`}
+        description={`Track the custom ${type} prices you’ve set over time.`}
         tabs={TABS}
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -60,52 +83,59 @@ export default function SellingPricePerformance() {
         <AnimatePresence mode="wait">
           {activeTab === 'my' && (
             <MotionDiv
-              key="tab-my"
+              key={`tab-my-${type}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <MySellingPriceChart
+              <MyPriceChart
                 data={chartData}
                 isLoading={isBusy}
-                errorMessage={error?.data?.message}
+                isError={isError}
+                name={typeConfig.myName}
+                color={typeConfig.myColor}
+                id={typeConfig.myId}
+                errorMessage={errorMessage}
               />
             </MotionDiv>
           )}
           {activeTab === 'smart' && (
             <MotionDiv
-              key="tab-smart"
+              key={`tab-smart-${type}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <SmartSellingPriceChart
+              <SmartPriceChart
                 data={chartData}
                 isLoading={isBusy}
-                errorMessage={error?.data?.message}
+                isError={isError}
+                name={typeConfig.smartName}
+                errorMessage={errorMessage}
               />
             </MotionDiv>
           )}
           {activeTab === 'global' && (
             <MotionDiv
-              key="tab-global"
+              key={`tab-global-${type}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="h-full"
             >
-              <MySellingPriceChart
+              <MyPriceChart
                 data={chartData}
                 isLoading={isBusy}
-                name="Global Prices"
+                isError={isError}
+                name={typeConfig.globalName}
                 color="#10b981"
-                id="colorGlobalPrices"
-                errorMessage={error?.data?.message}
+                id={`colorGlobalPrices-${type}`}
+                errorMessage={errorMessage}
               />
             </MotionDiv>
           )}

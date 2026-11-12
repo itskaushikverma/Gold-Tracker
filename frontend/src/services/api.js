@@ -57,13 +57,13 @@ export const api = createApi({
       invalidatesTags: ['INVESTMENT_DETAILS', 'INVESTMENT_PERFORMANCE'],
     }),
 
-    setCustomSellingPrice: builder.mutation({
+    setCustomPrice: builder.mutation({
       query: (body) => ({
-        url: ENDPOINTS.SET_CUSTOM_SELLING_PRICE,
+        url: ENDPOINTS.CUSTOM_PRICE,
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['INVESTMENT_DETAILS', 'SELLING_PRICE_PERFORMANCE'],
+      invalidatesTags: ['INVESTMENT_DETAILS', 'CUSTOM_PRICE'],
     }),
 
     getDetails: builder.query({
@@ -84,13 +84,13 @@ export const api = createApi({
       providesTags: ['INVESTMENT_PERFORMANCE'],
     }),
 
-    getSellingPricePerformance: builder.query({
-      query: ({ scope } = {}) => ({
-        url: ENDPOINTS.GET_SELLING_PRICE_PERFORMANCE,
+    getCustomPrice: builder.query({
+      query: ({ scope, type } = {}) => ({
+        url: ENDPOINTS.CUSTOM_PRICE,
         method: 'GET',
-        params: { scope },
+        params: { scope, type },
       }),
-      providesTags: ['SELLING_PRICE_PERFORMANCE'],
+      providesTags: ['CUSTOM_PRICE'],
     }),
   }),
 });
@@ -102,8 +102,8 @@ export const {
   useLogoutMutation,
   usePurchaseMutation,
   useSellMutation,
-  useSetCustomSellingPriceMutation,
+  useSetCustomPriceMutation,
   useGetDetailsQuery,
   useGetPerformanceQuery,
-  useGetSellingPricePerformanceQuery,
+  useGetCustomPriceQuery,
 } = api;

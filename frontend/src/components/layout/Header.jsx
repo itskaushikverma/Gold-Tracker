@@ -42,9 +42,14 @@ export default function Header({
       valueClassName: 'text-emerald-400',
     },
     {
-      title: 'Custom Selling Price',
+      title: 'Custom Sell Price',
       value: `${formatCurrency(details?.overrideSellingPrice || 0)}/mg`,
-      valueClassName: 'text-violet-400',
+      valueClassName: 'text-emerald-400',
+    },
+    {
+      title: 'Custom Purchase Price',
+      value: `${formatCurrency(details?.overridePurchasePrice || 0)}/mg`,
+      valueClassName: 'text-blue-400',
     },
   ];
 

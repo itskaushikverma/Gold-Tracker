@@ -4,23 +4,16 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-export const generateSellingPriceChart = async (customPrices) => {
-  const inputData = customPrices
-    .map((item) => ({
-      date: new Date(item.date).getTime(),
-      value: Number(item.sellingPrice),
-    }))
-    .sort((a, b) => a.date - b.date);
-
+export const generateCustomPriceChart = async (formattedData) => {
   const prompt = `
 You are a professional data visualization expert.
 
-Analyze the following selling price time-series data and generate a complete
+Analyze the following price time-series data and generate a complete
 chart configuration that can be consumed by Chart.js.
 
 The input contains:
 - date: Unix timestamp in milliseconds (epoch ms)
-- value: selling price
+- value: price
 
 IMPORTANT:
 
@@ -39,7 +32,7 @@ DATA:
 CHART:
 - Use a line chart.
 - The X-axis represents time.
-- The Y-axis represents selling price.
+- The Y-axis represents price.
 
 X-AXIS:
 Analyze the provided date range and choose the most appropriate configuration.
@@ -77,7 +70,7 @@ timeUnit = "year"
 displayFormat = "yyyy"
 
 Y-AXIS:
-Analyze the minimum and maximum selling price.
+Analyze the minimum and maximum price.
 
 Choose:
 - sensible suggestedMin
@@ -141,7 +134,7 @@ Return EXACTLY this structure:
 
 INPUT DATA:
 
-${JSON.stringify(inputData)}
+${JSON.stringify(formattedData)}
 `;
 
   try {
